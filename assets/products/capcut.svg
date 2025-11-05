@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="320" viewBox="0 0 512 320">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111217"/>
+      <stop offset="1" stop-color="#0b0c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="320" fill="url(#g)"/>
+  <circle cx="470" cy="-30" r="210" fill="#26c6da" opacity="0.22"/>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="130" font-weight="900" fill="#e0f7fa">CAPCUT</text>
+  <text x="96%" y="96%" text-anchor="end" font-family="Poppins, Arial" font-size="18" fill="#ff5f6d" opacity="0.9">Plug Market</text>
+</svg>

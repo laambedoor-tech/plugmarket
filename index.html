@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plug Market — Digital services at better prices</title>
+  <meta name="description" content="Get digital services for less with instant delivery and support. Plug Market, your trusted marketplace." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
+  <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <canvas id="bg-particles" aria-hidden="true"></canvas>
+
+    <header class="nav">
+      <a href="#" class="brand">
+        <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
+        <span class="brand__name">Plug Market</span>
+      </a>
+      <nav class="menu">
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="cta">
+  <a class="btn btn--ghost" href="#products">View products</a>
+  <a class="btn btn--primary" href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener noreferrer">Join Discord</a>
+        <a class="cart-link" href="./cart.html" aria-label="Cart">
+          <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
+          <span class="cart-count" id="cart-count">0</span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+  <section id="home" class="hero anchor-offset">
+        <div class="hero__content">
+          <p class="eyebrow">Trusted marketplace</p>
+          <h1 class="hero__title">Pay less for your favorite services</h1>
+          <p class="hero__subtitle">
+            Instant delivery, real support, and verified sales. Choose from
+            streaming, music, utilities, VPNs, and more.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#products">Browse products</a>
+            <a class="btn btn--ghost" href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener noreferrer">Join Discord</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" aria-labelledby="features-title">
+        <h2 id="features-title" class="section-title">Why choose us?</h2>
+        <div class="features__grid">
+          <article class="card feature">
+            <div class="feature__icon" aria-hidden="true">⚡</div>
+            <h3>Instant delivery</h3>
+            <p>Most orders are fulfilled on the spot so you can start right away.</p>
+          </article>
+          <article class="card feature">
+            <div class="feature__icon" aria-hidden="true">🛡️</div>
+            <h3>Protection & warranty</h3>
+            <p>Buy with confidence. Clear policies and replacements when applicable.</p>
+          </article>
+          <article class="card feature">
+            <div class="feature__icon" aria-hidden="true">💬</div>
+            <h3>Friendly support</h3>
+            <p>We're on Discord to help before and after your purchase.</p>
+          </article>
+          <article class="card feature">
+            <div class="feature__icon" aria-hidden="true">⭐</div>
+            <h3>Great reputation</h3>
+            <p>Thousands of happy customers and positive ratings back us.</p>
+          </article>
+        </div>
+      </section>
+
+  <section id="products" class="products anchor-offset" aria-labelledby="products-title">
+        <h2 id="products-title" class="section-title">Featured products</h2>
+        <div class="products__grid" id="products-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="stats" aria-labelledby="stats-title">
+        <h2 id="stats-title" class="sr-only">Numbers</h2>
+        <div class="stats__grid">
+          <div class="stat card">
+            <div class="stat__value" data-count="4.86" data-suffix="★">4.86★</div>
+            <div class="stat__label">Average rating</div>
+          </div>
+          <div class="stat card">
+            <div class="stat__value" data-count="238" data-integer="true">238</div>
+            <div class="stat__label">Products sold</div>
+          </div>
+          <div class="stat card">
+            <div class="stat__value" data-count="562" data-integer="true">562</div>
+            <div class="stat__label">Total customers</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reviews" aria-labelledby="reviews-title">
+        <h2 id="reviews-title" class="section-title">Reviews</h2>
+        <div class="reviews__grid">
+          <article class="card review">
+            <div class="review__stars">★★★★★</div>
+            <p>“Everything was perfect and super fast. Will buy again.”</p>
+            <span class="review__meta">Verified purchase · Oct 31, 2025</span>
+          </article>
+          <article class="card review">
+            <div class="review__stars">★★★★★</div>
+            <p>“Buen soporte, resolvieron mis dudas al instante.”</p>
+            <span class="review__meta">Compra verificada · Oct 30, 2025</span>
+          </article>
+          <article class="card review">
+            <div class="review__stars">★★★★☆</div>
+            <p>“Great price and works as expected.”</p>
+            <span class="review__meta">Verified purchase · Oct 29, 2025</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="faq" class="faq anchor-offset" aria-labelledby="faq-title">
+        <h2 id="faq-title" class="section-title">Frequently Asked Questions</h2>
+        <div class="faq__container">
+          <details class="faq-item">
+            <summary class="faq-item__question">How does delivery work?</summary>
+            <div class="faq-item__answer">
+              <p>Most orders are delivered instantly via Discord or email. After payment, you'll receive your account credentials or activation instructions right away.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-item__question">What payment methods do you accept?</summary>
+            <div class="faq-item__answer">
+              <p>We accept various payment methods including credit/debit cards, PayPal, and cryptocurrency. Payment options are displayed during checkout.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-item__question">Do you offer refunds or replacements?</summary>
+            <div class="faq-item__answer">
+              <p>Yes! If you experience any issues with your purchase, contact us on Discord within 24 hours. We offer replacements for defective accounts and refunds in certain cases according to our policy.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-item__question">Are these accounts legal and safe?</summary>
+            <div class="faq-item__answer">
+              <p>All our products are sourced responsibly and sold in compliance with applicable terms. We recommend reviewing each service's terms of use. Your data security is our priority.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-item__question">How long do subscriptions last?</summary>
+            <div class="faq-item__answer">
+              <p>Each product listing shows available durations (1, 3, 6, or 12 months, and Lifetime for select products). The exact duration is guaranteed from the moment of delivery.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-item__question">What if I need help after purchase?</summary>
+            <div class="faq-item__answer">
+              <p>Join our Discord server for 24/7 support. Our team is always ready to help with setup, troubleshooting, or any questions you might have.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-item__question">Can I change or cancel my order?</summary>
+            <div class="faq-item__answer">
+              <p>Due to instant delivery, orders cannot be canceled once processed. However, if you need to modify your order, contact us immediately on Discord and we'll do our best to assist.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal de variantes / suscripciones -->
+    <div class="modal" id="product-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal__overlay" data-close></div>
+      <div class="modal__panel" role="document">
+        <div class="modal__header">
+          <h3 class="modal__title" id="modal-title">Product</h3>
+          <button class="modal__close" type="button" aria-label="Close" data-close>×</button>
+        </div>
+        <div class="modal__content" id="modal-content">
+          <!-- items rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+  <footer class="footer anchor-offset" id="contact">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="./assets/logo.svg" alt="Plug Market" />
+          <p class="muted">Plug Market © 2025</p>
+        </div>
+        <nav class="footer__links">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener">Discord</a>
+          <a href="#">Telegram</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="./js/main.js" type="module"></script>
+  </body>
+</html>
