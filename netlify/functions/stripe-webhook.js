@@ -10,20 +10,21 @@ function getSupabase() {
 }
 
 // Assign account from inventory
-async function assignAccount(productId, customerEmail) {
+async function assignAccount(productId, plan, customerEmail) {
   const supabase = getSupabase();
   
-  // Find available account for this product
+  // Find available account for this product and plan
   const { data: accounts, error: fetchError } = await supabase
     .from('accounts')
     .select('*')
     .eq('product_id', productId)
+    .eq('plan', plan)
     .eq('status', 'available')
     .limit(1);
 
   if (fetchError) throw new Error(`DB fetch error: ${fetchError.message}`);
   if (!accounts || accounts.length === 0) {
-    throw new Error(`No available accounts for product: ${productId}`);
+    throw new Error(`No available accounts for ${productId} - ${plan}`);
   }
 
   const account = accounts[0];
@@ -77,25 +78,28 @@ exports.handler = async (event) => {
         const pi = evt.data.object;
         console.log('Payment succeeded', { id: pi.id, amount: pi.amount });
 
-        // Parse cart from metadata
-        const cart = JSON.parse(pi.metadata.cart || '[]');
-        const customerEmail = pi.receipt_email || pi.metadata.email;
+        // Get customer email from metadata or receipt_email
+        const customerEmail = pi.metadata.customer_email || pi.receipt_email;
 
         if (!customerEmail) {
-          console.error('No customer email found');
+          console.error('No customer email found in payment intent');
           break;
         }
+
+        // Parse cart from metadata
+        const cart = JSON.parse(pi.metadata.cart || '[]');
 
         // Process each item in cart
         for (const item of cart) {
           try {
-            const credentials = await assignAccount(item.pid, customerEmail);
-            console.log(`Assigned account for ${item.pid} to ${customerEmail}`);
+            const credentials = await assignAccount(item.pid, item.plan, customerEmail);
+            console.log(`Assigned account for ${item.pid} - ${item.plan} to ${customerEmail}`);
             
             // TODO: Send email with credentials
             // For now, log the credentials (you'll see them in Netlify Functions logs)
             console.log('Account credentials:', {
               product: item.pid,
+              plan: item.plan,
               email: credentials.email,
               password: credentials.password,
               customer: customerEmail

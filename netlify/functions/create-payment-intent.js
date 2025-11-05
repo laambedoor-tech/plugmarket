@@ -63,6 +63,7 @@ exports.handler = async (event) => {
       metadata: {
         cart: JSON.stringify(normalized),
         site: 'plugmarket',
+        customer_email: email || '',
       },
     });
 
