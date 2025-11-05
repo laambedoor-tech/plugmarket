@@ -1,0 +1,14 @@
+{
+  "name": "plugmarket",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Plug Market static site with Netlify Functions",
+  "license": "MIT",
+  "scripts": {
+    "build": "echo No build step",
+    "start": "echo Open index.html"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
