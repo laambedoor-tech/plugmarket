@@ -13,6 +13,8 @@ function getSupabase() {
 async function assignAccount(productId, plan, customerEmail) {
   const supabase = getSupabase();
   
+  console.log(`Searching for account: product_id="${productId}", plan="${plan}"`);
+  
   // Find available account for this product and plan
   const { data: accounts, error: fetchError } = await supabase
     .from('accounts')
@@ -21,6 +23,8 @@ async function assignAccount(productId, plan, customerEmail) {
     .eq('plan', plan)
     .eq('status', 'available')
     .limit(1);
+
+  console.log(`Query result: ${accounts ? accounts.length : 0} accounts found`, { fetchError, accounts });
 
   if (fetchError) throw new Error(`DB fetch error: ${fetchError.message}`);
   if (!accounts || accounts.length === 0) {
