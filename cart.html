@@ -50,6 +50,27 @@
             <a class="btn btn--primary" id="btn-checkout">Checkout</a>
           </div>
         </div>
+
+        <!-- Stripe Checkout Panel -->
+        <div id="checkout-panel" class="card" style="margin-top:16px; display:none;">
+          <h2 style="margin-bottom:12px;">Secure checkout</h2>
+          <p class="muted" style="margin:0 0 8px 0;">Enter your email for receipt and complete the payment below.</p>
+          <form id="payment-form">
+            <div style="display:grid; gap:10px; max-width:520px;">
+              <label style="display:grid; gap:6px;">
+                <span style="font-weight:600;">Email</span>
+                <input id="checkout-email" type="email" placeholder="you@example.com" autocomplete="email" required style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+              </label>
+              <div id="payment-element"></div>
+              <div id="payment-message" class="muted" role="alert" style="display:none;"></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+              <button id="btn-pay" class="btn btn--primary" type="submit">Pay now</button>
+              <button id="btn-cancel-checkout" class="btn btn--ghost" type="button">Cancel</button>
+            </div>
+            <p class="muted" style="margin-top:8px;">Payments are processed by Stripe. Your data is encrypted and secure.</p>
+          </form>
+        </div>
       </section>
     </main>
 
@@ -68,6 +89,7 @@
       </div>
     </footer>
 
+    <script src="https://js.stripe.com/v3" defer></script>
     <script src="./js/main.js" type="module"></script>
     <script src="./js/cart.js" type="module"></script>
   </body>
