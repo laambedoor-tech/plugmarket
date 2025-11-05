@@ -1,4 +1,50 @@
 const stripeLib = require('stripe');
+const { createClient } = require('@supabase/supabase-js');
+
+// Initialize Supabase client
+function getSupabase() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) throw new Error('Missing Supabase credentials');
+  return createClient(url, key);
+}
+
+// Assign account from inventory
+async function assignAccount(productId, customerEmail) {
+  const supabase = getSupabase();
+  
+  // Find available account for this product
+  const { data: accounts, error: fetchError } = await supabase
+    .from('accounts')
+    .select('*')
+    .eq('product_id', productId)
+    .eq('status', 'available')
+    .limit(1);
+
+  if (fetchError) throw new Error(`DB fetch error: ${fetchError.message}`);
+  if (!accounts || accounts.length === 0) {
+    throw new Error(`No available accounts for product: ${productId}`);
+  }
+
+  const account = accounts[0];
+
+  // Mark as sold
+  const { error: updateError } = await supabase
+    .from('accounts')
+    .update({
+      status: 'sold',
+      sold_at: new Date().toISOString(),
+      customer_email: customerEmail
+    })
+    .eq('id', account.id);
+
+  if (updateError) throw new Error(`DB update error: ${updateError.message}`);
+
+  return {
+    email: account.email,
+    password: account.password
+  };
+}
 
 // Stripe webhook endpoint for Netlify Functions
 exports.handler = async (event) => {
@@ -19,7 +65,6 @@ exports.handler = async (event) => {
 
   let evt;
   try {
-    // event.body is a raw string; don't JSON.parse before verification
     evt = stripe.webhooks.constructEvent(event.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed.', err.message);
@@ -30,8 +75,36 @@ exports.handler = async (event) => {
     switch (evt.type) {
       case 'payment_intent.succeeded': {
         const pi = evt.data.object;
-        // TODO: fulfill the order (e.g., update DB, send email/Discord DM)
-        console.log('Payment succeeded', { id: pi.id, amount: pi.amount, metadata: pi.metadata });
+        console.log('Payment succeeded', { id: pi.id, amount: pi.amount });
+
+        // Parse cart from metadata
+        const cart = JSON.parse(pi.metadata.cart || '[]');
+        const customerEmail = pi.receipt_email || pi.metadata.email;
+
+        if (!customerEmail) {
+          console.error('No customer email found');
+          break;
+        }
+
+        // Process each item in cart
+        for (const item of cart) {
+          try {
+            const credentials = await assignAccount(item.pid, customerEmail);
+            console.log(`Assigned account for ${item.pid} to ${customerEmail}`);
+            
+            // TODO: Send email with credentials
+            // For now, log the credentials (you'll see them in Netlify Functions logs)
+            console.log('Account credentials:', {
+              product: item.pid,
+              email: credentials.email,
+              password: credentials.password,
+              customer: customerEmail
+            });
+          } catch (err) {
+            console.error(`Failed to assign account for ${item.pid}:`, err.message);
+            // Continue with other items even if one fails
+          }
+        }
         break;
       }
       case 'payment_intent.payment_failed': {
