@@ -5,6 +5,11 @@ const { createClient } = require('@supabase/supabase-js');
 function getSupabase() {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_ANON_KEY;
+  console.log('Supabase config:', { 
+    url, 
+    keyPrefix: key ? key.substring(0, 20) + '...' : 'missing',
+    keyLength: key ? key.length : 0
+  });
   if (!url || !key) throw new Error('Missing Supabase credentials');
   return createClient(url, key);
 }
