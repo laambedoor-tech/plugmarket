@@ -15,8 +15,8 @@ async function assignAccount(productId, plan, customerEmail) {
   
   console.log(`Searching for account: product_id="${productId}", plan="${plan}"`);
   
-  // Find available account for this product and plan
-  const { data: accounts, error: fetchError } = await supabase
+  // First, try exact match
+  let { data: accounts, error: fetchError } = await supabase
     .from('accounts')
     .select('*')
     .eq('product_id', productId)
@@ -24,7 +24,22 @@ async function assignAccount(productId, plan, customerEmail) {
     .eq('status', 'available')
     .limit(1);
 
-  console.log(`Query result: ${accounts ? accounts.length : 0} accounts found`, { fetchError, accounts });
+  console.log(`Exact match result: ${accounts ? accounts.length : 0} accounts`, { fetchError, sample: accounts?.[0] });
+
+  // If no exact match, try without plan filter (for debugging)
+  if ((!accounts || accounts.length === 0) && !fetchError) {
+    console.log('Trying without plan filter...');
+    const { data: allAccounts, error: allError } = await supabase
+      .from('accounts')
+      .select('*')
+      .eq('product_id', productId)
+      .eq('status', 'available');
+    
+    console.log(`Without plan filter: ${allAccounts ? allAccounts.length : 0} accounts`, { 
+      allError, 
+      plans: allAccounts?.map(a => `"${a.plan}"`) 
+    });
+  }
 
   if (fetchError) throw new Error(`DB fetch error: ${fetchError.message}`);
   if (!accounts || accounts.length === 0) {
