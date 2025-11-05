@@ -1,6 +1,63 @@
 // Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
 
+// Stripe Elements state
+let stripe = null;
+let elements = null;
+let paymentElement = null;
+let clientSecret = null;
+
+async function fetchJSON(url, opts){
+  const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
+  if (!res.ok) {
+    let msg = 'Request failed';
+    try { const j = await res.json(); msg = j.error || JSON.stringify(j); } catch {}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+function showCheckout(show){
+  const panel = document.getElementById('checkout-panel');
+  panel.style.display = show ? 'block' : 'none';
+}
+
+async function initStripe(){
+  if (stripe) return stripe;
+  // @ts-ignore Stripe is loaded via global script
+  if (!window.Stripe) throw new Error('Stripe.js not loaded');
+  const cfg = await fetchJSON('/api/get-stripe-config');
+  stripe = window.Stripe(cfg.publishableKey);
+  return stripe;
+}
+
+async function createPaymentIntent(){
+  const items = getCart();
+  const emailEl = document.getElementById('checkout-email');
+  const email = emailEl && emailEl.value ? String(emailEl.value) : undefined;
+  const data = await fetchJSON('/api/create-payment-intent', {
+    method: 'POST',
+    body: JSON.stringify({ items: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })), email })
+  });
+  return data.clientSecret;
+}
+
+async function mountElements(){
+  await initStripe();
+  clientSecret = await createPaymentIntent();
+  elements = stripe.elements({ clientSecret });
+  paymentElement = elements.create('payment');
+  paymentElement.mount('#payment-element');
+}
+
+function setMessage(msg){
+  const el = document.getElementById('payment-message');
+  if (!el) return;
+  if (!msg){ el.style.display = 'none'; el.textContent = ''; return; }
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
 // local toneToGradient copy to avoid module scope issues
 function toneToGradient(tone){
   switch (tone) {
@@ -74,9 +131,51 @@ addEventListener('click', (e) => {
 // Clear and checkout
 addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
-  document.getElementById('btn-checkout')?.addEventListener('click', () => {
-    // TODO: Implementar función de checkout/pago
-    alert('Checkout - Próximamente disponible');
+  document.getElementById('btn-checkout')?.addEventListener('click', async () => {
+    const items = getCart();
+    if (!items.length) return;
+    try {
+      showCheckout(true);
+      // Slight delay to ensure panel visible, then mount elements
+      setTimeout(() => { mountElements().catch(err => setMessage(err.message)); }, 50);
+      document.getElementById('checkout-email')?.focus();
+    } catch (e) {
+      setMessage(e.message || 'Checkout unavailable');
+    }
+  });
+  document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
+    showCheckout(false);
+    setMessage('');
+    // Optionally unmount elements to allow re-creating intents
+    try { paymentElement && paymentElement.unmount(); } catch {}
+    paymentElement = null; elements = null; clientSecret = null;
+  });
+
+  document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements) {
+      try { await mountElements(); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
+    }
+    setMessage('');
+    const btn = document.getElementById('btn-pay');
+    btn && (btn.disabled = true);
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: window.location.origin + '/cart.html' },
+      redirect: 'if_required',
+    });
+    btn && (btn.disabled = false);
+    if (error) {
+      setMessage(error.message || 'Payment failed. Please try again.');
+      return;
+    }
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+      setMessage('Payment succeeded. Thank you!');
+      setCart([]);
+    } else {
+      // For some methods, Stripe may redirect instead. We'll rely on return_url.
+      setMessage('Follow the instructions to complete the payment.');
+    }
   });
   render(); updateCount();
 });
