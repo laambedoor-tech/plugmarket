@@ -52,18 +52,16 @@ exports.handler = async (event) => {
 
     const stripe = stripeLib(stripeSecret);
 
-    const { items, email } = JSON.parse(event.body || '{}');
+    const { items } = JSON.parse(event.body || '{}');
     const { totalCents, normalized } = validateAndPriceCart(items);
 
     const intent = await stripe.paymentIntents.create({
       amount: totalCents,
       currency: 'usd',
       automatic_payment_methods: { enabled: true },
-      receipt_email: email || undefined,
       metadata: {
         cart: JSON.stringify(normalized),
         site: 'plugmarket',
-        customer_email: email || '',
       },
     });
 

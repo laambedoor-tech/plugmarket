@@ -33,11 +33,9 @@ async function initStripe(){
 
 async function createPaymentIntent(){
   const items = getCart();
-  const emailEl = document.getElementById('checkout-email');
-  const email = emailEl && emailEl.value ? String(emailEl.value) : undefined;
   const data = await fetchJSON('/api/create-payment-intent', {
     method: 'POST',
-    body: JSON.stringify({ items: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })), email })
+    body: JSON.stringify({ items: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
   });
   return data.clientSecret;
 }
@@ -156,14 +154,28 @@ addEventListener('DOMContentLoaded', () => {
     if (!stripe || !elements) {
       try { await mountElements(); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
     }
+    
+    // Get email from form
+    const emailEl = document.getElementById('checkout-email');
+    const customerEmail = emailEl ? emailEl.value.trim() : '';
+    if (!customerEmail) {
+      setMessage('Please enter your email');
+      return;
+    }
+    
     setMessage('');
     const btn = document.getElementById('btn-pay');
     btn && (btn.disabled = true);
+    
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
-      confirmParams: { return_url: window.location.origin + '/cart.html' },
+      confirmParams: { 
+        return_url: window.location.origin + '/cart.html',
+        receipt_email: customerEmail
+      },
       redirect: 'if_required',
     });
+    
     btn && (btn.disabled = false);
     if (error) {
       setMessage(error.message || 'Payment failed. Please try again.');

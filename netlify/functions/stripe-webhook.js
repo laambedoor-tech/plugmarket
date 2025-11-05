@@ -76,24 +76,25 @@ exports.handler = async (event) => {
     switch (evt.type) {
       case 'payment_intent.succeeded': {
         const pi = evt.data.object;
-        console.log('Payment succeeded', { id: pi.id, amount: pi.amount });
+        console.log('Payment succeeded', { id: pi.id, amount: pi.amount, receipt_email: pi.receipt_email });
 
-        // Get customer email from metadata or receipt_email
-        const customerEmail = pi.metadata.customer_email || pi.receipt_email;
+        // Get customer email from receipt_email (set by confirmPayment)
+        const customerEmail = pi.receipt_email;
 
         if (!customerEmail) {
-          console.error('No customer email found in payment intent');
+          console.error('No customer email found in payment intent', { id: pi.id });
           break;
         }
 
         // Parse cart from metadata
         const cart = JSON.parse(pi.metadata.cart || '[]');
+        console.log('Processing cart:', cart);
 
         // Process each item in cart
         for (const item of cart) {
           try {
             const credentials = await assignAccount(item.pid, item.plan, customerEmail);
-            console.log(`Assigned account for ${item.pid} - ${item.plan} to ${customerEmail}`);
+            console.log(`✅ Assigned account for ${item.pid} - ${item.plan} to ${customerEmail}`);
             
             // TODO: Send email with credentials
             // For now, log the credentials (you'll see them in Netlify Functions logs)
@@ -105,7 +106,7 @@ exports.handler = async (event) => {
               customer: customerEmail
             });
           } catch (err) {
-            console.error(`Failed to assign account for ${item.pid}:`, err.message);
+            console.error(`❌ Failed to assign account for ${item.pid}:`, err.message);
             // Continue with other items even if one fails
           }
         }
