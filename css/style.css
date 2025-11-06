@@ -156,13 +156,44 @@ main { position: relative; z-index: 1; }
   background: radial-gradient(60% 40% at 80% 10%, rgba(255,95,109,.22), transparent), #121317;
   box-shadow: var(--shadow-lg);
   transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  cursor: pointer;
 }
 .product-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 4px rgba(255,39,67,.12), var(--shadow-lg); border-color: rgba(255,255,255,.12); }
+.product-card--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.product-card--disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-lg);
+}
 .product-card__media { position: relative; display: grid; place-items: center; height: 120px; background: linear-gradient(135deg, rgba(255,39,67,.35), rgba(255,95,109,.15)); filter: saturate(1.1); overflow: hidden; }
 .product-card__media img { display:block; width:auto; height:auto; max-width: 78%; max-height: 78%; object-fit: contain; filter: drop-shadow(0 4px 18px rgba(0,0,0,.6)); opacity: .98; }
 .product-card__body { padding: 14px; }
 .product-card__title { margin: 0 0 6px; font-weight: 700; font-size: 16px; }
-.product-card__price { margin: 0; color: var(--accent-3); font-weight: 600; }
+.product-card__price { margin: 0 0 8px; color: var(--accent-3); font-weight: 600; }
+
+/* Stock badges */
+.stock-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stock-badge--in {
+  background: rgba(46,213,115,0.15);
+  color: #2ed573;
+  border: 1px solid rgba(46,213,115,0.3);
+}
+.stock-badge--out {
+  background: rgba(255,39,67,0.15);
+  color: #ff2743;
+  border: 1px solid rgba(255,39,67,0.3);
+}
+
 .product-card__badge {
   position: absolute; top: 10px; left: 10px;
   background: rgba(0,0,0,.5);
@@ -192,6 +223,10 @@ main { position: relative; z-index: 1; }
 .variant { display: grid; grid-template-columns: 84px 1fr auto; align-items: center; gap: 14px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.015)); }
 .variant + .variant { margin-top: 10px; }
 .variant:hover { border-color: rgba(255,255,255,.16); box-shadow: var(--shadow-sm); }
+.variant--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .variant__thumb { width: 84px; height: 64px; border-radius: 10px; background: linear-gradient(135deg, rgba(255,39,67,.5), rgba(255,95,109,.18)); border: 1px solid rgba(255,255,255,.12); display:grid; place-items:center; overflow:hidden; }
 .variant__thumb img { display:block; width:auto; height:auto; max-width: 86%; max-height: 86%; object-fit: contain; filter: drop-shadow(0 3px 12px rgba(0,0,0,.55)); }
 .variant__title { margin: 0; font-weight: 700; }

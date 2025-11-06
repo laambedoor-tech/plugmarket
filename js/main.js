@@ -87,19 +87,23 @@
 })();
 
 // 2) Productos demo
+const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
+
 const products = [
-  { id: 'netflix', title: 'Netflix', price: '$', badge: 'Most Popular', tone: 'red' },
-  { id: 'spotify', title: 'Spotify Premium', price: '$', badge: 'Deal', tone: 'green' },
-  { id: 'youtube', title: 'YouTube Premium', price: '$', badge: 'Top', tone: 'orange' },
-  { id: 'disney', title: 'Disney+ ', price: '$', badge: 'New', tone: 'blue' },
-  { id: 'prime', title: 'Prime Video', price: '$', badge: 'In stock', tone: 'blue' },
-  { id: 'hbomax', title: 'HBO Max', price: '$', badge: 'In stock', tone: 'purple' },
-  { id: 'nordvpn', title: 'NordVPN', price: '$', badge: 'Secure', tone: 'cyan' },
-  { id: 'crunchy', title: 'Crunchyroll', price: '$', badge: 'Anime', tone: 'orange' },
-  { id: 'nitro', title: 'Discord Nitro', price: '$', badge: 'Gamers', tone: 'purple' },
-  { id: 'chatgpt', title: 'ChatGPT Plus', price: '$', badge: 'AI', tone: 'teal' },
-  { id: 'capcut', title: 'CapCut Pro', price: '$', badge: 'Creator', tone: 'cyan' },
+  { id: 'netflix', title: 'Netflix', price: '$', tone: 'red' },
+  { id: 'spotify', title: 'Spotify Premium', price: '$', tone: 'green' },
+  { id: 'youtube-premium', title: 'YouTube Premium', price: '$', tone: 'orange' },
+  { id: 'disney', title: 'Disney+ ', price: '$', tone: 'blue' },
+  { id: 'prime', title: 'Prime Video', price: '$', tone: 'blue' },
+  { id: 'hbomax', title: 'HBO Max', price: '$', tone: 'purple' },
+  { id: 'nordvpn', title: 'NordVPN', price: '$', tone: 'cyan' },
+  { id: 'crunchy', title: 'Crunchyroll', price: '$', tone: 'orange' },
+  { id: 'nitro', title: 'Discord Nitro', price: '$', tone: 'purple' },
+  { id: 'chatgpt', title: 'ChatGPT Plus', price: '$', tone: 'teal' },
+  { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
 ];
+
+let stockData = {};
 
 // Suscripciones por producto (precios según adjuntos, en USD)
 const subscriptions = {
@@ -134,9 +138,20 @@ const toneToGradient = (tone) => {
   }
 };
 
-(function renderProducts(){
+(async function renderProducts(){
   const grid = document.getElementById('products-grid');
   if (!grid) return;
+
+  // Fetch stock data
+  try {
+    const res = await fetch(`${API_BASE}/api/get-stock`);
+    if (res.ok) {
+      const data = await res.json();
+      stockData = data.stock || {};
+    }
+  } catch (err) {
+    console.error('Failed to fetch stock:', err);
+  }
 
   const getMinPrice = (pid) => {
     const plans = subscriptions[pid];
@@ -146,19 +161,37 @@ const toneToGradient = (tone) => {
     return Math.min(...vals);
   };
 
+  const hasAnyStock = (pid) => {
+    const plans = subscriptions[pid];
+    if (!plans) return false;
+    
+    for (const plan of Object.keys(plans)) {
+      const key = `${pid}:${plan}`;
+      if (stockData[key] && stockData[key] > 0) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   grid.innerHTML = products.map(p => {
     const min = getMinPrice(p.id);
     const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
+    const inStock = hasAnyStock(p.id);
+    const stockBadge = inStock 
+      ? '<span class="stock-badge stock-badge--in">In Stock</span>' 
+      : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
+    
     return `
-    <article class="product-card" data-pid="${p.id}">
+    <article class="product-card${!inStock ? ' product-card--disabled' : ''}" data-pid="${p.id}">
       <div class="product-card__media" style="background:${toneToGradient(p.tone)}">
         <img src="./assets/products/${p.id}.svg" alt="${p.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div class="product-card__body">
         <h3 class="product-card__title">${p.title}</h3>
         <p class="product-card__price">${priceText}</p>
+        ${stockBadge}
       </div>
-      <span class="product-card__badge ${p.badge === 'Most Popular' ? 'product-card__badge--hot' : ''}">${p.badge}</span>
     </article>`;
   }).join('');
 })();
@@ -214,22 +247,29 @@ const toneToGradient = (tone) => {
         <div class="card" style="margin:10px">We're adding subscription options for this product. Check back soon.</div>
       `;
     } else {
-      modalContent.innerHTML = Object.entries(plans).map(([label, price]) => `
-        <div class="variant" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
+      modalContent.innerHTML = Object.entries(plans).map(([label, price]) => {
+        const stockKey = `${pid}:${label}`;
+        const available = stockData[stockKey] && stockData[stockKey] > 0;
+        const stockBadge = available
+          ? '<span class="stock-badge stock-badge--in">In Stock</span>'
+          : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
+        
+        return `
+        <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
           <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
             <img src="./assets/products/${product.id}.svg" alt="${product.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
           </div>
           <div>
             <h4 class="variant__title">${product.title} — ${label}</h4>
-            <div class="variant__meta">Instant delivery · Basic warranty</div>
+            <div class="variant__meta">Instant delivery · Basic warranty · ${stockBadge}</div>
           </div>
           <div class="variant__actions">
             <div class="variant__price">$${price}</div>
-            <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart">Add to cart</button>
-            <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now">Buy now</button>
+            <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart" ${!available ? 'disabled' : ''}>Add to cart</button>
+            <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now" ${!available ? 'disabled' : ''}>Buy now</button>
           </div>
         </div>
-      `).join('');
+      `}).join('');
     }
 
     modal.setAttribute('aria-hidden', 'false');
@@ -239,7 +279,7 @@ const toneToGradient = (tone) => {
   // Delegación de clicks en grid
   document.addEventListener('click', (e) => {
     const card = e.target.closest('.product-card');
-    if (card && card.dataset.pid) {
+    if (card && card.dataset.pid && !card.classList.contains('product-card--disabled')) {
       open(card.dataset.pid);
     }
     if (e.target.matches('[data-close]')) {
@@ -247,7 +287,7 @@ const toneToGradient = (tone) => {
     }
     // add to cart
     const addBtn = e.target.closest('.js-add-cart');
-    if (addBtn) {
+    if (addBtn && !addBtn.disabled) {
       const row = addBtn.closest('.variant');
       if (row) {
         const pid = row.dataset.pid; const plan = row.dataset.plan; const price = parseFloat(row.dataset.price);
@@ -257,7 +297,7 @@ const toneToGradient = (tone) => {
       }
     }
     const buyBtn = e.target.closest('.js-buy-now');
-    if (buyBtn) {
+    if (buyBtn && !buyBtn.disabled) {
       const row = buyBtn.closest('.variant');
       if (row) {
         const pid = row.dataset.pid; const plan = row.dataset.plan; const price = parseFloat(row.dataset.price);
