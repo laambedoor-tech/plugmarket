@@ -27,6 +27,9 @@ async function assignAccount(productId, plan, customerEmail) {
     .eq('product_id', productId)
     .eq('plan', plan)
     .eq('status', 'available')
+    // FIFO: pick the oldest available first
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true })
     .limit(1);
 
   console.log(`Exact match result: ${accounts ? accounts.length : 0} accounts`, { fetchError, sample: accounts?.[0] });
@@ -114,11 +117,16 @@ exports.handler = async (event) => {
         const cart = JSON.parse(pi.metadata.cart || '[]');
         console.log('Processing cart:', cart);
 
-        // Process each item in cart
+        // Process each item in cart; respect quantity (qty)
         for (const item of cart) {
+          const qty = Number(item.qty) > 0 ? Number(item.qty) : 1;
+          console.log(`Item ${item.pid} - ${item.plan} requested qty=${qty}`);
+          
+          // Assign one account per unit
+          for (let i = 0; i < qty; i++) {
           try {
             const credentials = await assignAccount(item.pid, item.plan, customerEmail);
-            console.log(`✅ Assigned account for ${item.pid} - ${item.plan} to ${customerEmail}`);
+            console.log(`✅ Assigned account (${i + 1}/${qty}) for ${item.pid} - ${item.plan} to ${customerEmail}`);
             
             // TODO: Send email with credentials
             // For now, log the credentials (you'll see them in Netlify Functions logs)
@@ -130,8 +138,14 @@ exports.handler = async (event) => {
               customer: customerEmail
             });
           } catch (err) {
-            console.error(`❌ Failed to assign account for ${item.pid}:`, err.message);
-            // Continue with other items even if one fails
+            console.error(`❌ Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);
+            // If out of stock, stop further attempts for this item
+            if (String(err.message).includes('No available accounts')) {
+              console.warn(`Stock exhausted for ${item.pid} - ${item.plan}. Assigned ${i} of ${qty}.`);
+              break;
+            }
+            // Otherwise continue trying remaining units
+          }
           }
         }
         break;
