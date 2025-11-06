@@ -1,6 +1,7 @@
 import getStripeConfig from './get-stripe-config.js';
 import createPaymentIntent from './create-payment-intent.js';
 import stripeWebhook from './stripe-webhook.js';
+import getOrders from './get-orders.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -18,6 +19,10 @@ export default {
     
     if (path === '/api/stripe-webhook') {
       return stripeWebhook.fetch(request, env, ctx);
+    }
+
+    if (path === '/api/get-orders') {
+      return getOrders.fetch(request, env, ctx);
     }
 
     // 404 for unknown routes

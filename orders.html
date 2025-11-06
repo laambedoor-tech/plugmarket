@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Pedidos — Plug Market</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="./index.html" class="logo">
+        <img src="./assets/logo.svg" alt="Plug Market" width="40" height="40" />
+        <span>Plug Market</span>
+      </a>
+      <nav class="nav">
+        <a href="./index.html" class="nav__link">Inicio</a>
+        <a href="./cart.html" class="nav__link">
+          Carrito <span id="cart-count" class="cart-count">0</span>
+        </a>
+        <a href="./orders.html" class="nav__link nav__link--active">Mis Pedidos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <section class="orders-section">
+        <h1 class="section-title">Mis Pedidos</h1>
+        
+        <!-- Login form -->
+        <div id="login-panel" class="card" style="max-width: 500px; margin: 2rem auto;">
+          <h2 style="margin-top: 0;">Accede a tus pedidos</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            Ingresa el email que usaste al comprar para ver todos tus pedidos y credenciales.
+          </p>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input 
+                type="email" 
+                id="login-email" 
+                class="form-control" 
+                placeholder="tu@email.com" 
+                required 
+                autocomplete="email"
+              />
+            </div>
+            <div id="login-message" class="message" style="display: none;"></div>
+            <button type="submit" class="btn btn--primary" style="width: 100%;">
+              Ver mis pedidos
+            </button>
+          </form>
+        </div>
+
+        <!-- Orders list -->
+        <div id="orders-panel" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 id="orders-email" style="margin: 0;"></h2>
+            <button id="btn-logout" class="btn btn--ghost btn--sm">Cerrar sesión</button>
+          </div>
+
+          <div id="orders-empty" style="display: none; text-align: center; padding: 3rem 0;">
+            <p style="color: var(--text-muted); font-size: 1.1rem;">
+              No tienes pedidos todavía.
+            </p>
+            <a href="./index.html" class="btn btn--primary" style="margin-top: 1rem;">
+              Ir a la tienda
+            </a>
+          </div>
+
+          <div id="orders-list"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Plug Market. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="./js/orders.js" type="module"></script>
+</body>
+</html>

@@ -136,6 +136,10 @@ export default {
           const cart = JSON.parse(pi.metadata?.cart || '[]');
           console.log('Processing cart:', cart);
 
+          // Collect all assigned credentials for the order
+          const orderItems = [];
+          let allAssigned = true;
+
           // Process each item respecting quantity
           for (const item of cart) {
             const qty = Number(item.qty) > 0 ? Number(item.qty) : 1;
@@ -146,16 +150,19 @@ export default {
                 const credentials = await assignAccount(env, item.pid, item.plan, customerEmail);
                 console.log(`✅ Assigned account (${i + 1}/${qty}) for ${item.pid} - ${item.plan} to ${customerEmail}`);
 
-                // TODO: Send email with credentials (Resend, SendGrid, etc.)
-                console.log('Account credentials:', {
-                  product: item.pid,
+                // Store credentials for order record
+                orderItems.push({
+                  pid: item.pid,
                   plan: item.plan,
-                  email: credentials.email,
-                  password: credentials.password,
-                  customer: customerEmail
+                  unitAmount: item.unitAmount,
+                  credentials: {
+                    email: credentials.email,
+                    password: credentials.password
+                  }
                 });
               } catch (err) {
                 console.error(`❌ Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);
+                allAssigned = false;
 
                 if (String(err.message).includes('No available accounts')) {
                   console.warn(`Stock exhausted for ${item.pid} - ${item.plan}. Assigned ${i} of ${qty}.`);
@@ -164,6 +171,26 @@ export default {
               }
             }
           }
+
+          // Save order to Supabase
+          if (orderItems.length > 0) {
+            const supabase = getSupabase(env);
+            const { error: orderError } = await supabase
+              .from('orders')
+              .insert({
+                customer_email: customerEmail,
+                payment_intent_id: pi.id,
+                total_cents: pi.amount,
+                items: orderItems
+              });
+
+            if (orderError) {
+              console.error('Failed to save order:', orderError.message);
+            } else {
+              console.log(`✅ Order saved for ${customerEmail} with ${orderItems.length} item(s)`);
+            }
+          }
+
           break;
         }
 
