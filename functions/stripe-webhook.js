@@ -7,10 +7,27 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Crypto helper for webhook signature verification (using Cloudflare's crypto)
-async function verifySignature(body, signature, secret) {
+async function verifySignature(body, signatureHeader, secret) {
   const encoder = new TextEncoder();
+  
+  // Parse signature header: t=timestamp,v1=signature
+  const parts = signatureHeader.split(',');
+  let timestamp, signature;
+  
+  for (const part of parts) {
+    const [key, value] = part.split('=');
+    if (key === 't') timestamp = value;
+    if (key === 'v1') signature = value;
+  }
+  
+  if (!timestamp || !signature) {
+    throw new Error('Invalid signature header format');
+  }
+  
+  // Create signed payload: timestamp.body
+  const signedPayload = `${timestamp}.${body}`;
   const keyBuffer = encoder.encode(secret);
-  const bodyBuffer = encoder.encode(body);
+  const payloadBuffer = encoder.encode(signedPayload);
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
@@ -20,14 +37,11 @@ async function verifySignature(body, signature, secret) {
     ['sign']
   );
 
-  const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, bodyBuffer);
+  const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, payloadBuffer);
   const hashArray = Array.from(new Uint8Array(signatureBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  const computedSignature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-  const [timestamp, computedSig] = signature.split(',').map(s => s.split('=')[1]);
-  const expectedSig = hashHex;
-
-  return computedSig === expectedSig;
+  return computedSignature === signature;
 }
 
 function getSupabase(env) {
