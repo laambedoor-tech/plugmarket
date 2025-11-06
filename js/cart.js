@@ -183,12 +183,22 @@ addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (paymentIntent && paymentIntent.status === 'succeeded') {
-      setMessage('Payment succeeded. Thank you!');
+      // Show success modal
       setCart([]);
+      showCheckout(false);
+      const modal = document.getElementById('success-modal');
+      if (modal) modal.style.display = 'flex';
     } else {
       // For some methods, Stripe may redirect instead. We'll rely on return_url.
       setMessage('Follow the instructions to complete the payment.');
     }
   });
+
+  // Close modal button
+  document.getElementById('btn-close-modal')?.addEventListener('click', () => {
+    const modal = document.getElementById('success-modal');
+    if (modal) modal.style.display = 'none';
+  });
+
   render(); updateCount();
 });
