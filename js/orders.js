@@ -1,5 +1,5 @@
 // Orders page - View order history and credentials
-const API_BASE = 'https://plugmarket.es';
+const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 const STORAGE_KEY = 'plugmarket_orders_email';
 
 let currentEmail = null;

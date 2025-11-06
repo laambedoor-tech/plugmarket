@@ -1,6 +1,6 @@
 // Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
-const API_BASE = 'https://plugmarket.es';
+const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 
 // Stripe Elements state
 let stripe = null;
