@@ -3,4 +3,9 @@ main = "functions/_worker.js"
 compatibility_date = "2025-11-06"
 compatibility_flags = ["nodejs_compat"]
 
-# Variables will be set in Cloudflare dashboard
+[vars]
+STRIPE_PUBLISHABLE_KEY = "pk_test_51SQADQKFa6AYtbu7GKZ3ySWNUE3LQIji755blVlfKJeJ0bbfGzYS9EMVoiHer8LfIEQdoggUBGravWI08EhRU6SX00OlZzSRcv"
+STRIPE_WEBHOOK_SECRET = "whsec_Kbm1HGlfEpvKu9C35qDDvHE3ZzeiosXj"
+SUPABASE_URL = "https://twewcjgphqunpjchwliv.supabase.co"
+
+# STRIPE_SECRET_KEY and SUPABASE_ANON_KEY are configured as secrets in Cloudflare Dashboard
