@@ -36,7 +36,7 @@ async function createPaymentIntent(){
   const items = getCart();
   const data = await fetchJSON(`${API_BASE}/api/create-payment-intent`, {
     method: 'POST',
-    body: JSON.stringify({ items: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
+    body: JSON.stringify({ cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
   });
   return data.clientSecret;
 }
