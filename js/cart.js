@@ -1,5 +1,6 @@
 // Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
+const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 
 // Stripe Elements state
 let stripe = null;
@@ -26,14 +27,14 @@ async function initStripe(){
   if (stripe) return stripe;
   // @ts-ignore Stripe is loaded via global script
   if (!window.Stripe) throw new Error('Stripe.js not loaded');
-  const cfg = await fetchJSON('/api/get-stripe-config');
+  const cfg = await fetchJSON(`${API_BASE}/api/get-stripe-config`);
   stripe = window.Stripe(cfg.publishableKey);
   return stripe;
 }
 
 async function createPaymentIntent(){
   const items = getCart();
-  const data = await fetchJSON('/api/create-payment-intent', {
+  const data = await fetchJSON(`${API_BASE}/api/create-payment-intent`, {
     method: 'POST',
     body: JSON.stringify({ items: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
   });
