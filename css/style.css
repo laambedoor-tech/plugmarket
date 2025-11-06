@@ -135,6 +135,11 @@ main { position: relative; z-index: 1; }
   border-radius: var(--radius);
   padding: 18px;
   box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
 }
 .feature .feature__icon { font-size: 24px; margin-bottom: 8px; }
 .feature h3 { margin: 6px 0 6px; font-size: 18px; }
