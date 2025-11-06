@@ -6,10 +6,15 @@
   "license": "MIT",
   "scripts": {
     "build": "echo No build step",
-    "start": "echo Open index.html"
+    "start": "echo Open index.html",
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "stripe": "^14.0.0",
     "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
   }
 }

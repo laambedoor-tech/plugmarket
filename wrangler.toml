@@ -1,0 +1,22 @@
+name = "plugmarket"
+type = "javascript"
+main = "src/index.js"
+compatibility_date = "2025-11-06"
+compatibility_flags = ["nodejs_compat"]
+
+# Production environment
+env.production.routes = [
+  { pattern = "plugmarket.com/api/*", zone_name = "plugmarket.com" }
+]
+
+# Bindings for environment variables
+[env.production.vars]
+# These will be set via Cloudflare dashboard after you create the Workers
+
+# Development settings (same as production for simplicity)
+[env.development.vars]
+
+# Function routes (handled by /functions directory)
+[[routes]]
+pattern = "/api/*"
+custom_domain = false
