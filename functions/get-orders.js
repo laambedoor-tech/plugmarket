@@ -42,7 +42,13 @@ export default {
     if (!email) {
       return new Response(
         JSON.stringify({ error: 'Missing email parameter' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 400, 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
       );
     }
 
@@ -59,7 +65,13 @@ export default {
         console.error('Supabase error:', error);
         return new Response(
           JSON.stringify({ error: 'Failed to fetch orders' }),
-          { status: 500, headers: { 'Content-Type': 'application/json' } }
+          { 
+            status: 500, 
+            headers: { 
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            }
+          }
         );
       }
 
@@ -80,7 +92,13 @@ export default {
       console.error('Error fetching orders:', error);
       return new Response(
         JSON.stringify({ error: error.message }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 500, 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
       );
     }
   }

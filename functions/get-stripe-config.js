@@ -34,7 +34,11 @@ export default {
         JSON.stringify({ error: 'Missing STRIPE_PUBLISHABLE_KEY' }),
         { 
           status: 500, 
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+          headers: { 
+            'Content-Type': 'application/json', 
+            'Cache-Control': 'no-store',
+            'Access-Control-Allow-Origin': '*'
+          }
         }
       );
     }

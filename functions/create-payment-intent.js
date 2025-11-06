@@ -70,7 +70,13 @@ export default {
     if (!stripeSecret) {
       return new Response(
         JSON.stringify({ error: 'Missing STRIPE_SECRET_KEY' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 500, 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
       );
     }
 
@@ -80,7 +86,13 @@ export default {
       if (!Array.isArray(cart) || cart.length === 0) {
         return new Response(
           JSON.stringify({ error: 'Invalid or empty cart' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
+          { 
+            status: 400, 
+            headers: { 
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            }
+          }
         );
       }
 
@@ -125,7 +137,13 @@ export default {
         console.error('Stripe error:', stripeResponse);
         return new Response(
           JSON.stringify({ error: stripeResponse.error?.message || 'Payment intent creation failed' }),
-          { status: response.status, headers: { 'Content-Type': 'application/json' } }
+          { 
+            status: response.status, 
+            headers: { 
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            }
+          }
         );
       }
 
@@ -146,7 +164,13 @@ export default {
       console.error('Error creating payment intent:', error);
       return new Response(
         JSON.stringify({ error: error.message }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 500, 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
       );
     }
   }
