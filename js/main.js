@@ -261,7 +261,7 @@ const toneToGradient = (tone) => {
           </div>
           <div>
             <h4 class="variant__title">${product.title} — ${label}</h4>
-            <div class="variant__meta">Instant delivery · Basic warranty · ${stockBadge}</div>
+            <div class="variant__meta">Instant delivery · ${stockBadge}</div>
           </div>
           <div class="variant__actions">
             <div class="variant__price">$${price}</div>
