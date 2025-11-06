@@ -5,6 +5,17 @@
 
 export default {
   async fetch(request, env) {
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      });
+    }
+
     // Only handle GET requests
     if (request.method !== 'GET') {
       return new Response('Method Not Allowed', { status: 405 });
@@ -32,7 +43,11 @@ export default {
       JSON.stringify({ publishableKey }),
       { 
         status: 200,
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }

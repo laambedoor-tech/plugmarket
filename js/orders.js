@@ -12,7 +12,7 @@ function money(cents) {
 // Helper to format date
 function formatDate(isoString) {
   const date = new Date(isoString);
-  return date.toLocaleDateString('es-ES', {
+  return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -142,6 +142,7 @@ function setMessage(msg, isError = false) {
   el.textContent = msg;
   el.style.display = 'block';
   el.style.color = isError ? 'var(--error, #ff4444)' : 'var(--success, #4caf50)';
+  el.style.background = isError ? 'rgba(255,68,68,0.1)' : 'rgba(76,175,80,0.1)';
 }
 
 // Update cart count (shared across pages)
@@ -162,7 +163,7 @@ addEventListener('DOMContentLoaded', () => {
   const savedEmail = sessionStorage.getItem(STORAGE_KEY);
   if (savedEmail) {
     // Auto-load orders
-    setMessage('Cargando pedidos...');
+    setMessage('Loading orders...');
     fetchOrders(savedEmail)
       .then(data => {
         setMessage('');
@@ -181,11 +182,11 @@ addEventListener('DOMContentLoaded', () => {
 
     const email = document.getElementById('login-email').value.trim();
     if (!email) {
-      setMessage('Ingresa tu email', true);
+      setMessage('Please enter your email', true);
       return;
     }
 
-    setMessage('Cargando pedidos...');
+    setMessage('Loading orders...');
 
     try {
       const data = await fetchOrders(email);

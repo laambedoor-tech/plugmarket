@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mis Pedidos — Plug Market</title>
+  <title>My Orders — Plug Market</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
@@ -37,13 +37,13 @@
 
   <main class="cart" style="position:relative; z-index:1;">
     <section style="padding:28px 24px; max-width: 1100px; margin:0 auto;">
-      <h1 class="section-title" style="text-align:left;">Mis Pedidos</h1>
+      <h1 class="section-title" style="text-align:left;">My Orders</h1>
         
         <!-- Login form -->
         <div id="login-panel" class="card" style="max-width: 500px; margin: 2rem auto; padding: 2rem;">
-          <h2 style="margin-top: 0; font-size: 1.5rem;">Accede a tus pedidos</h2>
+          <h2 style="margin-top: 0; font-size: 1.5rem;">Access your orders</h2>
           <p style="color: var(--text-500); margin-bottom: 1.5rem;">
-            Ingresa el email que usaste al comprar para ver todos tus pedidos y credenciales.
+            Enter the email you used when purchasing to see all your orders and credentials.
           </p>
           <form id="login-form">
             <div style="margin-bottom: 1rem;">
@@ -60,14 +60,14 @@
                   color: var(--text);
                   font-size: 1rem;
                 " 
-                placeholder="tu@email.com" 
+                placeholder="your@email.com" 
                 required 
                 autocomplete="email"
               />
             </div>
             <div id="login-message" style="display: none; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;"></div>
             <button type="submit" class="btn btn--primary" style="width: 100%;">
-              Ver mis pedidos
+              View my orders
             </button>
           </form>
         </div>
@@ -76,16 +76,16 @@
         <div id="orders-panel" style="display: none;">
           <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
             <h2 id="orders-email" style="margin: 0; font-size: 1.25rem;"></h2>
-            <button id="btn-logout" class="btn btn--ghost btn--sm">Cerrar sesión</button>
+            <button id="btn-logout" class="btn btn--ghost btn--sm">Logout</button>
           </div>
 
           <div id="orders-empty" style="display: none;" class="card">
             <div style="text-align: center; padding: 3rem;">
               <p style="color: var(--text-500); font-size: 1.1rem; margin-bottom: 1.5rem;">
-                No tienes pedidos todavía.
+                You don't have any orders yet.
               </p>
               <a href="./index.html#products" class="btn btn--primary">
-                Ir a la tienda
+                Go to store
               </a>
             </div>
           </div>

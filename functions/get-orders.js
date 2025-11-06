@@ -18,6 +18,17 @@ function getSupabase(env) {
 
 export default {
   async fetch(request, env) {
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      });
+    }
+
     if (request.method !== 'GET') {
       return new Response('Method Not Allowed', { status: 405 });
     }
@@ -58,7 +69,10 @@ export default {
           status: 200,
           headers: { 
             'Content-Type': 'application/json',
-            'Cache-Control': 'no-store'
+            'Cache-Control': 'no-store',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
           }
         }
       );
