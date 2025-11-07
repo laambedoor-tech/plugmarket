@@ -103,9 +103,20 @@ async function mountPaypalButtons(){
     },
     onApprove: async (data) => {
       try {
+        const emailEl = document.getElementById('paypal-email');
+        const customerEmail = emailEl ? emailEl.value.trim() : '';
+        if (!customerEmail) {
+          setPaypalMessage('Please enter your email');
+          return;
+        }
+        const items = getCart();
         const res = await fetch(`${API_BASE}/api/paypal/capture-order`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: data.orderID })
+          body: JSON.stringify({ 
+            orderId: data.orderID,
+            cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
+            customerEmail
+          })
         });
         const j = await res.json();
         if (!res.ok) throw new Error(j.error || 'Capture failed');
