@@ -20,6 +20,20 @@ const PRICES_USD = {
   capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 }
 };
 
+const PLAN_ALIASES = {
+  '1 mes':'1 Month','1 month':'1 Month','1m':'1 Month',
+  '3 meses':'3 Months','3 month':'3 Months','3m':'3 Months',
+  '6 meses':'6 Months','6 month':'6 Months','6m':'6 Months',
+  '12 meses':'12 Months','12 month':'12 Months','12m':'12 Months',
+  'lifetime':'Lifetime','de por vida':'Lifetime'
+};
+
+function normalizePlan(raw){
+  if(!raw) return raw;
+  const key = raw.trim();
+  return PLAN_ALIASES[key.toLowerCase()] || key;
+}
+
 function validateAndPriceCart(cart) {
   let totalCents = 0;
   const normalizedCart = [];
@@ -34,9 +48,11 @@ function validateAndPriceCart(cart) {
       throw new Error(`Unknown product: ${item.pid}`);
     }
 
-    const unitPrice = prices[item.plan];
+    const originalPlan = item.plan;
+    const plan = normalizePlan(originalPlan);
+    const unitPrice = prices[plan];
     if (unitPrice === undefined) {
-      throw new Error(`Unknown plan "${item.plan}" for ${item.pid}`);
+      throw new Error(`Unknown plan "${originalPlan}" (normalized="${plan}") for ${item.pid}`);
     }
 
     const qty = Number(item.qty) > 0 ? Number(item.qty) : 1;
@@ -44,7 +60,7 @@ function validateAndPriceCart(cart) {
 
     normalizedCart.push({
       pid: item.pid,
-      plan: item.plan,
+      plan,
       unitAmount: unitPrice,
       qty
     });
