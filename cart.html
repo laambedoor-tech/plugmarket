@@ -58,9 +58,10 @@
           <p class="muted" style="margin:0 0 8px 0;">Enter your email for receipt and choose your preferred payment method.</p>
 
           <!-- Method tabs -->
-          <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap: wrap;">
             <button id="tab-card" class="btn btn--primary" type="button">Card</button>
             <button id="tab-paypal" class="btn btn--ghost" type="button">PayPal</button>
+            <button id="tab-crypto" class="btn btn--ghost" type="button">Crypto</button>
           </div>
 
           <!-- Card (Stripe) form -->
@@ -94,6 +95,53 @@
               <button id="btn-cancel-paypal" class="btn btn--ghost" type="button">Cancel</button>
             </div>
             <p class="muted" style="margin-top:8px;">Payments processed by PayPal.</p>
+          </div>
+
+          <!-- Crypto container -->
+          <div id="crypto-container" style="display:none;">
+            <div style="display:grid; gap:10px; max-width:520px;">
+              <div class="card" style="padding:12px; display:grid; gap:10px; grid-template-columns: 1fr 1fr;">
+                <label style="display:grid; gap:6px;">
+                  <span style="font-weight:600;">Network</span>
+                  <select id="crypto-network" style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)"></select>
+                </label>
+                <label style="display:grid; gap:6px;">
+                  <span style="font-weight:600;">Token</span>
+                  <select id="crypto-token" style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)"></select>
+                </label>
+              </div>
+              <div class="card" style="padding:12px;">
+                <div style="font-weight:700; margin-bottom:6px;">Send crypto</div>
+                <div id="crypto-instructions" class="muted">Loading…</div>
+                <div style="display:flex; gap:12px; align-items:center; margin-top:10px;">
+                  <img id="crypto-qr" alt="QR" style="width:120px; height:120px; border-radius:12px; border:1px solid var(--border); display:none;"/>
+                  <div style="flex:1;">
+                    <div style="font-size:14px; color:var(--text-500);">Amount</div>
+                    <div id="crypto-amount" style="font-weight:800;">—</div>
+                    <div style="font-size:14px; color:var(--text-500); margin-top:8px;">Address</div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                      <input id="crypto-address" type="text" readonly style="flex:1; padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)"/>
+                      <button id="btn-copy-address" class="btn btn--ghost btn--sm" type="button">Copy</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <label style="display:grid; gap:6px;">
+                <span style="font-weight:600;">Your email</span>
+                <input id="crypto-email" type="email" placeholder="you@example.com" autocomplete="email" required style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+              </label>
+              <label style="display:grid; gap:6px;">
+                <span style="font-weight:600;">Transaction hash (optional)</span>
+                <input id="crypto-tx" type="text" placeholder="0x…" style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+              </label>
+              <div id="crypto-message" class="muted" role="alert" style="display:none;"></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+              <button id="btn-crypto-paid" class="btn btn--primary" type="button">I sent the payment</button>
+              <button id="btn-cancel-crypto" class="btn btn--ghost" type="button">Cancel</button>
+            </div>
+            <p class="muted" style="margin-top:8px;">We currently support stablecoins via EVM wallets (MetaMask). Low fees recommended (Polygon).</p>
           </div>
         </div>
       </section>

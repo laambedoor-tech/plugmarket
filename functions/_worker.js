@@ -7,6 +7,9 @@ import getPaypalConfig from './get-paypal-config.js';
 import paypalCreateOrder from './paypal-create-order.js';
 import paypalCaptureOrder from './paypal-capture-order.js';
 import testDb from './test-db.js';
+import cryptoConfig from './crypto-config.js';
+import cryptoCreateIntent from './crypto-create-intent.js';
+import cryptoSubmitProof from './crypto-submit-proof.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -44,6 +47,17 @@ export default {
 
     if (path === '/api/paypal/capture-order') {
       return paypalCaptureOrder.fetch(request, env, ctx);
+    }
+
+    // Crypto endpoints
+    if (path === '/api/crypto/config') {
+      return cryptoConfig.fetch(request, env, ctx);
+    }
+    if (path === '/api/crypto/create-intent') {
+      return cryptoCreateIntent.fetch(request, env, ctx);
+    }
+    if (path === '/api/crypto/submit-proof') {
+      return cryptoSubmitProof.fetch(request, env, ctx);
     }
 
     if (path === '/api/test-db') {

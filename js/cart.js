@@ -9,6 +9,7 @@ let paymentElement = null;
 let clientSecret = null;
 let paypalLoaded = false;
 let paypalConfig = null;
+let cryptoConfig = null;
 
 async function fetchJSON(url, opts){
   const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
@@ -217,12 +218,27 @@ addEventListener('DOMContentLoaded', () => {
   document.getElementById('tab-paypal')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'block';
+    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
     document.getElementById('tab-paypal').classList.add('btn--primary');
     document.getElementById('tab-card').classList.remove('btn--primary');
+    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
+  });
+  document.getElementById('tab-crypto')?.addEventListener('click', async () => {
+    document.getElementById('payment-form').style.display = 'none';
+    document.getElementById('paypal-container').style.display = 'none';
+    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
+    document.getElementById('tab-crypto')?.classList.add('btn--primary');
+    document.getElementById('tab-card')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    try { await setupCrypto(); } catch (e){ const el = document.getElementById('crypto-message'); if (el){ el.style.display='block'; el.textContent = e.message || 'Crypto unavailable'; } }
   });
   document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
     showCheckout(false); setPaypalMessage('');
+  });
+  document.getElementById('btn-cancel-crypto')?.addEventListener('click', () => {
+    showCheckout(false);
+    const msg = document.getElementById('crypto-message'); if (msg){ msg.style.display='none'; msg.textContent=''; }
   });
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);
@@ -284,3 +300,100 @@ addEventListener('DOMContentLoaded', () => {
 
   render(); updateCount();
 });
+
+// --- Crypto helpers ---
+function setCryptoMessage(msg){
+  const el = document.getElementById('crypto-message');
+  if (!el) return;
+  if (!msg){ el.style.display='none'; el.textContent=''; return; }
+  el.style.display='block'; el.textContent = msg;
+}
+
+async function setupCrypto(){
+  // Fetch config once
+  if (!cryptoConfig){
+    const res = await fetch(`${API_BASE}/api/crypto/config`);
+    cryptoConfig = await res.json();
+  }
+  const inst = document.getElementById('crypto-instructions');
+  const qr = document.getElementById('crypto-qr');
+  const addrInput = document.getElementById('crypto-address');
+  const amountEl = document.getElementById('crypto-amount');
+  const copyBtn = document.getElementById('btn-copy-address');
+  const paidBtn = document.getElementById('btn-crypto-paid');
+  const selNetwork = document.getElementById('crypto-network');
+  const selToken = document.getElementById('crypto-token');
+  let lastQuote = null;
+  if (!cryptoConfig?.enabled){
+    inst.textContent = 'Crypto is temporarily unavailable.';
+    if (qr) qr.style.display='none';
+    copyBtn && (copyBtn.disabled = true);
+    paidBtn && (paidBtn.disabled = true);
+    return;
+  }
+
+  // Populate selectors
+  if (selNetwork && selToken){
+    // Networks
+    selNetwork.innerHTML = '';
+    (cryptoConfig.networks||[]).forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n.id; opt.textContent = n.label; selNetwork.appendChild(opt);
+    });
+    // Default selection
+    const defaultNet = (cryptoConfig.defaultNetwork || 'polygon');
+    const defaultTok = (cryptoConfig.defaultToken || 'USDC');
+    selNetwork.value = defaultNet;
+    // Tokens: we show a generic list (USDC, USDT, ETH, MATIC) and filter contextually
+    const tokenList = (cryptoConfig.tokens||[]).filter(t => ['USDC','USDT','ETH','MATIC'].includes(t.symbol));
+    selToken.innerHTML = '';
+    tokenList.forEach(t => { const o = document.createElement('option'); o.value=t.symbol; o.textContent=t.symbol; selToken.appendChild(o); });
+    selToken.value = defaultTok;
+  }
+
+  async function quote(){
+    // Ask server to compute amount from current cart and selected method
+    const items = getCart();
+    const network = selNetwork ? selNetwork.options[selNetwork.selectedIndex].text : (cryptoConfig.defaultNetwork||'Polygon');
+    const token = selToken ? selToken.value : (cryptoConfig.defaultToken||'USDC');
+    const res2 = await fetch(`${API_BASE}/api/crypto/create-intent`,{
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ cart: items.map(i=>({ pid:i.pid, plan:i.plan, qty:i.qty })), network, token })
+    });
+    const data = await res2.json();
+    if (!res2.ok || data.error){ setCryptoMessage(data.error || 'Unable to prepare crypto payment'); return; }
+    lastQuote = data;
+    const { address, token: tkn, amount, network: net } = data;
+    inst.textContent = `Send exactly ${amount} ${tkn} on ${net} to this address:`;
+    if (addrInput) addrInput.value = address;
+    amountEl.textContent = `${amount} ${tkn}`;
+    if (qr){
+      const qrData = encodeURIComponent(address);
+      qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${qrData}`;
+      qr.style.display='block';
+    }
+  }
+
+  await quote();
+  selNetwork?.addEventListener('change', quote);
+  selToken?.addEventListener('change', quote);
+  copyBtn?.addEventListener('click', async ()=>{
+    try { await navigator.clipboard.writeText(address); setCryptoMessage('Address copied'); setTimeout(()=>setCryptoMessage(''), 1500); } catch {}
+  }, { once: true });
+  paidBtn?.addEventListener('click', async ()=>{
+    setCryptoMessage('');
+    const email = document.getElementById('crypto-email').value.trim();
+    const tx = document.getElementById('crypto-tx').value.trim();
+    if (!email){ setCryptoMessage('Please enter your email'); return; }
+    const resp = await fetch(`${API_BASE}/api/crypto/submit-proof`,{
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+        cart: getCart().map(i=>({ pid:i.pid, plan:i.plan, qty:i.qty })), customerEmail: email, txHash: tx || null,
+        token: lastQuote?.token, network: lastQuote?.network, amount: lastQuote?.amount
+      })
+    });
+    const j = await resp.json();
+    if (!resp.ok || j.error){ setCryptoMessage(j.error || 'Could not submit payment'); return; }
+    setCart([]);
+    showCheckout(false);
+    const modal = document.getElementById('success-modal'); if (modal) modal.style.display='flex';
+  }, { once: true });
+}

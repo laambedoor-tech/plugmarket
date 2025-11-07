@@ -6,10 +6,17 @@
 
 // Copy of pricing helper used in Stripe PI endpoint (keep in sync)
 const PRICES_USD = {
-  netflix: { '1 Month': 150, '3 Months': 400, 'Yearly': 1200 },
-  spotify: { '1 Month': 120, '3 Months': 300, 'Yearly': 1000 },
-  'youtube-premium': { '1 Month': 150, '3 Months': 400, 'Yearly': 1300 },
-  'hulu': { 'Standard': 1500, 'Ad-Free': 1700 }
+  netflix: { '1 Month': 150, '3 Months': 350, '6 Months': 600, '12 Months': 1100, 'Lifetime': 1800 },
+  spotify: { '1 Month': 220, '3 Months': 380, '6 Months': 620, '12 Months': 1250 },
+  'youtube-premium': { '1 Month': 160, '3 Months': 320, '6 Months': 550, '12 Months': 1050 },
+  disney: { '1 Month': 110, '3 Months': 270, '6 Months': 480, '12 Months': 950 },
+  prime: { '1 Month': 180, '3 Months': 340, '6 Months': 580, '12 Months': 1120 },
+  hbomax: { '1 Month': 140, '3 Months': 310, '6 Months': 470, '12 Months': 980 },
+  nordvpn: { '1 Month': 85, '3 Months': 200, '6 Months': 360, '12 Months': 690 },
+  crunchy: { '1 Month': 90, '3 Months': 210, '6 Months': 380, '12 Months': 720 },
+  nitro: { 'Boost 1m': 479, 'Boost 1 Year': 1597, 'Basic 1m': 135 },
+  chatgpt: { '1 Month': 320, '3 Months': 780, '6 Months': 1250, '12 Months': 2400 },
+  capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 }
 };
 
 function validateAndPriceCart(cart){
@@ -38,7 +45,7 @@ async function getAccessToken(env){
     body: 'grant_type=client_credentials'
   });
   const json = await res.json();
-  if (!res.ok) throw new Error(json.error_description || 'Failed to get token');
+  if (!res.ok) throw new Error(json.error_description || json.error || 'Failed to get PayPal token');
   return { token: json.access_token, base };
 }
 
