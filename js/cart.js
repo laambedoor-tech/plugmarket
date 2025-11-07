@@ -222,19 +222,21 @@ addEventListener('DOMContentLoaded', () => {
   document.getElementById('tab-card')?.addEventListener('click', () => {
     document.getElementById('payment-form').style.display = 'block';
     document.getElementById('paypal-container').style.display = 'none';
+    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
     document.getElementById('tab-card').classList.add('btn--primary');
-    document.getElementById('tab-paypal').classList.remove('btn--primary');
+    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
   });
   document.getElementById('tab-paypal')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'block';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
     document.getElementById('tab-paypal').classList.add('btn--primary');
-    document.getElementById('tab-card').classList.remove('btn--primary');
+    document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
   });
-  document.getElementById('tab-crypto')?.addEventListener('click', async () => {
+  document.getElementById('tab-crypto')?.addEventListener('click', () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
