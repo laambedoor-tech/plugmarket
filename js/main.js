@@ -177,20 +177,15 @@ const toneToGradient = (tone) => {
   grid.innerHTML = products.map(p => {
     const min = getMinPrice(p.id);
     const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
-    const inStock = hasAnyStock(p.id);
-    const stockBadge = inStock 
-      ? '<span class="stock-badge stock-badge--in">In Stock</span>' 
-      : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
     
     return `
-    <article class="product-card${!inStock ? ' product-card--disabled' : ''}" data-pid="${p.id}">
+    <article class="product-card" data-pid="${p.id}">
       <div class="product-card__media" style="background:${toneToGradient(p.tone)}">
         <img src="./assets/products/${p.id}.svg" alt="${p.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div class="product-card__body">
         <h3 class="product-card__title">${p.title}</h3>
         <p class="product-card__price">${priceText}</p>
-        ${stockBadge}
       </div>
     </article>`;
   }).join('');
@@ -248,25 +243,19 @@ const toneToGradient = (tone) => {
       `;
     } else {
       modalContent.innerHTML = Object.entries(plans).map(([label, price]) => {
-        const stockKey = `${pid}:${label}`;
-        const available = stockData[stockKey] && stockData[stockKey] > 0;
-        const stockBadge = available
-          ? '<span class="stock-badge stock-badge--in">In Stock</span>'
-          : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
-        
         return `
-        <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
+        <div class="variant" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
           <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
             <img src="./assets/products/${product.id}.svg" alt="${product.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
           </div>
           <div>
             <h4 class="variant__title">${product.title} — ${label}</h4>
-            <div class="variant__meta">Instant delivery · ${stockBadge}</div>
+            <div class="variant__meta">Instant delivery</div>
           </div>
           <div class="variant__actions">
             <div class="variant__price">$${price}</div>
-            <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart" ${!available ? 'disabled' : ''}>Add to cart</button>
-            <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now" ${!available ? 'disabled' : ''}>Buy now</button>
+            <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart">Add to cart</button>
+            <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now">Buy now</button>
           </div>
         </div>
       `}).join('');
@@ -279,7 +268,7 @@ const toneToGradient = (tone) => {
   // Delegación de clicks en grid
   document.addEventListener('click', (e) => {
     const card = e.target.closest('.product-card');
-    if (card && card.dataset.pid && !card.classList.contains('product-card--disabled')) {
+    if (card && card.dataset.pid) {
       open(card.dataset.pid);
     }
     if (e.target.matches('[data-close]')) {
@@ -287,7 +276,7 @@ const toneToGradient = (tone) => {
     }
     // add to cart
     const addBtn = e.target.closest('.js-add-cart');
-    if (addBtn && !addBtn.disabled) {
+    if (addBtn) {
       const row = addBtn.closest('.variant');
       if (row) {
         const pid = row.dataset.pid; const plan = row.dataset.plan; const price = parseFloat(row.dataset.price);
@@ -297,7 +286,7 @@ const toneToGradient = (tone) => {
       }
     }
     const buyBtn = e.target.closest('.js-buy-now');
-    if (buyBtn && !buyBtn.disabled) {
+    if (buyBtn) {
       const row = buyBtn.closest('.variant');
       if (row) {
         const pid = row.dataset.pid; const plan = row.dataset.plan; const price = parseFloat(row.dataset.price);
