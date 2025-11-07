@@ -7,5 +7,8 @@ compatibility_flags = ["nodejs_compat"]
 STRIPE_PUBLISHABLE_KEY = "pk_live_51SQAD7GqeSmKEqnwptb6rHCNyCBYmYQQa1HwAIUGjAnwlfp5kUXbCsIw0qhJ3nNZa5YYmCEUFIlevNKetXrXFdJ300ECXpbADy"
 STRIPE_WEBHOOK_SECRET = "whsec_WFWyo9U4IQPHNrQMxklBCntFU7t55WzT"
 SUPABASE_URL = "https://twewcjgphqunpjchwliv.supabase.co"
+PAYPAL_CLIENT_ID = "ATlf_ReXDEAkuLqTNVyKBQY9BJyFo_QGsF6YMsDS3E5I-_3-r-r5G-BhfcAB028ZIPM4V3LtjCVqEg"
+PAYPAL_ENV = "sandbox"
+PAYPAL_CURRENCY = "USD"
 
-# STRIPE_SECRET_KEY and SUPABASE_ANON_KEY are configured as secrets in Cloudflare Dashboard
+# STRIPE_SECRET_KEY, SUPABASE_ANON_KEY, and PAYPAL_SECRET are configured as secrets in Cloudflare Dashboard
