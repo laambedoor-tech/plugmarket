@@ -243,19 +243,26 @@ const toneToGradient = (tone) => {
       `;
     } else {
       modalContent.innerHTML = Object.entries(plans).map(([label, price]) => {
+        const stockKey = `${pid}:${label}`;
+        const stockCount = stockData[stockKey] || 0;
+        const available = stockCount > 0;
+        const stockBadge = available
+          ? '<span class="stock-badge stock-badge--in">In Stock</span>'
+          : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
+        
         return `
-        <div class="variant" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
+        <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
           <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
             <img src="./assets/products/${product.id}.svg" alt="${product.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
           </div>
           <div>
             <h4 class="variant__title">${product.title} — ${label}</h4>
-            <div class="variant__meta">Instant delivery</div>
+            <div class="variant__meta">Instant delivery · ${stockBadge}</div>
           </div>
           <div class="variant__actions">
             <div class="variant__price">$${price}</div>
-            <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart">Add to cart</button>
-            <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now">Buy now</button>
+            <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart" ${!available ? 'disabled' : ''}>Add to cart</button>
+            <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now" ${!available ? 'disabled' : ''}>Buy now</button>
           </div>
         </div>
       `}).join('');
@@ -276,7 +283,7 @@ const toneToGradient = (tone) => {
     }
     // add to cart
     const addBtn = e.target.closest('.js-add-cart');
-    if (addBtn) {
+    if (addBtn && !addBtn.disabled) {
       const row = addBtn.closest('.variant');
       if (row) {
         const pid = row.dataset.pid; const plan = row.dataset.plan; const price = parseFloat(row.dataset.price);
@@ -286,7 +293,7 @@ const toneToGradient = (tone) => {
       }
     }
     const buyBtn = e.target.closest('.js-buy-now');
-    if (buyBtn) {
+    if (buyBtn && !buyBtn.disabled) {
       const row = buyBtn.closest('.variant');
       if (row) {
         const pid = row.dataset.pid; const plan = row.dataset.plan; const price = parseFloat(row.dataset.price);
