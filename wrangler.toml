@@ -8,7 +8,7 @@ STRIPE_PUBLISHABLE_KEY = "pk_live_51SQAD7GqeSmKEqnwptb6rHCNyCBYmYQQa1HwAIUGjAnwl
 STRIPE_WEBHOOK_SECRET = "whsec_WFWyo9U4IQPHNrQMxklBCntFU7t55WzT"
 SUPABASE_URL = "https://twewcjgphqunpjchwliv.supabase.co"
 PAYPAL_CLIENT_ID = "ATlf_ReXDEAkuLqTNVyKBQY9BJyFo_QGsF6YMsDS3E5I-_3-r-r5G-BhfcAB028ZIPM4V3LtjCVqEg"
-PAYPAL_ENV = "sandbox"
+PAYPAL_ENV = "live"
 PAYPAL_CURRENCY = "USD"
 
 # STRIPE_SECRET_KEY, SUPABASE_ANON_KEY, and PAYPAL_SECRET are configured as secrets in Cloudflare Dashboard
