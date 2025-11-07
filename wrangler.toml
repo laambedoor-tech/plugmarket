@@ -11,11 +11,6 @@ PAYPAL_CLIENT_ID = "ATlf_ReXDXEAkuLqTNVyKBQY9BJyFo_QGsFf6YMsDS3E5I-_3-r-r5G-Bhfc
 PAYPAL_ENV = "live"
 PAYPAL_CURRENCY = "USD"
 
-# Crypto payment config (manual stablecoin flow)
-CRYPTO_NETWORK = "Polygon"
-CRYPTO_TOKEN = "USDC"
-# Receiving wallet address (EVM)
-CRYPTO_ADDRESS = "0x77C9078BE6B434F98EE7a9A22FbF46056c0052c2"
-CRYPTO_DECIMALS = "6"
+# Crypto integration removed; users will be directed to Discord for manual crypto payments.
 
 # STRIPE_SECRET_KEY, SUPABASE_ANON_KEY, and PAYPAL_SECRET are configured as secrets in Cloudflare Dashboard
