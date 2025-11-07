@@ -7,6 +7,8 @@ let stripe = null;
 let elements = null;
 let paymentElement = null;
 let clientSecret = null;
+let paypalLoaded = false;
+let paypalConfig = null;
 
 async function fetchJSON(url, opts){
   const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
@@ -55,6 +57,69 @@ function setMessage(msg){
   if (!msg){ el.style.display = 'none'; el.textContent = ''; return; }
   el.textContent = msg;
   el.style.display = 'block';
+}
+
+function setPaypalMessage(msg){
+  const el = document.getElementById('paypal-message');
+  if (!el) return;
+  if (!msg){ el.style.display = 'none'; el.textContent = ''; return; }
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function ensurePaypal(){
+  if (paypalLoaded) return true;
+  paypalConfig = await fetchJSON(`${API_BASE}/api/paypal/config`);
+  if (!paypalConfig.clientId){ setPaypalMessage('PayPal is not configured yet.'); return false; }
+  await new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(paypalConfig.clientId)}&currency=${paypalConfig.currency||'USD'}`;
+    s.onload = () => { paypalLoaded = true; resolve(); };
+    s.onerror = () => reject(new Error('Failed to load PayPal SDK'));
+    document.head.appendChild(s);
+  });
+  return true;
+}
+
+async function mountPaypalButtons(){
+  const ok = await ensurePaypal();
+  if (!ok) return;
+  // @ts-ignore
+  if (!window.paypal) { setPaypalMessage('PayPal SDK not available'); return; }
+  const container = document.getElementById('paypal-buttons');
+  container.innerHTML = '';
+  // @ts-ignore
+  window.paypal.Buttons({
+    style: { layout: 'vertical', shape: 'rect', color: 'gold' },
+    createOrder: async () => {
+      const items = getCart();
+      const res = await fetch(`${API_BASE}/api/paypal/create-order`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order');
+      return data.id;
+    },
+    onApprove: async (data) => {
+      try {
+        const res = await fetch(`${API_BASE}/api/paypal/capture-order`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderId: data.orderID })
+        });
+        const j = await res.json();
+        if (!res.ok) throw new Error(j.error || 'Capture failed');
+        // success
+        setCart([]);
+        showCheckout(false);
+        const modal = document.getElementById('success-modal');
+        if (modal) modal.style.display = 'flex';
+      } catch (e){
+        setPaypalMessage(e.message || 'Payment failed');
+      }
+    },
+    onError: (err) => setPaypalMessage(err?.message || 'PayPal error')
+  }).render('#paypal-buttons');
 }
 
 // local toneToGradient copy to avoid module scope issues
@@ -141,6 +206,23 @@ addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       setMessage(e.message || 'Checkout unavailable');
     }
+  });
+  // Method tab switching
+  document.getElementById('tab-card')?.addEventListener('click', () => {
+    document.getElementById('payment-form').style.display = 'block';
+    document.getElementById('paypal-container').style.display = 'none';
+    document.getElementById('tab-card').classList.add('btn--primary');
+    document.getElementById('tab-paypal').classList.remove('btn--primary');
+  });
+  document.getElementById('tab-paypal')?.addEventListener('click', async () => {
+    document.getElementById('payment-form').style.display = 'none';
+    document.getElementById('paypal-container').style.display = 'block';
+    document.getElementById('tab-paypal').classList.add('btn--primary');
+    document.getElementById('tab-card').classList.remove('btn--primary');
+    try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
+  });
+  document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
+    showCheckout(false); setPaypalMessage('');
   });
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);

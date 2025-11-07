@@ -51,7 +51,11 @@ export default {
       if (error) {
         console.error('Supabase error:', error);
         return new Response(
-          JSON.stringify({ error: 'Failed to fetch stock' }),
+          JSON.stringify({ 
+            error: 'Failed to fetch stock', 
+            details: error.message,
+            hint: error.hint 
+          }),
           { 
             status: 500, 
             headers: { 
@@ -73,7 +77,13 @@ export default {
       }
 
       return new Response(
-        JSON.stringify({ stock: stockMap }),
+        JSON.stringify({ 
+          stock: stockMap,
+          debug: {
+            count: stock ? stock.length : 0,
+            hasData: !!stock
+          }
+        }),
         { 
           status: 200,
           headers: { 
@@ -88,7 +98,10 @@ export default {
     } catch (error) {
       console.error('Error fetching stock:', error);
       return new Response(
-        JSON.stringify({ error: error.message }),
+        JSON.stringify({ 
+          error: error.message,
+          stack: error.stack 
+        }),
         { 
           status: 500, 
           headers: { 
