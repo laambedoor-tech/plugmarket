@@ -179,11 +179,13 @@ const toneToGradient = (tone) => {
   grid.innerHTML = products.map(p => {
     const min = getMinPrice(p.id);
     const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
+    const logoExt = p.id === 'geoguessr' ? 'png' : 'svg';
+    const logoFile = p.id === 'geoguessr' ? 'geoguessrlogo.png' : `${p.id}.svg`;
     
     return `
     <article class="product-card" data-pid="${p.id}">
       <div class="product-card__media" style="background:${toneToGradient(p.tone)}">
-        <img src="./assets/products/${p.id}.svg" alt="${p.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+        <img src="./assets/products/${logoFile}" alt="${p.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div class="product-card__body">
         <h3 class="product-card__title">${p.title}</h3>
@@ -251,11 +253,12 @@ const toneToGradient = (tone) => {
         const stockBadge = available
           ? '<span class="stock-badge stock-badge--in">In Stock</span>'
           : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
+        const logoFile = product.id === 'geoguessr' ? 'geoguessrlogo.png' : `${product.id}.svg`;
         
         return `
         <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
           <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
-            <img src="./assets/products/${product.id}.svg" alt="${product.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+            <img src="./assets/products/${logoFile}" alt="${product.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
           </div>
           <div>
             <h4 class="variant__title">${product.title} — ${label}</h4>
