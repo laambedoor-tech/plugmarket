@@ -1,5 +1,36 @@
 // Plug Market — JS: partículas, productos demo y contadores
 
+// 0) Mobile Menu Toggle
+(() => {
+  const toggle = document.getElementById('mobile-menu-toggle');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const close = document.getElementById('mobile-sidebar-close');
+  const overlay = document.getElementById('mobile-sidebar-overlay');
+
+  if (!toggle || !sidebar) return;
+
+  function openSidebar() {
+    sidebar.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', openSidebar);
+  if (close) close.addEventListener('click', closeSidebar);
+  if (overlay) overlay.addEventListener('click', closeSidebar);
+
+  // Close sidebar when clicking links
+  sidebar.querySelectorAll('.mobile-sidebar__link').forEach(link => {
+    link.addEventListener('click', () => {
+      setTimeout(closeSidebar, 200);
+    });
+  });
+})();
+
 // 1) Partículas en canvas con glow rojo
 (() => {
   const canvas = document.getElementById('bg-particles');

@@ -26,13 +26,40 @@
         <a href="./orders.html">Orders</a>
       </nav>
       <div class="cta">
-        <a class="btn btn--ghost" href="./index.html#products">Continue shopping</a>
+        <a class="btn btn--ghost btn--desktop-only" href="./index.html#products">Continue shopping</a>
         <a class="cart-link" href="./cart.html" aria-label="Cart">
           <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
           <span class="cart-count" id="cart-count">0</span>
         </a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
+
+    <!-- Mobile Sidebar Menu -->
+    <div class="mobile-sidebar" id="mobile-sidebar">
+      <div class="mobile-sidebar__overlay" id="mobile-sidebar-overlay"></div>
+      <nav class="mobile-sidebar__panel">
+        <div class="mobile-sidebar__header">
+          <span class="mobile-sidebar__title">Menu</span>
+          <button class="mobile-sidebar__close" id="mobile-sidebar-close" aria-label="Close menu">✕</button>
+        </div>
+        <div class="mobile-sidebar__content">
+          <a href="./index.html#home" class="mobile-sidebar__link">Home</a>
+          <a href="./index.html#products" class="mobile-sidebar__link">Products</a>
+          <a href="./index.html#faq" class="mobile-sidebar__link">FAQ</a>
+          <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
+          <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
+          <div class="mobile-sidebar__divider"></div>
+          <a href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer" class="mobile-sidebar__link mobile-sidebar__link--discord">
+            Join Discord
+          </a>
+        </div>
+      </nav>
+    </div>
 
     <main class="cart" style="position:relative; z-index:1;">
       <section style="padding:28px 24px; max-width: 1100px; margin:0 auto;">
