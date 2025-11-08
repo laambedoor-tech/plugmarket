@@ -17,7 +17,8 @@ const PRICES_USD = {
   crunchy: { '1 Month': 90, '3 Months': 210, '6 Months': 380, '12 Months': 720 },
   nitro: { 'Boost 1m': 479, 'Boost 1 Year': 1597, 'Basic 1m': 135 },
   chatgpt: { '1 Month': 320, '3 Months': 780, '6 Months': 1250, '12 Months': 2400 },
-  capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 }
+  capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 },
+  geoguessr: { '1 Month': 200, '3 Months': 500, '12 Months': 1000 }
 };
 
 const PLAN_ALIASES = {
