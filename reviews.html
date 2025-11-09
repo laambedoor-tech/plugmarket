@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plug Market — Reviews</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <style>
+    body { background: #0b0b0c; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 32px auto 0; max-width: 1240px; }
+    @media (max-width: 1024px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 680px) { .reviews-grid { grid-template-columns: 1fr; } }
+    .review-card { background: var(--card, #17181d); border-radius: 14px; border: 1px solid var(--border, #262730); box-shadow: 0 4px 18px rgba(0,0,0,.4); padding: 18px 16px 14px; color: #fff; display: flex; flex-direction: column; min-height: 160px; }
+    .review-stars { color: #ff2743; font-size: 18px; margin-bottom: 6px; }
+    .review-date { color: #9aa0ad; font-size: 13px; margin-bottom: 4px; }
+    .review-product { color: #ff8a65; font-size: 13px; margin-top: 10px; }
+    .review-message { font-size: 15px; margin-bottom: 8px; }
+    .pagination { display: flex; justify-content: center; gap: 8px; margin: 32px 0 24px; }
+    .pagination button { background: #17181d; color: #fff; border: 1px solid #262730; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+    .pagination button.active { background: linear-gradient(135deg, #ff2743, #ff5f6d); color: #fff; border: none; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a href="./index.html" class="brand">
+      <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
+      <span class="brand__name">Plug Market</span>
+    </a>
+    <nav class="menu">
+      <a href="./index.html#home">Home</a>
+      <a href="./index.html#products">Products</a>
+      <a href="./index.html#faq">FAQ</a>
+      <a href="./index.html#contact">Contact</a>
+      <a href="./orders.html">Orders</a>
+      <a href="./reviews.html">Reviews</a>
+    </nav>
+    <div class="cta">
+      <a class="btn btn--ghost" href="./index.html#products">View products</a>
+      <a class="btn btn--primary" href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer">Join Discord</a>
+      <a class="cart-link" href="./cart.html" aria-label="Cart">
+        <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </header>
+  <main>
+    <section style="max-width:1240px;margin:0 auto;padding:32px 0 0;">
+      <h1 class="section-title">Customer Reviews</h1>
+      <div class="reviews-grid" id="reviews-grid"></div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+  </main>
+  <script>
+// Reviews fijas (ejemplo, puedes ampliar con más reviews)
+const reviews = [
+  {stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
+  {stars: 5, date: 'Nov 09, 2025', message: 'Account was delivered instantly, no issues.', product: 'Netflix Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
+  {stars: 4, date: 'Nov 09, 2025', message: 'Had a small problem, but it was fixed fast.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
+  {stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 09, 2025', message: 'Everything went smoothly, thanks!', product: 'Crunchyroll Premium (12 Months)'},
+  {stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
+  {stars: 5, date: 'Nov 08, 2025', message: 'Support helped me right away, very happy.', product: 'Netflix Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
+  {stars: 5, date: 'Nov 08, 2025', message: 'Great value for the price, will buy again.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
+  {stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 08, 2025', message: 'Very satisfied with my purchase.', product: 'Crunchyroll Premium (12 Months)'},
+  {stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
+  {stars: 5, date: 'Nov 07, 2025', message: 'Account worked as described, thanks!', product: 'Netflix Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
+  {stars: 5, date: 'Nov 07, 2025', message: 'Easy process and fast delivery.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
+  {stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 07, 2025', message: 'Best price I found online.', product: 'Crunchyroll Premium (12 Months)'},
+  {stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
+  {stars: 5, date: 'Nov 06, 2025', message: 'Good communication and quick support.', product: 'Netflix Premium Account (1 Month)'},
+  {stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
+  {stars: 5, date: 'Nov 06, 2025', message: 'Happy with the service.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
+  {stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
+  {stars: 4, date: 'Nov 06, 2025', message: 'Service is legit, recommended.', product: 'Crunchyroll Premium (12 Months)'},
+  // ...agrega más reviews aquí para completar las páginas...
+];
+const perPage = 24;
+let page = 1;
+function renderReviews() {
+  const grid = document.getElementById('reviews-grid');
+  grid.innerHTML = '';
+  const start = (page-1)*perPage;
+  const end = start+perPage;
+  reviews.slice(start, end).forEach(r => {
+    grid.innerHTML += `<div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}${r.stars===4?'☆':''}</div>
+      <div class="review-date">${r.date}</div>
+      <div class="review-message">${r.message}</div>
+      <div class="review-product">${r.product}</div>
+    </div>`;
+  });
+  // Pagination
+  const totalPages = Math.ceil(reviews.length/perPage);
+  const pag = document.getElementById('pagination');
+  pag.innerHTML = '';
+  for (let i=1; i<=totalPages; i++) {
+    pag.innerHTML += `<button class="${i===page?'active':''}" onclick="page=${i};renderReviews()">${i}</button>`;
+  }
+}
+renderReviews();
+</script>
+  <!-- Static reviews, pagination logic can be added if needed -->
+</body>
+</html>
