@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Test Google Tag Manager</title>
 
   <!-- Google Tag Manager -->
   <script>
-    (function(w,d,s,l,i){
-      w[l]=w[l]||[];
-      w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-      var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-      j.async=true;
-      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-      f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PDHKGQV8');
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PDHKGQV8');
   </script>
   <!-- End Google Tag Manager -->
 </head>
-<body>
 
+<body>
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PDHKGQV8"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    height="0" width="0" style="display:none;visibility:hidden"></iframe>
   </noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <h1>Prueba GTM</h1>
-  <button onclick="dataLayer.push({ event: 'compra_finalizada' })">
-    Simular compra finalizada
-  </button>
+  <h1>Test de Google Tag Manager</h1>
+  <p>Si todo está correcto, esta página debería aparecer como conectada en Tag Assistant.</p>
 
+  <script>
+    // Evento de prueba en el dataLayer
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "compra_finalizada",
+      valor: 99.99,
+      moneda: "EUR"
+    });
+
+    console.log("Evento de prueba enviado al dataLayer ✅");
+  </script>
 </body>
 </html>
