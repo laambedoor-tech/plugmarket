@@ -247,7 +247,7 @@ addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
     showCheckout(false); setPaypalMessage('');
   });
-  // No crypto handlers needed; crypto directs to Discord
+  // No crypto handlers needed; crypto directs to Discord: https://discord.gg/3GRtH6msrb
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);
     setMessage('');
@@ -308,4 +308,4 @@ addEventListener('DOMContentLoaded', () => {
 
   render(); updateCount();
 });
-// (Crypto helpers removed; Crypto tab now just links to Discord)
+// (Crypto helpers removed; Crypto tab now just links to Discord: https://discord.gg/3GRtH6msrb)
