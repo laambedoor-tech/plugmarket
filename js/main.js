@@ -70,9 +70,9 @@
   function connect(a, b) {
     const dx = a.x - b.x;
     const dy = a.y - b.y;
-    const d2 = dx*dx + dy*dy;
+    const d2 = dx * dx + dy * dy;
     const max = 110 * DPR;
-    if (d2 < max*max) {
+    if (d2 < max * max) {
       const alpha = 1 - Math.sqrt(d2) / max;
       ctx.strokeStyle = 'rgba(255,255,255,' + (alpha * 0.08) + ')';
       ctx.lineWidth = 1 * DPR;
@@ -133,6 +133,7 @@ const products = [
   { id: 'chatgpt', title: 'ChatGPT Plus', price: '$', tone: 'teal' },
   { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
   { id: 'geoguessr', title: 'GeoGuessr', price: '$', tone: 'green' },
+  { id: 'filmora', title: 'Wondershare Filmora', price: '$', tone: 'teal' },
 ];
 
 let stockData = {};
@@ -145,16 +146,17 @@ const subscriptions = {
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
   spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 12.5 },
   youtube: { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5 },
-  disney:  { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
-  prime:   { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 11.2 },
-  hbomax:  { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
+  disney: { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
+  prime: { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 11.2 },
+  hbomax: { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
   nordvpn: { '1 Month': 0.85, '3 Months': 2.0, '6 Months': 3.6, '12 Months': 6.9 },
   crunchy: { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
   // Discord Nitro: solo las variantes de la captura
-  nitro:   { 'Boost 1m': 4.79, 'Boost 1 Year': 15.97, 'Basic 1m': 1.35 },
+  nitro: { 'Boost 1m': 4.79, 'Boost 1 Year': 15.97, 'Basic 1m': 1.35 },
   chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 12.5, '12 Months': 24.0 },
-  capcut:  { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
+  capcut: { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
   geoguessr: { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0 },
+  filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 19.0 },
 };
 
 const toneToGradient = (tone) => {
@@ -171,7 +173,7 @@ const toneToGradient = (tone) => {
   }
 };
 
-(async function renderProducts(){
+(async function renderProducts() {
   const grid = document.getElementById('products-grid');
   if (!grid) return;
 
@@ -197,7 +199,7 @@ const toneToGradient = (tone) => {
   const hasAnyStock = (pid) => {
     const plans = subscriptions[pid];
     if (!plans) return false;
-    
+
     for (const plan of Object.keys(plans)) {
       const key = `${pid}:${plan}`;
       if (stockData[key] && stockData[key] > 0) {
@@ -210,9 +212,9 @@ const toneToGradient = (tone) => {
   grid.innerHTML = products.map(p => {
     const min = getMinPrice(p.id);
     const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
-    const logoExt = p.id === 'geoguessr' ? 'png' : 'svg';
-    const logoFile = p.id === 'geoguessr' ? 'geoguessrlogo.png' : `${p.id}.svg`;
-    
+    const logoExt = (p.id === 'geoguessr' || p.id === 'filmora') ? 'png' : 'svg';
+    const logoFile = p.id === 'geoguessr' ? 'geoguessrlogo.png' : p.id === 'filmora' ? 'filmora-logo.png' : `${p.id}.svg`;
+
     return `
     <article class="product-card" data-pid="${p.id}">
       <div class="product-card__media" style="background:${toneToGradient(p.tone)}">
@@ -293,8 +295,8 @@ const toneToGradient = (tone) => {
         const stockBadge = available
           ? '<span class="stock-badge stock-badge--in">In Stock</span>'
           : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
-        const logoFile = product.id === 'geoguessr' ? 'geoguessrlogo.png' : `${product.id}.svg`;
-        
+        const logoFile = product.id === 'geoguessr' ? 'geoguessrlogo.png' : product.id === 'filmora' ? 'filmora-logo.png' : `${product.id}.svg`;
+
         return `
         <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
           <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
@@ -352,14 +354,14 @@ const toneToGradient = (tone) => {
 
 // 5) Cart (localStorage)
 const CART_KEY = 'plugmarket_cart';
-function getCart(){
+function getCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; }
 }
-function setCart(items){
+function setCart(items) {
   localStorage.setItem(CART_KEY, JSON.stringify(items));
   renderCartCount();
 }
-function addToCart({ pid, plan, price }){
+function addToCart({ pid, plan, price }) {
   const product = products.find(p => p.id === pid);
   if (!product) return;
   const items = getCart();
@@ -369,8 +371,8 @@ function addToCart({ pid, plan, price }){
   else { items.push({ key, pid, title: product.title, tone: product.tone, plan, price, qty: 1 }); }
   setCart(items);
 }
-function cartCount(){ return getCart().reduce((a,b)=>a+b.qty,0); }
-function renderCartCount(){
+function cartCount() { return getCart().reduce((a, b) => a + b.qty, 0); }
+function renderCartCount() {
   const el = document.getElementById('cart-count');
   if (el) el.textContent = String(cartCount());
 }
