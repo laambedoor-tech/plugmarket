@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PDHKGVQ8');</script>
-<!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17767889322"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'AW-17767889322');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Plug Market — Reviews</title>
@@ -15,25 +18,95 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/style.css" />
   <style>
-    body { background: #0b0b0c; }
-    .reviews-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 32px auto 0; max-width: 1240px; }
-    @media (max-width: 1024px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 680px) { .reviews-grid { grid-template-columns: 1fr; } }
-    .review-card { background: var(--card, #17181d); border-radius: 14px; border: 1px solid var(--border, #262730); box-shadow: 0 4px 18px rgba(0,0,0,.4); padding: 18px 16px 14px; color: #fff; display: flex; flex-direction: column; min-height: 160px; }
-    .review-stars { color: #ff2743; font-size: 18px; margin-bottom: 6px; }
-    .review-date { color: #9aa0ad; font-size: 13px; margin-bottom: 4px; }
-    .review-product { color: #ff8a65; font-size: 13px; margin-top: 10px; }
-    .review-message { font-size: 15px; margin-bottom: 8px; }
-    .pagination { display: flex; justify-content: center; gap: 8px; margin: 32px 0 24px; }
-    .pagination button { background: #17181d; color: #fff; border: 1px solid #262730; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
-    .pagination button.active { background: linear-gradient(135deg, #ff2743, #ff5f6d); color: #fff; border: none; }
+    body {
+      background: #0b0b0c;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin: 32px auto 0;
+      max-width: 1240px;
+    }
+
+    @media (max-width: 1024px) {
+      .reviews-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .reviews-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .review-card {
+      background: var(--card, #17181d);
+      border-radius: 14px;
+      border: 1px solid var(--border, #262730);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, .4);
+      padding: 18px 16px 14px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 160px;
+    }
+
+    .review-stars {
+      color: #ff2743;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .review-date {
+      color: #9aa0ad;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .review-product {
+      color: #ff8a65;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .review-message {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 32px 0 24px;
+    }
+
+    .pagination button {
+      background: #17181d;
+      color: #fff;
+      border: 1px solid #262730;
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .pagination button.active {
+      background: linear-gradient(135deg, #ff2743, #ff5f6d);
+      color: #fff;
+      border: none;
+    }
   </style>
 </head>
+
 <body>
   <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PDHKGQV8"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PDHKGQV8" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <header class="nav">
     <a href="./index.html" class="brand">
       <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
@@ -49,7 +122,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </nav>
     <div class="cta">
       <a class="btn btn--ghost" href="./index.html#products">View products</a>
-      <a class="btn btn--primary" href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer">Join Discord</a>
+      <a class="btn btn--primary" href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer">Join
+        Discord</a>
       <a class="cart-link" href="./cart.html" aria-label="Cart">
         <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
         <span class="cart-count" id="cart-count">0</span>
@@ -64,107 +138,108 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </section>
   </main>
   <script>
-// Reviews fijas (ejemplo, puedes ampliar con más reviews)
-const reviews = [
-  {stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-  {stars: 5, date: 'Nov 09, 2025', message: 'Account was delivered instantly, no issues.', product: 'Netflix Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
-  {stars: 4, date: 'Nov 09, 2025', message: 'Had a small problem, but it was fixed fast.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-  {stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 09, 2025', message: 'Everything went smoothly, thanks!', product: 'Crunchyroll Premium (12 Months)'},
-  {stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-  {stars: 5, date: 'Nov 08, 2025', message: 'Support helped me right away, very happy.', product: 'Netflix Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
-  {stars: 5, date: 'Nov 08, 2025', message: 'Great value for the price, will buy again.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-  {stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 08, 2025', message: 'Very satisfied with my purchase.', product: 'Crunchyroll Premium (12 Months)'},
-  {stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-  {stars: 5, date: 'Nov 07, 2025', message: 'Account worked as described, thanks!', product: 'Netflix Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
-  {stars: 5, date: 'Nov 07, 2025', message: 'Easy process and fast delivery.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-  {stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 07, 2025', message: 'Best price I found online.', product: 'Crunchyroll Premium (12 Months)'},
-  {stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-  {stars: 5, date: 'Nov 06, 2025', message: 'Good communication and quick support.', product: 'Netflix Premium Account (1 Month)'},
-  {stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
-  {stars: 5, date: 'Nov 06, 2025', message: 'Happy with the service.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-  {stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)'},
-  {stars: 4, date: 'Nov 06, 2025', message: 'Service is legit, recommended.', product: 'Crunchyroll Premium (12 Months)'},
-  // Generar reviews repetidas para llenar 120 reviews
-  ...Array.from({length: 96}, (_, i) => {
-    // Cambia el contenido según el rango de i para que cada página tenga reviews distintas
-    if (i < 24) {
-      // Página 2
-      const base = [
-        {stars: 5, date: 'Nov 05, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-        {stars: 5, date: 'Nov 05, 2025', message: 'Recommended.', product: 'Netflix Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 05, 2025', message: 'Great service, will buy again.', product: 'Disney+ Premium Account (3 Months)'},
-        {stars: 4, date: 'Nov 05, 2025', message: 'Automatic feedback after 7 days.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-        {stars: 5, date: 'Nov 05, 2025', message: 'Had a problem but it was resolved.', product: 'YouTube Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 05, 2025', message: 'Everything perfect, recommended.', product: 'Crunchyroll Premium (12 Months)'},
-      ];
-      return base[i % base.length];
-    } else if (i < 48) {
-      // Página 3
-      const base = [
-        {stars: 5, date: 'Nov 04, 2025', message: 'Fast delivery and great support.', product: 'Spotify Premium Account FA (12 Month)'},
-        {stars: 5, date: 'Nov 04, 2025', message: 'No issues, everything perfect.', product: 'Netflix Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 04, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)'},
-        {stars: 4, date: 'Nov 04, 2025', message: 'Support was helpful.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-        {stars: 5, date: 'Nov 04, 2025', message: 'Best price for this service.', product: 'YouTube Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 04, 2025', message: 'Would recommend to friends.', product: 'Crunchyroll Premium (12 Months)'},
-      ];
-      return base[i % base.length];
-    } else if (i < 72) {
-      // Página 4
-      const base = [
-        {stars: 5, date: 'Nov 03, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-        {stars: 5, date: 'Nov 03, 2025', message: 'Automatic feedback after 7 days.', product: 'Netflix Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 03, 2025', message: 'Very satisfied, will buy again.', product: 'Disney+ Premium Account (3 Months)'},
-        {stars: 4, date: 'Nov 03, 2025', message: 'Had to contact support, but solved.', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-        {stars: 5, date: 'Nov 03, 2025', message: 'Great service, thanks!', product: 'YouTube Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 03, 2025', message: 'All good, recommended.', product: 'Crunchyroll Premium (12 Months)'},
-      ];
-      return base[i % base.length];
-    } else {
-      // Página 5
-      const base = [
-        {stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)'},
-        {stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Netflix Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 02, 2025', message: 'Everything as described.', product: 'Disney+ Premium Account (3 Months)'},
-        {stars: 4, date: 'Nov 02, 2025', message: 'Good service', product: 'Nitro Boost Lyf (Nitro Boost 1m)'},
-        {stars: 5, date: 'Nov 02, 2025', message: 'happy with my order.', product: 'YouTube Premium Account (1 Month)'},
-        {stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Crunchyroll Premium (12 Months)'},
-      ];
-      return base[i % base.length];
-    }
-  })
-];
-const perPage = 24;
-let page = 1;
-function renderReviews() {
-  const grid = document.getElementById('reviews-grid');
-  grid.innerHTML = '';
-  const start = (page-1)*perPage;
-  const end = start+perPage;
-  reviews.slice(start, end).forEach(r => {
-    grid.innerHTML += `<div class="review-card">
-      <div class="review-stars">${'★'.repeat(r.stars)}${r.stars===4?'☆':''}</div>
+    // Reviews fijas (ejemplo, puedes ampliar con más reviews)
+    const reviews = [
+      { stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+      { stars: 5, date: 'Nov 09, 2025', message: 'Account was delivered instantly, no issues.', product: 'Netflix Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
+      { stars: 4, date: 'Nov 09, 2025', message: 'Had a small problem, but it was fixed fast.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+      { stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 09, 2025', message: 'Everything went smoothly, thanks!', product: 'Crunchyroll Premium (12 Months)' },
+      { stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+      { stars: 5, date: 'Nov 08, 2025', message: 'Support helped me right away, very happy.', product: 'Netflix Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
+      { stars: 5, date: 'Nov 08, 2025', message: 'Great value for the price, will buy again.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+      { stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 08, 2025', message: 'Very satisfied with my purchase.', product: 'Crunchyroll Premium (12 Months)' },
+      { stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+      { stars: 5, date: 'Nov 07, 2025', message: 'Account worked as described, thanks!', product: 'Netflix Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
+      { stars: 5, date: 'Nov 07, 2025', message: 'Easy process and fast delivery.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+      { stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 07, 2025', message: 'Best price I found online.', product: 'Crunchyroll Premium (12 Months)' },
+      { stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+      { stars: 5, date: 'Nov 06, 2025', message: 'Good communication and quick support.', product: 'Netflix Premium Account (1 Month)' },
+      { stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
+      { stars: 5, date: 'Nov 06, 2025', message: 'Happy with the service.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+      { stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
+      { stars: 4, date: 'Nov 06, 2025', message: 'Service is legit, recommended.', product: 'Crunchyroll Premium (12 Months)' },
+      // Generar reviews repetidas para llenar 120 reviews
+      ...Array.from({ length: 96 }, (_, i) => {
+        // Cambia el contenido según el rango de i para que cada página tenga reviews distintas
+        if (i < 24) {
+          // Página 2
+          const base = [
+            { stars: 5, date: 'Nov 05, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+            { stars: 5, date: 'Nov 05, 2025', message: 'Recommended.', product: 'Netflix Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 05, 2025', message: 'Great service, will buy again.', product: 'Disney+ Premium Account (3 Months)' },
+            { stars: 4, date: 'Nov 05, 2025', message: 'Automatic feedback after 7 days.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+            { stars: 5, date: 'Nov 05, 2025', message: 'Had a problem but it was resolved.', product: 'YouTube Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 05, 2025', message: 'Everything perfect, recommended.', product: 'Crunchyroll Premium (12 Months)' },
+          ];
+          return base[i % base.length];
+        } else if (i < 48) {
+          // Página 3
+          const base = [
+            { stars: 5, date: 'Nov 04, 2025', message: 'Fast delivery and great support.', product: 'Spotify Premium Account FA (12 Month)' },
+            { stars: 5, date: 'Nov 04, 2025', message: 'No issues, everything perfect.', product: 'Netflix Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 04, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
+            { stars: 4, date: 'Nov 04, 2025', message: 'Support was helpful.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+            { stars: 5, date: 'Nov 04, 2025', message: 'Best price for this service.', product: 'YouTube Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 04, 2025', message: 'Would recommend to friends.', product: 'Crunchyroll Premium (12 Months)' },
+          ];
+          return base[i % base.length];
+        } else if (i < 72) {
+          // Página 4
+          const base = [
+            { stars: 5, date: 'Nov 03, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+            { stars: 5, date: 'Nov 03, 2025', message: 'Automatic feedback after 7 days.', product: 'Netflix Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 03, 2025', message: 'Very satisfied, will buy again.', product: 'Disney+ Premium Account (3 Months)' },
+            { stars: 4, date: 'Nov 03, 2025', message: 'Had to contact support, but solved.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+            { stars: 5, date: 'Nov 03, 2025', message: 'Great service, thanks!', product: 'YouTube Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 03, 2025', message: 'All good, recommended.', product: 'Crunchyroll Premium (12 Months)' },
+          ];
+          return base[i % base.length];
+        } else {
+          // Página 5
+          const base = [
+            { stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
+            { stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Netflix Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 02, 2025', message: 'Everything as described.', product: 'Disney+ Premium Account (3 Months)' },
+            { stars: 4, date: 'Nov 02, 2025', message: 'Good service', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
+            { stars: 5, date: 'Nov 02, 2025', message: 'happy with my order.', product: 'YouTube Premium Account (1 Month)' },
+            { stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Crunchyroll Premium (12 Months)' },
+          ];
+          return base[i % base.length];
+        }
+      })
+    ];
+    const perPage = 24;
+    let page = 1;
+    function renderReviews() {
+      const grid = document.getElementById('reviews-grid');
+      grid.innerHTML = '';
+      const start = (page - 1) * perPage;
+      const end = start + perPage;
+      reviews.slice(start, end).forEach(r => {
+        grid.innerHTML += `<div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}${r.stars === 4 ? '☆' : ''}</div>
       <div class="review-date">${r.date}</div>
       <div class="review-message">${r.message}</div>
       <div class="review-product">${r.product}</div>
     </div>`;
-  });
-  // Pagination
-  const totalPages = Math.ceil(reviews.length/perPage);
-  const pag = document.getElementById('pagination');
-  pag.innerHTML = '';
-  for (let i=1; i<=totalPages; i++) {
-    pag.innerHTML += `<button class="${i===page?'active':''}" onclick="page=${i};renderReviews()">${i}</button>`;
-  }
-}
-renderReviews();
-</script>
+      });
+      // Pagination
+      const totalPages = Math.ceil(reviews.length / perPage);
+      const pag = document.getElementById('pagination');
+      pag.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        pag.innerHTML += `<button class="${i === page ? 'active' : ''}" onclick="page=${i};renderReviews()">${i}</button>`;
+      }
+    }
+    renderReviews();
+  </script>
   <!-- Static reviews, pagination logic can be added if needed -->
 </body>
+
 </html>

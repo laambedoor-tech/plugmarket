@@ -1,154 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PDHKGVQ8');</script>
-<!-- End Google Tag Manager -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Plug Market — Cart</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17767889322"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'AW-17767889322');
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plug Market — Cart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
   <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./css/style.css" />
-  </head>
-  <body>
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PDHKGQV8"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-    <canvas id="bg-particles" aria-hidden="true"></canvas>
-    <header class="nav">
-      <a href="./index.html" class="brand">
-        <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
-        <span class="brand__name">Plug Market</span>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+  <header class="nav">
+    <a href="./index.html" class="brand">
+      <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
+      <span class="brand__name">Plug Market</span>
+    </a>
+    <nav class="menu">
+      <a href="./index.html#home">Home</a>
+      <a href="./index.html#products">Products</a>
+      <a href="./index.html#faq">FAQ</a>
+      <a href="./index.html#contact">Contact</a>
+      <a href="./orders.html">Orders</a>
+    </nav>
+    <div class="cta">
+      <a class="btn btn--ghost btn--desktop-only" href="./index.html#products">Continue shopping</a>
+      <a class="cart-link" href="./cart.html" aria-label="Cart">
+        <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
+        <span class="cart-count" id="cart-count">0</span>
       </a>
-      <nav class="menu">
-        <a href="./index.html#home">Home</a>
-        <a href="./index.html#products">Products</a>
-        <a href="./index.html#faq">FAQ</a>
-        <a href="./index.html#contact">Contact</a>
-        <a href="./orders.html">Orders</a>
-      </nav>
-      <div class="cta">
-        <a class="btn btn--ghost btn--desktop-only" href="./index.html#products">Continue shopping</a>
-        <a class="cart-link" href="./cart.html" aria-label="Cart">
-          <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
-          <span class="cart-count" id="cart-count">0</span>
-        </a>
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Mobile Sidebar Menu -->
-    <div class="mobile-sidebar" id="mobile-sidebar">
-      <div class="mobile-sidebar__overlay" id="mobile-sidebar-overlay"></div>
-      <nav class="mobile-sidebar__panel">
-        <div class="mobile-sidebar__header">
-          <span class="mobile-sidebar__title">Menu</span>
-          <button class="mobile-sidebar__close" id="mobile-sidebar-close" aria-label="Close menu">✕</button>
-        </div>
-        <div class="mobile-sidebar__content">
-          <a href="./index.html#home" class="mobile-sidebar__link">Home</a>
-          <a href="./index.html#products" class="mobile-sidebar__link">Products</a>
-          <a href="./index.html#faq" class="mobile-sidebar__link">FAQ</a>
-          <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
-          <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
-          <div class="mobile-sidebar__divider"></div>
-          <a href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer" class="mobile-sidebar__link mobile-sidebar__link--discord">
-            Join Discord
-          </a>
-        </div>
-      </nav>
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
+  </header>
 
-    <main class="cart" style="position:relative; z-index:1;">
-      <section style="padding:28px 24px; max-width: 1100px; margin:0 auto;">
-        <h1 class="section-title" style="text-align:left;">Your cart</h1>
+  <!-- Mobile Sidebar Menu -->
+  <div class="mobile-sidebar" id="mobile-sidebar">
+    <div class="mobile-sidebar__overlay" id="mobile-sidebar-overlay"></div>
+    <nav class="mobile-sidebar__panel">
+      <div class="mobile-sidebar__header">
+        <span class="mobile-sidebar__title">Menu</span>
+        <button class="mobile-sidebar__close" id="mobile-sidebar-close" aria-label="Close menu">✕</button>
+      </div>
+      <div class="mobile-sidebar__content">
+        <a href="./index.html#home" class="mobile-sidebar__link">Home</a>
+        <a href="./index.html#products" class="mobile-sidebar__link">Products</a>
+        <a href="./index.html#faq" class="mobile-sidebar__link">FAQ</a>
+        <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
+        <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
+        <div class="mobile-sidebar__divider"></div>
+        <a href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer"
+          class="mobile-sidebar__link mobile-sidebar__link--discord">
+          Join Discord
+        </a>
+      </div>
+    </nav>
+  </div>
 
-        <div class="card" style="padding:0; overflow:hidden;">
-          <div id="cart-empty" style="display:none; padding:24px; color:var(--text-500);">Your cart is empty.</div>
-          <div id="cart-items"></div>
+  <main class="cart" style="position:relative; z-index:1;">
+    <section style="padding:28px 24px; max-width: 1100px; margin:0 auto;">
+      <h1 class="section-title" style="text-align:left;">Your cart</h1>
+
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div id="cart-empty" style="display:none; padding:24px; color:var(--text-500);">Your cart is empty.</div>
+        <div id="cart-items"></div>
+      </div>
+
+      <div class="card"
+        style="margin-top:16px; display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center;">
+        <div class="muted">Taxes calculated at checkout. Prices in USD.</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div style="font-weight:800;">Subtotal: <span id="cart-subtotal">$0.00</span></div>
+          <a class="btn btn--ghost" id="btn-clear">Clear</a>
+          <a class="btn btn--primary" id="btn-checkout">Checkout</a>
+        </div>
+      </div>
+
+      <!-- Checkout Panel with method selector -->
+      <div id="checkout-panel" class="card" style="margin-top:16px; display:none;">
+        <h2 style="margin-bottom:12px;">Secure checkout</h2>
+        <p class="muted" style="margin:0 0 8px 0;">Enter your email for receipt and choose your preferred payment
+          method.</p>
+
+        <!-- Method tabs -->
+        <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap: wrap;">
+          <button id="tab-card" class="btn btn--primary" type="button">Card</button>
+          <button id="tab-paypal" class="btn btn--ghost" type="button">PayPal</button>
+          <button id="tab-crypto" class="btn btn--ghost" type="button">Crypto</button>
         </div>
 
-        <div class="card" style="margin-top:16px; display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center;">
-          <div class="muted">Taxes calculated at checkout. Prices in USD.</div>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <div style="font-weight:800;">Subtotal: <span id="cart-subtotal">$0.00</span></div>
-            <a class="btn btn--ghost" id="btn-clear">Clear</a>
-            <a class="btn btn--primary" id="btn-checkout">Checkout</a>
+        <!-- Card (Stripe) form -->
+        <form id="payment-form" style="display:block;">
+          <div style="display:grid; gap:10px; max-width:520px;">
+            <label style="display:grid; gap:6px;">
+              <span style="font-weight:600;">Email</span>
+              <input id="checkout-email" type="email" placeholder="you@example.com" autocomplete="email" required
+                style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+            </label>
+            <div id="payment-element"></div>
+            <div id="payment-message" class="muted" role="alert" style="display:none;"></div>
           </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+            <button id="btn-pay" class="btn btn--primary" type="submit">Pay now</button>
+            <button id="btn-cancel-checkout" class="btn btn--ghost" type="button">Cancel</button>
+          </div>
+          <p class="muted" style="margin-top:8px;">Payments processed by Stripe.</p>
+        </form>
+
+        <!-- PayPal container -->
+        <div id="paypal-container" style="display:none;">
+          <div style="display:grid; gap:10px; max-width:520px;">
+            <label style="display:grid; gap:6px;">
+              <span style="font-weight:600;">Email</span>
+              <input id="paypal-email" type="email" placeholder="you@example.com" autocomplete="email" required
+                style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+            </label>
+            <div id="paypal-buttons"></div>
+            <div id="paypal-message" class="muted" role="alert" style="display:none;"></div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+            <button id="btn-cancel-paypal" class="btn btn--ghost" type="button">Cancel</button>
+          </div>
+          <p class="muted" style="margin-top:8px;">Payments processed by PayPal.</p>
         </div>
 
-        <!-- Checkout Panel with method selector -->
-        <div id="checkout-panel" class="card" style="margin-top:16px; display:none;">
-          <h2 style="margin-bottom:12px;">Secure checkout</h2>
-          <p class="muted" style="margin:0 0 8px 0;">Enter your email for receipt and choose your preferred payment method.</p>
-
-          <!-- Method tabs -->
-          <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap: wrap;">
-            <button id="tab-card" class="btn btn--primary" type="button">Card</button>
-            <button id="tab-paypal" class="btn btn--ghost" type="button">PayPal</button>
-            <button id="tab-crypto" class="btn btn--ghost" type="button">Crypto</button>
-          </div>
-
-          <!-- Card (Stripe) form -->
-          <form id="payment-form" style="display:block;">
-            <div style="display:grid; gap:10px; max-width:520px;">
-              <label style="display:grid; gap:6px;">
-                <span style="font-weight:600;">Email</span>
-                <input id="checkout-email" type="email" placeholder="you@example.com" autocomplete="email" required style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
-              </label>
-              <div id="payment-element"></div>
-              <div id="payment-message" class="muted" role="alert" style="display:none;"></div>
-            </div>
-            <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
-              <button id="btn-pay" class="btn btn--primary" type="submit">Pay now</button>
-              <button id="btn-cancel-checkout" class="btn btn--ghost" type="button">Cancel</button>
-            </div>
-            <p class="muted" style="margin-top:8px;">Payments processed by Stripe.</p>
-          </form>
-
-          <!-- PayPal container -->
-          <div id="paypal-container" style="display:none;">
-            <div style="display:grid; gap:10px; max-width:520px;">
-              <label style="display:grid; gap:6px;">
-                <span style="font-weight:600;">Email</span>
-                <input id="paypal-email" type="email" placeholder="you@example.com" autocomplete="email" required style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
-              </label>
-              <div id="paypal-buttons"></div>
-              <div id="paypal-message" class="muted" role="alert" style="display:none;"></div>
-            </div>
-            <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
-              <button id="btn-cancel-paypal" class="btn btn--ghost" type="button">Cancel</button>
-            </div>
-            <p class="muted" style="margin-top:8px;">Payments processed by PayPal.</p>
-          </div>
-
-          <!-- Crypto container -->
-          <div id="crypto-container" style="display:none;">
-            <div class="card" style="padding:16px; max-width:520px;">
-              <h3 style="margin:0 0 8px 0;">Crypto payments</h3>
-              <p class="muted" style="margin:0 0 12px 0;">To pay with crypto please join our Discord and open a ticket. We'll provide the address and amount.</p>
-              <a href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener" class="btn btn--primary">Open Discord</a>
-            </div>
+        <!-- Crypto container -->
+        <div id="crypto-container" style="display:none;">
+          <div class="card" style="padding:16px; max-width:520px;">
+            <h3 style="margin:0 0 8px 0;">Crypto payments</h3>
+            <p class="muted" style="margin:0 0 12px 0;">To pay with crypto please join our Discord and open a ticket.
+              We'll provide the address and amount.</p>
+            <a href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener" class="btn btn--primary">Open
+              Discord</a>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
+  </main>
 
-    <!-- Success Modal -->
-    <div id="success-modal" style="
+  <!-- Success Modal -->
+  <div id="success-modal" style="
       display: none;
       position: fixed;
       top: 0;
@@ -160,14 +167,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       align-items: center;
       justify-content: center;
     ">
-      <div class="card" style="
+    <div class="card" style="
         max-width: 500px;
         margin: 20px;
         text-align: center;
         padding: 2rem;
         animation: slideUp 0.3s ease-out;
       ">
-        <div style="
+      <div style="
           width: 80px;
           height: 80px;
           background: linear-gradient(135deg, rgba(46,213,115,.3), rgba(46,213,115,.1));
@@ -177,57 +184,60 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           justify-content: center;
           margin: 0 auto 1.5rem;
         ">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2ed573" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        
-        <h2 style="margin: 0 0 0.5rem 0; font-size: 1.75rem;">Payment Successful!</h2>
-        <p style="color: var(--text-muted); margin: 0 0 1.5rem 0; font-size: 1rem;">
-          Your payment has been processed successfully. You can now access your account credentials.
-        </p>
-        
-        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-          <a href="./orders.html" class="btn btn--primary" style="min-width: 180px;">
-            View My Orders
-          </a>
-          <button id="btn-close-modal" class="btn btn--ghost" style="min-width: 120px;">
-            Continue Shopping
-          </button>
-        </div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2ed573" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <h2 style="margin: 0 0 0.5rem 0; font-size: 1.75rem;">Payment Successful!</h2>
+      <p style="color: var(--text-muted); margin: 0 0 1.5rem 0; font-size: 1rem;">
+        Your payment has been processed successfully. You can now access your account credentials.
+      </p>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+        <a href="./orders.html" class="btn btn--primary" style="min-width: 180px;">
+          View My Orders
+        </a>
+        <button id="btn-close-modal" class="btn btn--ghost" style="min-width: 120px;">
+          Continue Shopping
+        </button>
       </div>
     </div>
+  </div>
 
-    <style>
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+  <style>
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
-    </style>
 
-    <footer class="footer" id="contact">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <img src="./assets/logo.svg" alt="Plug Market" />
-          <p class="muted">Plug Market © 2025</p>
-        </div>
-  <nav class="footer__links">
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
-          <a href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener">Discord</a>
-          <a href="#">Telegram</a>
-        </nav>
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <footer class="footer" id="contact">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="./assets/logo.svg" alt="Plug Market" />
+        <p class="muted">Plug Market © 2025</p>
       </div>
-    </footer>
+      <nav class="footer__links">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="https://discord.gg/3GRtH6msrb" target="_blank" rel="noopener">Discord</a>
+        <a href="#">Telegram</a>
+      </nav>
+    </div>
+  </footer>
 
-    <script src="https://js.stripe.com/v3" defer></script>
-    <script src="./js/main.js" type="module"></script>
-    <script src="./js/cart.js" type="module"></script>
-  </body>
+  <script src="https://js.stripe.com/v3" defer></script>
+  <script src="./js/main.js" type="module"></script>
+  <script src="./js/cart.js" type="module"></script>
+</body>
+
 </html>

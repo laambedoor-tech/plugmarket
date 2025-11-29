@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PDHKGVQ8');</script>
-<!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17767889322"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'AW-17767889322');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders — Plug Market</title>
@@ -18,11 +21,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
-  <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PDHKGQV8"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
   <canvas id="bg-particles" aria-hidden="true"></canvas>
 
   <header class="nav">
@@ -66,7 +66,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
         <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
         <div class="mobile-sidebar__divider"></div>
-        <a href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer" class="mobile-sidebar__link mobile-sidebar__link--discord">
+        <a href="https://discord.gg/VCMbpaqX" target="_blank" rel="noopener noreferrer"
+          class="mobile-sidebar__link mobile-sidebar__link--discord">
           Join Discord
         </a>
       </div>
@@ -76,20 +77,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <main class="cart" style="position:relative; z-index:1;">
     <section style="padding:28px 24px; max-width: 1100px; margin:0 auto;">
       <h1 class="section-title" style="text-align:left;">My Orders</h1>
-        
-        <!-- Login form -->
-        <div id="login-panel" class="card" style="max-width: 500px; margin: 2rem auto; padding: 2rem;">
-          <h2 style="margin-top: 0; font-size: 1.5rem;">Access your orders</h2>
-          <p style="color: var(--text-500); margin-bottom: 1.5rem;">
-            Enter the email you used when purchasing to see all your orders and credentials.
-          </p>
-          <form id="login-form">
-            <div style="margin-bottom: 1rem;">
-              <label for="login-email" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email</label>
-              <input 
-                type="email" 
-                id="login-email" 
-                style="
+
+      <!-- Login form -->
+      <div id="login-panel" class="card" style="max-width: 500px; margin: 2rem auto; padding: 2rem;">
+        <h2 style="margin-top: 0; font-size: 1.5rem;">Access your orders</h2>
+        <p style="color: var(--text-500); margin-bottom: 1.5rem;">
+          Enter the email you used when purchasing to see all your orders and credentials.
+        </p>
+        <form id="login-form">
+          <div style="margin-bottom: 1rem;">
+            <label for="login-email" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email</label>
+            <input type="email" id="login-email" style="
                   width: 100%;
                   padding: 0.75rem;
                   border: 1px solid var(--border);
@@ -97,43 +95,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   background: var(--card-bg);
                   color: var(--text);
                   font-size: 1rem;
-                " 
-                placeholder="your@email.com" 
-                required 
-                autocomplete="email"
-              />
-            </div>
-            <div id="login-message" style="display: none; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;"></div>
-            <button type="submit" class="btn btn--primary" style="width: 100%;">
-              View my orders
-            </button>
-          </form>
+                " placeholder="your@email.com" required autocomplete="email" />
+          </div>
+          <div id="login-message" style="display: none; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
+          </div>
+          <button type="submit" class="btn btn--primary" style="width: 100%;">
+            View my orders
+          </button>
+        </form>
+      </div>
+
+      <!-- Orders list -->
+      <div id="orders-panel" style="display: none;">
+        <div class="card"
+          style="padding: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+          <h2 id="orders-email" style="margin: 0; font-size: 1.25rem;"></h2>
+          <button id="btn-logout" class="btn btn--ghost btn--sm">Logout</button>
         </div>
 
-        <!-- Orders list -->
-        <div id="orders-panel" style="display: none;">
-          <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-            <h2 id="orders-email" style="margin: 0; font-size: 1.25rem;"></h2>
-            <button id="btn-logout" class="btn btn--ghost btn--sm">Logout</button>
+        <div id="orders-empty" style="display: none;" class="card">
+          <div style="text-align: center; padding: 3rem;">
+            <p style="color: var(--text-500); font-size: 1.1rem; margin-bottom: 1.5rem;">
+              You don't have any orders yet.
+            </p>
+            <a href="./index.html#products" class="btn btn--primary">
+              Go to store
+            </a>
           </div>
-
-          <div id="orders-empty" style="display: none;" class="card">
-            <div style="text-align: center; padding: 3rem;">
-              <p style="color: var(--text-500); font-size: 1.1rem; margin-bottom: 1.5rem;">
-                You don't have any orders yet.
-              </p>
-              <a href="./index.html#products" class="btn btn--primary">
-                Go to store
-              </a>
-            </div>
-          </div>
-
-          <div id="orders-list"></div>
         </div>
-      </section>
-    </main>
 
-    <script src="./js/main.js" type="module"></script>
-    <script src="./js/orders.js" type="module"></script>
-  </body>
+        <div id="orders-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/main.js" type="module"></script>
+  <script src="./js/orders.js" type="module"></script>
+</body>
+
 </html>
