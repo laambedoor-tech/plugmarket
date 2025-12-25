@@ -212,8 +212,8 @@ const toneToGradient = (tone) => {
   grid.innerHTML = products.map(p => {
     const min = getMinPrice(p.id);
     const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
-    const logoExt = (p.id === 'geoguessr' || p.id === 'filmora') ? 'png' : 'svg';
-    const logoFile = p.id === 'geoguessr' ? 'geoguessrlogo.png' : p.id === 'filmora' ? 'filmora-logo.png' : `${p.id}.svg`;
+    // Usar PNG para todos los productos (las nuevas imágenes añadidas)
+    const logoFile = p.id === 'geoguessr' ? 'geoguesser.png' : p.id === 'youtube-premium' ? 'youtube.png' : `${p.id}.png`;
 
     return `
     <article class="product-card" data-pid="${p.id}">
@@ -295,7 +295,8 @@ const toneToGradient = (tone) => {
         const stockBadge = available
           ? '<span class="stock-badge stock-badge--in">In Stock</span>'
           : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
-        const logoFile = product.id === 'geoguessr' ? 'geoguessrlogo.png' : product.id === 'filmora' ? 'filmora-logo.png' : `${product.id}.svg`;
+        // Usar PNG para todos los productos
+        const logoFile = product.id === 'geoguessr' ? 'geoguesser.png' : product.id === 'youtube-premium' ? 'youtube.png' : `${product.id}.png`;
 
         return `
         <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">

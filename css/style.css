@@ -1,20 +1,22 @@
-/* Plug Market — Tema oscuro con acento rojo */
+/* Plug Market — Tema navideño oscuro con esencia roja */
 :root {
-  --bg-900: #0b0b0c;
-  --bg-850: #101013;
-  --surface: #15161a;
+  --bg-900: #0a0d0f;
+  --bg-850: #0f1214;
+  --surface: #141820;
   --card: #17181d;
   --text-100: #ffffff;
   --text-300: #d7d9e0;
   --text-500: #9aa0ad;
-  --border: #262730;
+  --border: #1a3a2a;
 
   --accent: #ff2743;
-  /* rojo principal */
+  /* rojo navideño principal */
   --accent-2: #ff5f6d;
-  /* degradado secundario */
-  --accent-3: #ff8a65;
-  /* cálido suave */
+  /* degradado navideño */
+  --accent-3: #ffd700;
+  /* dorado navideño */
+  --accent-green: #2dd573;
+  /* verde navideño */
 
   --radius: 14px;
   --shadow-sm: 0 4px 18px rgba(0, 0, 0, .4);
@@ -39,11 +41,13 @@ html {
 body {
   margin: 0;
   font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 800px at 70% -20%, rgba(255, 39, 67, .06), transparent),
-    radial-gradient(1000px 600px at -10% 20%, rgba(255, 95, 109, .08), transparent),
+  background: radial-gradient(1200px 800px at 70% -20%, rgba(255, 39, 67, .08), transparent),
+    radial-gradient(1000px 600px at -10% 20%, rgba(45, 213, 115, .06), transparent),
     var(--bg-900);
   color: var(--text-100);
   line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* Canvas de partículas */
@@ -51,6 +55,48 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
+}
+
+/* Animación de nieve navideña */
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+  }
+}
+
+@keyframes sway {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(20px); }
+  75% { transform: translateX(-20px); }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.8), transparent),
+    radial-gradient(1.5px 1.5px at 60px 70px, rgba(255,255,255,.6), transparent),
+    radial-gradient(1px 1px at 50px 50px, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,.3), transparent),
+    radial-gradient(1.5px 1.5px at 90px 10px, rgba(255,255,255,.5), transparent);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: snowfall 15s linear infinite, sway 4s ease-in-out infinite;
+  opacity: 0.08;
 }
 
 /* Navegación */
@@ -98,7 +144,8 @@ body {
 }
 
 .menu a:hover {
-  color: var(--text-100);
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(255, 39, 67, .4);
 }
 
 .cta {
@@ -291,14 +338,29 @@ body {
 }
 
 .btn--primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: var(--glow);
+  background: linear-gradient(135deg, var(--accent), #ff2750);
+  box-shadow: var(--glow), 0 0 20px rgba(255, 39, 67, .25);
   border-color: transparent;
+  position: relative;
+}
+
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, .1) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity .3s ease;
 }
 
 .btn--primary:hover {
-  transform: translateY(-1px) scale(1.01);
-  box-shadow: 0 0 0 4px rgba(255, 39, 67, .12), var(--glow);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 0 4px rgba(255, 39, 67, .15), var(--glow), 0 0 30px rgba(255, 39, 67, .3);
+}
+
+.btn--primary:hover::before {
+  opacity: 1;
 }
 
 .btn--ghost {
@@ -419,7 +481,7 @@ main {
 /* Products */
 .products {
   padding: 24px;
-  max-width: 1240px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -434,7 +496,7 @@ main {
   overflow: hidden;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: radial-gradient(60% 40% at 80% 10%, rgba(255, 95, 109, .22), transparent), #121317;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .02));
   box-shadow: var(--shadow-lg);
   transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
   cursor: pointer;
@@ -460,25 +522,24 @@ main {
   position: relative;
   display: grid;
   place-items: center;
-  height: 120px;
-  background: linear-gradient(135deg, rgba(255, 39, 67, .35), rgba(255, 95, 109, .15));
+  height: 200px;
+  background: transparent;
   filter: saturate(1.1);
   overflow: hidden;
 }
 
 .product-card__media img {
   display: block;
-  width: auto;
-  height: auto;
-  max-width: 78%;
-  max-height: 78%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, .6));
-  opacity: .98;
+  object-position: center;
+  filter: none;
+  opacity: 1;
 }
 
 .product-card__body {
-  padding: 14px;
+  padding: 14px 16px;
 }
 
 .product-card__title {
@@ -625,10 +686,10 @@ main {
 
 .variant__thumb {
   width: 84px;
-  height: 64px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(255, 39, 67, .5), rgba(255, 95, 109, .18));
-  border: 1px solid rgba(255, 255, 255, .12);
+  height: 84px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -636,12 +697,10 @@ main {
 
 .variant__thumb img {
   display: block;
-  width: auto;
-  height: auto;
-  max-width: 86%;
-  max-height: 86%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, .55));
+  filter: none;
 }
 
 .variant__title {
@@ -923,7 +982,7 @@ main {
     width: 100%;
   }
 
-  /* Productos móvil */
+  /* Productos móvil (768px) */
   .products {
     padding: 16px;
   }
@@ -934,11 +993,11 @@ main {
   }
 
   .product-card__media {
-    height: 100px;
+    height: 180px;
   }
 
   .product-card__body {
-    padding: 12px;
+    padding: 14px;
   }
 
   .product-card__title {
@@ -1119,7 +1178,7 @@ main {
     width: 100%;
   }
 
-  /* Productos móvil */
+  /* Productos móvil (480px) */
   .products {
     padding: 16px;
   }
@@ -1130,11 +1189,11 @@ main {
   }
 
   .product-card__media {
-    height: 100px;
+    height: 180px;
   }
 
   .product-card__body {
-    padding: 12px;
+    padding: 14px;
   }
 
   .product-card__title {
@@ -1259,4 +1318,127 @@ main {
   .eyebrow {
     font-size: 11px;
   }
+}
+
+/* Christmas Snow Effect */
+.snowflakes {
+  position: fixed;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10%;
+  color: #fff;
+  font-size: 1.2em;
+  opacity: 0.8;
+  animation: snowfall linear infinite;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes snowfall {
+  0% {
+    top: -10%;
+    transform: translateX(0) rotate(0deg);
+  }
+  100% {
+    top: 100%;
+    transform: translateX(100px) rotate(360deg);
+  }
+}
+
+/* Individual snowflake positioning and timing */
+.snowflake:nth-child(1) {
+  left: 5%;
+  animation-duration: 10s;
+  animation-delay: 0s;
+  font-size: 1.5em;
+}
+
+.snowflake:nth-child(2) {
+  left: 15%;
+  animation-duration: 12s;
+  animation-delay: 2s;
+  font-size: 1.2em;
+}
+
+.snowflake:nth-child(3) {
+  left: 25%;
+  animation-duration: 8s;
+  animation-delay: 4s;
+  font-size: 1.8em;
+}
+
+.snowflake:nth-child(4) {
+  left: 35%;
+  animation-duration: 14s;
+  animation-delay: 1s;
+  font-size: 1.3em;
+}
+
+.snowflake:nth-child(5) {
+  left: 45%;
+  animation-duration: 11s;
+  animation-delay: 3s;
+  font-size: 1.6em;
+}
+
+.snowflake:nth-child(6) {
+  left: 55%;
+  animation-duration: 9s;
+  animation-delay: 5s;
+  font-size: 1.4em;
+}
+
+.snowflake:nth-child(7) {
+  left: 65%;
+  animation-duration: 13s;
+  animation-delay: 0s;
+  font-size: 1.7em;
+}
+
+.snowflake:nth-child(8) {
+  left: 75%;
+  animation-duration: 10s;
+  animation-delay: 2s;
+  font-size: 1.5em;
+}
+
+.snowflake:nth-child(9) {
+  left: 85%;
+  animation-duration: 12s;
+  animation-delay: 4s;
+  font-size: 1.3em;
+}
+
+.snowflake:nth-child(10) {
+  left: 95%;
+  animation-duration: 11s;
+  animation-delay: 1s;
+  font-size: 1.6em;
+}
+
+.snowflake:nth-child(11) {
+  left: 10%;
+  animation-duration: 14s;
+  animation-delay: 3s;
+  font-size: 1.4em;
+}
+
+.snowflake:nth-child(12) {
+  left: 90%;
+  animation-duration: 9s;
+  animation-delay: 5s;
+  font-size: 1.8em;
+}
+
+/* Subtle Christmas glow effect on cards */
+.card:hover {
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(45, 213, 115, 0.1);
 }

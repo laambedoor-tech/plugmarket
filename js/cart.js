@@ -168,10 +168,13 @@ function render(){
   }
   empty.style.display = 'none';
 
-  list.innerHTML = items.map((it, idx) => `
+  list.innerHTML = items.map((it, idx) => {
+    // Usar PNG para todos los productos
+    const logoFile = it.pid === 'geoguessr' ? 'geoguesser.png' : it.pid === 'youtube-premium' ? 'youtube.png' : `${it.pid}.png`;
+    return `
     <div class="variant" style="border-radius:0; border-left:0; border-right:0;">
       <div class="variant__thumb" style="background:${toneToGradient(it.tone)}">
-        <img src="./assets/products/${it.pid}.svg" alt="${it.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+        <img src="./assets/products/${logoFile}" alt="${it.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div>
         <h4 class="variant__title">${it.title} — ${it.plan}</h4>
@@ -187,7 +190,8 @@ function render(){
         <button class="btn btn--ghost btn--sm js-remove" data-i="${idx}">Remove</button>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
   subtotalEl.textContent = money(subtotal);
