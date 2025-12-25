@@ -31,16 +31,20 @@
   });
 })();
 
-// 1) Partículas en canvas con glow rojo
+// 1) Partículas en canvas con glow rojo (optimizado rendimiento)
 (() => {
   const canvas = document.getElementById('bg-particles');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = matchMedia('(max-width: 768px)').matches;
+  // Menor DPR en móvil para reducir coste de fill/blur
+  const DPR = prefersReduced ? 1 : (isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2));
   let w, h;
 
   const particles = [];
-  const COUNT = 80;
+  // Reducimos el número de partículas y conexiones en dispositivos modestos
+  const COUNT = prefersReduced ? 18 : (isMobile ? 28 : 48);
   const COLOR = 'rgba(255, 39, 67, 0.8)';
   const COLOR_DIM = 'rgba(255, 255, 255, 0.15)';
 
@@ -71,7 +75,7 @@
     const dx = a.x - b.x;
     const dy = a.y - b.y;
     const d2 = dx * dx + dy * dy;
-    const max = 110 * DPR;
+    const max = 90 * DPR;
     if (d2 < max * max) {
       const alpha = 1 - Math.sqrt(d2) / max;
       ctx.strokeStyle = 'rgba(255,255,255,' + (alpha * 0.08) + ')';
@@ -83,7 +87,14 @@
     }
   }
 
-  function tick() {
+  let last = 0;
+  const FRAME_MS = prefersReduced ? 1000 / 20 : 1000 / 30; // 20–30fps
+  function tick(ts) {
+    if (ts && ts - last < FRAME_MS) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    last = ts || 0;
     ctx.clearRect(0, 0, w, h);
 
     for (let i = 0; i < particles.length; i++) {
@@ -94,17 +105,22 @@
       if (p.y < 0 || p.y > h) p.vy *= -1;
 
       ctx.shadowColor = p.color;
-      ctx.shadowBlur = 12 * DPR;
+      ctx.shadowBlur = prefersReduced ? 4 * DPR : 8 * DPR;
       ctx.fillStyle = p.color;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r * DPR, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // conexiones sutiles
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        connect(particles[i], particles[j]);
+    // Conexiones sutiles pero limitadas: solo vecinos cercanos y muestreo
+    if (!prefersReduced) {
+      const MAX_NEIGHBORS = isMobile ? 4 : 6;
+      for (let i = 0; i < particles.length; i += 2) { // saltar cada 2 para reducir O(n^2)
+        const a = particles[i];
+        // Buscar solo próximos K índices
+        for (let k = 1; k <= MAX_NEIGHBORS && i + k < particles.length; k++) {
+          connect(a, particles[i + k]);
+        }
       }
     }
 
@@ -218,7 +234,13 @@ const toneToGradient = (tone) => {
     return `
     <article class="product-card" data-pid="${p.id}">
       <div class="product-card__media" style="background:${toneToGradient(p.tone)}">
-        <img src="./assets/products/${logoFile}" alt="${p.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+        <img src="./assets/products/${logoFile}"
+             alt="${p.title} logo"
+             width="400" height="200"
+             loading="lazy"
+             decoding="async"
+             fetchpriority="low"
+             onerror="this.style.display='none'" />
       </div>
       <div class="product-card__body">
         <h3 class="product-card__title">${p.title}</h3>
@@ -301,7 +323,11 @@ const toneToGradient = (tone) => {
         return `
         <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">
           <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
-            <img src="./assets/products/${logoFile}" alt="${product.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+            <img src="./assets/products/${logoFile}"
+                 alt="${product.title} logo"
+                 width="84" height="84"
+                 loading="lazy" decoding="async" fetchpriority="low"
+                 onerror="this.style.display='none'" />
           </div>
           <div>
             <h4 class="variant__title">${product.title} — ${label}</h4>
