@@ -7,6 +7,8 @@ import getPaypalConfig from './get-paypal-config.js';
 import paypalCreateOrder from './paypal-create-order.js';
 import paypalCaptureOrder from './paypal-capture-order.js';
 import testDb from './test-db.js';
+import submitReview from './submit-review.js';
+import getReviews from './get-reviews.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -49,6 +51,14 @@ export default {
 
     if (path === '/api/test-db') {
       return testDb.fetch(request, env, ctx);
+    }
+
+    if (path === '/api/submit-review') {
+      return submitReview.fetch(request, env, ctx);
+    }
+
+    if (path === '/api/get-reviews') {
+      return getReviews.fetch(request, env, ctx);
     }
 
     // 404 for unknown routes
