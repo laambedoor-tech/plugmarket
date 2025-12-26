@@ -55,6 +55,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
 /* Animación de nieve navideña */
@@ -1007,6 +1008,8 @@ main {
 .footer {
   border-top: 1px solid var(--border);
   background: rgba(255, 255, 255, .02);
+  position: relative;
+  z-index: 2;
 }
 
 .footer__grid {
