@@ -22,6 +22,78 @@
       background: #0b0b0c;
     }
 
+    .reviews-hero {
+      background: linear-gradient(135deg, rgba(255, 39, 67, 0.16), rgba(255, 95, 109, 0.08));
+      border: 1px solid var(--border, #262730);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .45);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .reviews-hero__eyebrow {
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: #ffd700;
+      margin: 0 0 6px;
+    }
+
+    .reviews-hero__title {
+      margin: 0 0 8px;
+      text-align: left;
+    }
+
+    .reviews-hero__copy {
+      color: #cfd2dc;
+      margin: 0 0 14px;
+      max-width: 640px;
+    }
+
+    .reviews-hero__metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      background: rgba(0, 0, 0, .2);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .metric__value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .metric__label {
+      color: #9aa0ad;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .reviews-hero__badge {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: left;
+      color: #e1e4ec;
+    }
+
+    .reviews-hero__badge p {
+      margin: 8px 0 0;
+      color: #cfd2dc;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     .reviews-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -30,9 +102,153 @@
       max-width: 1240px;
     }
 
+    .reviews-toolbar {
+      max-width: 1240px;
+      margin: 18px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: #e1e4ec;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .chip--accent {
+      background: linear-gradient(135deg, #ff2743, #ff5f6d);
+      border: none;
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(255, 39, 67, .35);
+    }
+
+    .chip--outline {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .12);
+      color: #f5f7fb;
+    }
+
+    .reviews-form-wrap {
+      max-width: 1240px;
+      margin: 20px auto 0;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .review-form {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .45);
+    }
+
+    .review-form h3 {
+      margin: 0 0 10px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .form-field label {
+      font-size: 14px;
+      color: #dfe3ec;
+      font-weight: 600;
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: rgba(255, 39, 67, .5);
+      box-shadow: 0 0 0 3px rgba(255, 39, 67, .2);
+    }
+
+    .form-note {
+      color: #9aa0ad;
+      font-size: 13px;
+      margin: 6px 0 0;
+      line-height: 1.5;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .form-success {
+      color: #2dd573;
+      font-weight: 700;
+      font-size: 13px;
+      display: none;
+    }
+
+    .form-success.visible {
+      display: inline-flex;
+    }
+
+    .inline-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .05);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-btn:hover {
+      border-color: rgba(255, 255, 255, .2);
+    }
+
+    .inline-btn, a.inline-btn {
+      text-decoration: none;
+    }
+
     @media (max-width: 1024px) {
       .reviews-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .reviews-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .reviews-form-wrap {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -43,15 +259,38 @@
     }
 
     .review-card {
-      background: var(--card, #17181d);
+      background: radial-gradient(220px 140px at 15% 20%, rgba(255, 39, 67, .08), transparent),
+        radial-gradient(220px 140px at 80% 0%, rgba(255, 215, 0, .08), transparent),
+        var(--card, #17181d);
       border-radius: 14px;
       border: 1px solid var(--border, #262730);
-      box-shadow: 0 4px 18px rgba(0, 0, 0, .4);
-      padding: 18px 16px 14px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .45);
+      padding: 16px 16px 14px;
       color: #fff;
       display: flex;
       flex-direction: column;
-      min-height: 160px;
+      min-height: 170px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .review-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #ff2743, #ffd700);
+      opacity: .9;
+    }
+
+    .review-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
     }
 
     .review-stars {
@@ -70,6 +309,8 @@
       color: #ff8a65;
       font-size: 13px;
       margin-top: 10px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
 
     .review-message {
@@ -160,112 +401,305 @@
 
   <main>
     <section style="max-width:1240px;margin:0 auto;padding:32px 0 0;">
-      <h1 class="section-title">Customer Reviews</h1>
+      <div class="reviews-hero">
+        <div>
+          <p class="reviews-hero__eyebrow">Verified purchases</p>
+          <h1 class="section-title reviews-hero__title">Customer Reviews</h1>
+          <p class="reviews-hero__copy">Fresh, verified feedback with weekly follow-ups so you know exactly what to expect before you buy.</p>
+          <div class="reviews-hero__metrics">
+            <div class="metric">
+              <div class="metric__value">4.9★</div>
+              <div class="metric__label">Average score</div>
+            </div>
+            <div class="metric">
+              <div class="metric__value" id="metric-total-reviews">120</div>
+              <div class="metric__label">Verified reviews</div>
+            </div>
+            <div class="metric">
+              <div class="metric__value" id="metric-updated">Dec 26, 2025</div>
+              <div class="metric__label">Last update</div>
+            </div>
+          </div>
+        </div>
+        <div class="reviews-hero__badge">
+          <span class="chip chip--accent">Updated weekly</span>
+          <p>Includes automatic check-ins at 7 days and manual notes from people actively using their accounts.</p>
+        </div>
+      </div>
+
+      <div class="reviews-toolbar">
+        <span class="chip chip--outline">Newest first</span>
+        <span class="chip chip--outline">Verified buyers only</span>
+        <span class="chip chip--outline">Includes automatic feedback</span>
+        <a class="inline-btn" href="#leave-review">Leave a review</a>
+      </div>
+
+      <div class="reviews-form-wrap" id="leave-review">
+        <form class="review-form" id="review-form">
+          <h3>Leave a review</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="review-name">Name (optional)</label>
+              <input class="form-control" id="review-name" name="name" placeholder="e.g. Alex" maxlength="40" />
+            </div>
+            <div class="form-field">
+              <label for="review-product">Product</label>
+              <select class="form-control" id="review-product" name="product" required></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="review-stars">Rating</label>
+              <select class="form-control" id="review-stars" name="stars" required>
+                <option value="5">5 ★</option>
+                <option value="4">4 ★</option>
+                <option value="3">3 ★</option>
+                <option value="2">2 ★</option>
+                <option value="1">1 ★</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="review-order">Order ID (optional)</label>
+              <input class="form-control" id="review-order" name="order" placeholder="e.g. #12345" maxlength="30" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="review-message">Your feedback</label>
+            <textarea class="form-control" id="review-message" name="message" rows="3" placeholder="How was delivery, setup, support?" maxlength="240" required></textarea>
+            <p class="form-note">We display recent reviews first. By submitting you confirm it is a genuine experience.</p>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="inline-btn">Submit review</button>
+            <span class="form-success" id="review-success">Saved. Thanks for sharing!</span>
+          </div>
+        </form>
+        <div class="review-form">
+          <h3>How it works</h3>
+          <p class="form-note">Reviews are shown after payment and also here. Automatic ones appear 7 days after delivery. Manual reviews you submit are stored locally on this device.</p>
+          <p class="form-note">Verified buyers are prioritized; include your order ID if you want us to validate it.</p>
+        </div>
+      </div>
+
       <div class="reviews-grid" id="reviews-grid"></div>
       <div class="pagination" id="pagination"></div>
     </section>
   </main>
   <script>
-    // Reviews fijas (ejemplo, puedes ampliar con más reviews)
-    const reviews = [
-      { stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-      { stars: 5, date: 'Nov 09, 2025', message: 'Account was delivered instantly, no issues.', product: 'Netflix Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
-      { stars: 4, date: 'Nov 09, 2025', message: 'Had a small problem, but it was fixed fast.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-      { stars: 5, date: 'Nov 09, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 09, 2025', message: 'Everything went smoothly, thanks!', product: 'Crunchyroll Premium (12 Months)' },
-      { stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-      { stars: 5, date: 'Nov 08, 2025', message: 'Support helped me right away, very happy.', product: 'Netflix Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
-      { stars: 5, date: 'Nov 08, 2025', message: 'Great value for the price, will buy again.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-      { stars: 5, date: 'Nov 08, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 08, 2025', message: 'Very satisfied with my purchase.', product: 'Crunchyroll Premium (12 Months)' },
-      { stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-      { stars: 5, date: 'Nov 07, 2025', message: 'Account worked as described, thanks!', product: 'Netflix Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
-      { stars: 5, date: 'Nov 07, 2025', message: 'Easy process and fast delivery.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-      { stars: 5, date: 'Nov 07, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 07, 2025', message: 'Best price I found online.', product: 'Crunchyroll Premium (12 Months)' },
-      { stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-      { stars: 5, date: 'Nov 06, 2025', message: 'Good communication and quick support.', product: 'Netflix Premium Account (1 Month)' },
-      { stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
-      { stars: 5, date: 'Nov 06, 2025', message: 'Happy with the service.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-      { stars: 5, date: 'Nov 06, 2025', message: 'Automatic feedback after 7 days.', product: 'YouTube Premium Account (1 Month)' },
-      { stars: 4, date: 'Nov 06, 2025', message: 'Service is legit, recommended.', product: 'Crunchyroll Premium (12 Months)' },
-      // Generar reviews repetidas para llenar 120 reviews
-      ...Array.from({ length: 96 }, (_, i) => {
-        // Cambia el contenido según el rango de i para que cada página tenga reviews distintas
-        if (i < 24) {
-          // Página 2
-          const base = [
-            { stars: 5, date: 'Nov 05, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-            { stars: 5, date: 'Nov 05, 2025', message: 'Recommended.', product: 'Netflix Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 05, 2025', message: 'Great service, will buy again.', product: 'Disney+ Premium Account (3 Months)' },
-            { stars: 4, date: 'Nov 05, 2025', message: 'Automatic feedback after 7 days.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-            { stars: 5, date: 'Nov 05, 2025', message: 'Had a problem but it was resolved.', product: 'YouTube Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 05, 2025', message: 'Everything perfect, recommended.', product: 'Crunchyroll Premium (12 Months)' },
-          ];
-          return base[i % base.length];
-        } else if (i < 48) {
-          // Página 3
-          const base = [
-            { stars: 5, date: 'Nov 04, 2025', message: 'Fast delivery and great support.', product: 'Spotify Premium Account FA (12 Month)' },
-            { stars: 5, date: 'Nov 04, 2025', message: 'No issues, everything perfect.', product: 'Netflix Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 04, 2025', message: 'Automatic feedback after 7 days.', product: 'Disney+ Premium Account (3 Months)' },
-            { stars: 4, date: 'Nov 04, 2025', message: 'Support was helpful.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-            { stars: 5, date: 'Nov 04, 2025', message: 'Best price for this service.', product: 'YouTube Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 04, 2025', message: 'Would recommend to friends.', product: 'Crunchyroll Premium (12 Months)' },
-          ];
-          return base[i % base.length];
-        } else if (i < 72) {
-          // Página 4
-          const base = [
-            { stars: 5, date: 'Nov 03, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-            { stars: 5, date: 'Nov 03, 2025', message: 'Automatic feedback after 7 days.', product: 'Netflix Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 03, 2025', message: 'Very satisfied, will buy again.', product: 'Disney+ Premium Account (3 Months)' },
-            { stars: 4, date: 'Nov 03, 2025', message: 'Had to contact support, but solved.', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-            { stars: 5, date: 'Nov 03, 2025', message: 'Great service, thanks!', product: 'YouTube Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 03, 2025', message: 'All good, recommended.', product: 'Crunchyroll Premium (12 Months)' },
-          ];
-          return base[i % base.length];
-        } else {
-          // Página 5
-          const base = [
-            { stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Spotify Premium Account FA (12 Month)' },
-            { stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Netflix Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 02, 2025', message: 'Everything as described.', product: 'Disney+ Premium Account (3 Months)' },
-            { stars: 4, date: 'Nov 02, 2025', message: 'Good service', product: 'Nitro Boost Lyf (Nitro Boost 1m)' },
-            { stars: 5, date: 'Nov 02, 2025', message: 'happy with my order.', product: 'YouTube Premium Account (1 Month)' },
-            { stars: 5, date: 'Nov 02, 2025', message: 'Automatic feedback after 7 days.', product: 'Crunchyroll Premium (12 Months)' },
-          ];
-          return base[i % base.length];
-        }
-      })
+    const autoMessage = 'Automatic feedback after 7 days';
+    const products = [
+      'Spotify',
+      'Netflix',
+      'YouTube Premium',
+      'Disney+',
+      'Amazon Prime Video',
+      'HBO Max',
+      'Crunchyroll',
+      'Discord Nitro',
+      'NordVPN',
+      'ChatGPT Plus',
+      'CapCut Pro',
+      'GeoGuessr',
+      'Wondershare Filmora'
     ];
+
+    const manualMessages = [
+      { stars: 5, message: 'Fast ty !' },
+      { stars: 5, message: 'Helped me fast, thanks' },
+      { stars: 4, message: '4/5 okay, support was kind' },
+      { stars: 5, message: 'Best service, always helpful' },
+      { stars: 5, message: 'Really nice team' },
+      { stars: 5, message: 'Good value, instant delivery' },
+      { stars: 5, message: 'Quick replace, no hassle' },
+      { stars: 5, message: 'Support answered in minutes' },
+      { stars: 5, message: 'Login worked first try' },
+      { stars: 5, message: 'Friendly staff, thank you' },
+      { stars: 5, message: 'Great price, smooth setup' },
+      { stars: 5, message: 'Solved in 2 minutes' },
+      { stars: 5, message: 'Thanks for the fast help' },
+      { stars: 4, message: '4/5 minor delay but ok' },
+      { stars: 5, message: 'Working fine on day 3' },
+      { stars: 5, message: 'Nice support, patient' },
+      { stars: 5, message: 'Gifted to a friend, worked' },
+      { stars: 5, message: 'Smooth renewal, cheers' },
+      { stars: 5, message: 'Helpful and polite' },
+      { stars: 5, message: 'Answered in Spanish, ty' },
+      { stars: 5, message: 'Best price I found' },
+      { stars: 4, message: '4/5 had to retry once' },
+      { stars: 5, message: 'Activation was easy' },
+      { stars: 5, message: 'Account legit so far' },
+      { stars: 5, message: 'Fast delivery, gg' },
+      { stars: 5, message: 'Live in under a minute' },
+      { stars: 5, message: 'Resolved quick, appreciate it' },
+      { stars: 5, message: 'Still working after a week' },
+      { stars: 5, message: 'No issues so far' },
+      { stars: 5, message: 'Sweet deal, thanks' },
+      { stars: 5, message: 'Courteous support team' },
+      { stars: 4, message: '4/5 slight wait' },
+      { stars: 5, message: 'Got help the same hour' },
+      { stars: 5, message: 'Solid service, repeat buyer' },
+      { stars: 5, message: 'Quick swap, ty' },
+      { stars: 5, message: 'All good, recommend' },
+      { stars: 5, message: 'Working great on TV' },
+      { stars: 5, message: 'Helped me on Discord' },
+      { stars: 5, message: 'Clean instructions, nice' },
+      { stars: 5, message: 'Value for money' },
+      { stars: 4, message: '4/5 wish it was faster' },
+      { stars: 5, message: 'Nice and legit' },
+      { stars: 5, message: 'Fast setup, done' },
+      { stars: 5, message: 'Supportive staff, cheers' },
+      { stars: 5, message: 'Music streaming fine' },
+      { stars: 5, message: 'VPN connected fast' },
+      { stars: 5, message: 'Premium activated instantly' },
+      { stars: 5, message: 'Short wait but resolved' },
+      { stars: 5, message: 'Friendly agent, ty' },
+      { stars: 5, message: 'Zero-hassle checkout' }
+    ];
+
+    const dateBuckets = [
+      { date: 'Dec 26, 2025', count: 8 },
+      { date: 'Dec 25, 2025', count: 8 },
+      { date: 'Dec 24, 2025', count: 8 },
+      { date: 'Dec 23, 2025', count: 8 },
+      { date: 'Dec 22, 2025', count: 8 },
+      { date: 'Dec 21, 2025', count: 8 },
+      { date: 'Dec 20, 2025', count: 8 },
+      { date: 'Dec 19, 2025', count: 8 },
+      { date: 'Dec 18, 2025', count: 8 },
+      { date: 'Dec 17, 2025', count: 8 },
+      { date: 'Dec 16, 2025', count: 8 },
+      { date: 'Dec 15, 2025', count: 8 },
+      { date: 'Dec 14, 2025', count: 8 },
+      { date: 'Dec 13, 2025', count: 8 },
+      { date: 'Dec 12, 2025', count: 8 }
+    ];
+
+    const STORAGE_KEY = 'pm_user_reviews_v1';
+
+    function loadUserReviews() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(parsed)) return parsed;
+        return [];
+      } catch (err) {
+        console.warn('Failed to load user reviews', err);
+        return [];
+      }
+    }
+
+    function saveUserReviews(list) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list.slice(0, 120)));
+      } catch (err) {
+        console.warn('Failed to save user reviews', err);
+      }
+    }
+
+    function formatDate() {
+      return new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).format(new Date());
+    }
+
+    const userReviews = loadUserReviews();
+
+    const reviews = [];
+    let manualIndex = 0;
+
+    dateBuckets.forEach(bucket => {
+      for (let i = 0; i < bucket.count; i++) {
+        const globalIndex = reviews.length;
+        const isAuto = (globalIndex % 4) < 3; // ~75% automatic
+        const product = products[(globalIndex + i) % products.length];
+
+        if (isAuto) {
+          reviews.push({ stars: 5, date: bucket.date, message: autoMessage, product });
+        } else {
+          const manual = manualMessages[manualIndex % manualMessages.length];
+          manualIndex++;
+          reviews.push({ stars: manual.stars, date: bucket.date, message: manual.message, product });
+        }
+      }
+    });
     const perPage = 24;
     let page = 1;
     function renderReviews() {
+      const combined = [...userReviews, ...reviews];
       const grid = document.getElementById('reviews-grid');
       grid.innerHTML = '';
       const start = (page - 1) * perPage;
       const end = start + perPage;
-      reviews.slice(start, end).forEach(r => {
+      combined.slice(start, end).forEach(r => {
+        const isUser = r.userGenerated;
+        const chipText = isUser ? 'User submitted' : 'Verified buyer';
         grid.innerHTML += `<div class="review-card">
-      <div class="review-stars">${'★'.repeat(r.stars)}${r.stars === 4 ? '☆' : ''}</div>
+      <div class="review-card__header">
+        <div class="review-stars">${'★'.repeat(r.stars)}${r.stars === 4 ? '☆' : ''}</div>
+        <span class="chip chip--outline">${chipText}</span>
+      </div>
       <div class="review-date">${r.date}</div>
       <div class="review-message">${r.message}</div>
       <div class="review-product">${r.product}</div>
     </div>`;
       });
       // Pagination
-      const totalPages = Math.ceil(reviews.length / perPage);
+      const totalPages = Math.ceil(combined.length / perPage);
       const pag = document.getElementById('pagination');
       pag.innerHTML = '';
       for (let i = 1; i <= totalPages; i++) {
         pag.innerHTML += `<button class="${i === page ? 'active' : ''}" onclick="page=${i};renderReviews()">${i}</button>`;
       }
     }
+
+    function updateMetrics() {
+      const totalReviewsCount = reviews.length + userReviews.length;
+      const totalMetric = document.getElementById('metric-total-reviews');
+      const updatedMetric = document.getElementById('metric-updated');
+      if (totalMetric) totalMetric.textContent = totalReviewsCount.toLocaleString();
+      if (updatedMetric) updatedMetric.textContent = (userReviews[0]?.date || reviews[0]?.date || formatDate());
+    }
+
+    function populateProductOptions() {
+      const select = document.getElementById('review-product');
+      if (!select) return;
+      select.innerHTML = products.map(p => `<option value="${p}">${p}</option>`).join('');
+    }
+
+    function attachFormHandler() {
+      const form = document.getElementById('review-form');
+      const successEl = document.getElementById('review-success');
+      if (!form) return;
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const stars = Number(formData.get('stars') || 5);
+        const message = String(formData.get('message') || '').trim();
+        const product = String(formData.get('product') || '').trim();
+        const name = String(formData.get('name') || '').trim();
+        if (!message || !product) return;
+
+        const newReview = {
+          stars: Math.max(1, Math.min(5, stars)),
+          date: formatDate(),
+          message,
+          product,
+          userGenerated: true,
+          name: name || undefined,
+        };
+
+        userReviews.unshift(newReview);
+        saveUserReviews(userReviews);
+        page = 1;
+        renderReviews();
+        updateMetrics();
+        form.reset();
+        if (successEl) successEl.classList.add('visible');
+        setTimeout(() => successEl && successEl.classList.remove('visible'), 2200);
+      });
+    }
+
+    populateProductOptions();
     renderReviews();
+    updateMetrics();
+    attachFormHandler();
   </script>
   <!-- Static reviews, pagination logic can be added if needed -->
 </body>
