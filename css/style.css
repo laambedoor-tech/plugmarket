@@ -1240,6 +1240,20 @@ main {
     font-size: 14px;
   }
 
+  /* Terms page móvil 768px */
+  .terms-wrap {
+    padding: 20px 16px 60px;
+  }
+
+  .terms-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .policy-card {
+    padding: 14px 16px;
+  }
+
   /* Footer móvil */
   .footer__grid {
     flex-direction: column;
@@ -1456,6 +1470,71 @@ main {
 
   .eyebrow {
     font-size: 11px;
+  }
+
+  /* Terms page responsive */
+  .terms-wrap {
+    padding: 20px 16px 60px;
+  }
+
+  .terms-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .terms-pill {
+    padding: 12px 14px;
+  }
+
+  .terms-pill__icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .terms-pill__title {
+    font-size: 14px;
+  }
+
+  .terms-pill__desc {
+    font-size: 13px;
+  }
+
+  .policy-card {
+    padding: 14px 16px;
+  }
+
+  .policy-card__title {
+    font-size: 15px;
+  }
+
+  .policy-list {
+    gap: 8px;
+  }
+
+  .policy-list li {
+    grid-template-columns: 22px 1fr;
+    gap: 8px;
+  }
+
+  .policy-flag {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+
+  .policy-meta,
+  .policy-note {
+    font-size: 13px;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero__actions .btn {
+    width: 100%;
   }
 }
 
