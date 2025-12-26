@@ -615,6 +615,8 @@
 
     const userReviews = [];
     let allBackendReviews = [];
+    const staticReviews = [];
+    let manualIndex = 0;
 
     async function initializeReviews() {
       allBackendReviews = await loadUserReviews();
