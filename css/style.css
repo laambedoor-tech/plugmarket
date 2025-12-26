@@ -143,6 +143,10 @@ body::before {
   font-weight: 500;
 }
 
+.menu a.active {
+  color: var(--accent);
+}
+
 .menu a:hover {
   color: var(--accent);
   text-shadow: 0 0 8px rgba(255, 39, 67, .4);
@@ -865,6 +869,138 @@ main {
 
 .faq-item__answer p {
   margin: 0;
+}
+
+/* Terms page */
+.terms-wrap {
+  padding: 28px 24px 90px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.terms-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.terms-pill {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.terms-pill__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--border);
+}
+
+.terms-pill__title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.terms-pill__desc {
+  margin: 4px 0 0;
+  color: var(--text-500);
+  font-size: 14px;
+}
+
+.policy-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.policy-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .018));
+  box-shadow: var(--shadow-sm);
+  padding: 16px 18px;
+}
+
+.policy-card__title {
+  margin: 0 0 10px;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.policy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid var(--border);
+  color: var(--text-300);
+}
+
+.policy-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.policy-list li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.policy-flag {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, .04);
+}
+
+.policy-flag--ok {
+  color: #2ed573;
+  border-color: rgba(46, 213, 115, .4);
+}
+
+.policy-flag--warn {
+  color: #ff2743;
+  border-color: rgba(255, 39, 67, .4);
+}
+
+.policy-meta {
+  color: var(--text-500);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.policy-note {
+  font-size: 14px;
+  color: var(--text-500);
 }
 
 /* Footer */
