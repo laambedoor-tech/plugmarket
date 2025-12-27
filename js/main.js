@@ -225,11 +225,16 @@ const toneToGradient = (tone) => {
     return false;
   };
 
-  grid.innerHTML = products.map(p => {
+  grid.innerHTML = products.map((p, index) => {
     const min = getMinPrice(p.id);
     const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
     // Usar PNG para todos los productos (las nuevas imágenes añadidas)
     const logoFile = p.id === 'geoguessr' ? 'geoguesser.png' : p.id === 'youtube-premium' ? 'youtube.png' : `${p.id}.png`;
+    
+    // Primeros 6 productos con prioridad alta para carga rápida
+    const isTopProduct = index < 6;
+    const loadingAttr = isTopProduct ? 'eager' : 'lazy';
+    const fetchPriorityAttr = isTopProduct ? 'high' : 'low';
 
     return `
     <article class="product-card" data-pid="${p.id}">
@@ -237,9 +242,9 @@ const toneToGradient = (tone) => {
         <img src="./assets/products/${logoFile}"
              alt="${p.title} logo"
              width="400" height="200"
-             loading="lazy"
+             loading="${loadingAttr}"
              decoding="async"
-             fetchpriority="low"
+             fetchpriority="${fetchPriorityAttr}"
              onerror="this.style.display='none'" />
       </div>
       <div class="product-card__body">
