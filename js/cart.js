@@ -427,8 +427,8 @@ async function startCryptoCheckout(){
   const customerEmail = emailEl ? emailEl.value.trim() : '';
   const currencyCode = currencyEl ? currencyEl.value : 'usdcpoly';
   // Map UI codes to NOWPayments API codes
-  const currencyMap = { 'usdcpoly': 'usdcpoly', 'usdttrc20': 'usdttrc20', 'ltc': 'ltc', 'btc': 'btc' };
-  const payCurrency = currencyMap[currencyCode] || 'usdcpoly';
+  const currencyMap = { 'usdcpoly': 'usdcmatic', 'usdttrc20': 'usdttrx', 'ltc': 'ltc', 'btc': 'btc' };
+  const payCurrency = currencyMap[currencyCode] || 'ltc';
   if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
   const items = getCart();
   if (!items.length) { setCryptoMessage('Your cart is empty'); return; }

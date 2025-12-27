@@ -59,8 +59,8 @@ export default {
 
       // Map UI currency codes to NOWPayments API codes
       const currencyMap = {
-        'usdcpoly': 'usdcpoly',
-        'usdttrc20': 'usdttrc20',
+        'usdcpoly': 'usdcmatic',
+        'usdttrc20': 'usdttrx',
         'ltc': 'ltc',
         'btc': 'btc'
       };
