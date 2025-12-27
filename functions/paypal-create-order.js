@@ -74,15 +74,28 @@ export default {
       if (!Array.isArray(cart) || !cart.length) return new Response(JSON.stringify({ error: 'Empty cart' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
       const totalCents = validateAndPriceCart(cart);
-      const amount = (totalCents / 100).toFixed(2);
+      let amount = (totalCents / 100).toFixed(2);
       const currency = env.PAYPAL_CURRENCY || 'USD';
 
       const { token, base } = await getAccessToken(env);
 
+      // PayPal (live) often rejects amounts below $1.00 in USD.
+      // To avoid semantic/business validation errors, enforce a minimum of $1.00.
+      // Client-side will warn users; server enforces as a safety net.
+      if ((env.PAYPAL_ENV || 'sandbox') === 'live') {
+        const amtNum = Number(amount);
+        if (!Number.isNaN(amtNum) && amtNum < 1) {
+          amount = '1.00';
+        }
+      }
+
       const payload = {
         intent: 'CAPTURE',
-        purchase_units: [{ amount: { currency_code: currency, value: amount } }],
-        application_context: { shipping_preference: 'NO_SHIPPING' }
+        purchase_units: [{ 
+          amount: { currency_code: currency, value: amount },
+          description: 'Plug Market order'
+        }],
+        application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW' }
       };
 
       const res = await fetch(base + '/v2/checkout/orders', {

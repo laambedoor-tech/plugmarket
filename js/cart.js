@@ -86,6 +86,17 @@ async function mountPaypalButtons(){
   if (!ok) return;
   // @ts-ignore
   if (!window.paypal) { setPaypalMessage('PayPal SDK not available'); return; }
+  // Prevent PayPal usage for very small orders (< $1.00) which PayPal rejects in live.
+  try {
+    const items = getCart();
+    const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+    if (subtotal < 1) {
+      setPaypalMessage('PayPal requires a minimum of $1.00. Please add more items or use Card.');
+      const container = document.getElementById('paypal-buttons');
+      if (container) container.innerHTML = '';
+      return;
+    }
+  } catch {}
   const container = document.getElementById('paypal-buttons');
   container.innerHTML = '';
   // @ts-ignore
