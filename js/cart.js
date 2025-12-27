@@ -425,10 +425,10 @@ async function startCryptoCheckout(){
   const emailEl = document.getElementById('crypto-email');
   const currencyEl = document.getElementById('crypto-currency');
   const customerEmail = emailEl ? emailEl.value.trim() : '';
-  const currencyCode = currencyEl ? currencyEl.value : 'usdcpoly';
-  // Map UI codes to NOWPayments API codes
-  const currencyMap = { 'usdcpoly': 'usdcmatic', 'usdttrc20': 'usdttrx', 'ltc': 'ltc', 'btc': 'btc' };
-  const payCurrency = currencyMap[currencyCode] || 'ltc';
+  const uiCurrency = currencyEl ? currencyEl.value : 'usdcpoly';
+  // Map UI codes to NOWPayments API codes (NOWPayments identifiers)
+  const npCurrencyMap = { usdcpoly: 'usdcmatic', usdttrc20: 'usdttrx', ltc: 'ltc', btc: 'btc' };
+  const payCurrency = npCurrencyMap[uiCurrency] || 'ltc';
   if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
   const items = getCart();
   if (!items.length) { setCryptoMessage('Your cart is empty'); return; }
@@ -438,7 +438,7 @@ async function startCryptoCheckout(){
   const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'block';
   const createBtn = document.getElementById('btn-create-crypto'); if (createBtn) createBtn.style.display = 'none';
   const cancelBtn = document.getElementById('btn-cancel-crypto'); if (cancelBtn) cancelBtn.style.display = 'inline-block';
-  updateCryptoLogos(payCurrency);
+  updateCryptoLogos(uiCurrency);
 
   const res = await fetch(`${API_BASE}/api/crypto/now/create`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -455,7 +455,9 @@ async function startCryptoCheckout(){
   if (!payAddress || !payAmount) throw new Error('Missing address or amount');
 
   const addrEl = document.getElementById('crypto-address'); if (addrEl) addrEl.value = payAddress;
-  const amtEl = document.getElementById('crypto-amount'); if (amtEl) amtEl.textContent = `${payAmount} ${(cur||payCurrency).toUpperCase()}`;
+  const displayMap = { usdcpoly: 'USDC', usdttrc20: 'USDT', ltc: 'LTC', btc: 'BTC' };
+  const displayCurrency = displayMap[uiCurrency] || (cur || payCurrency || '').toUpperCase();
+  const amtEl = document.getElementById('crypto-amount'); if (amtEl) amtEl.textContent = `${payAmount} ${displayCurrency}`;
   const qrEl = document.getElementById('crypto-qr'); if (qrEl) qrEl.src = `https://quickchart.io/qr?size=260&text=${encodeURIComponent(payAddress)}`;
   setCryptoStatus('waiting');
 
