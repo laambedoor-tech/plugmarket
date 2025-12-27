@@ -36,8 +36,10 @@ function validateAndPriceCart(cart) {
   if (!Array.isArray(cart) || cart.length === 0) throw new Error('Cart is empty');
   let total = 0;
   for (const item of cart) {
-    const { pid, plan, qty } = item;
+    let { pid, plan, qty } = item;
     if (!pid || !plan || !qty) throw new Error('Invalid cart item');
+    // Normalize product IDs
+    if (pid === 'nordvpn') pid = 'nord-vpn';
     const norm = normalizePlan(plan);
     const price = PRICES_USD[pid]?.[norm];
     if (price == null) throw new Error(`Invalid product or plan: ${pid} - ${norm}`);
