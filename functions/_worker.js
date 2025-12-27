@@ -12,6 +12,8 @@ import getReviews from './get-reviews.js';
 import cryptoNowCreate from './crypto-now-create.js';
 import cryptoNowIpn from './crypto-now-ipn.js';
 import cryptoNowStatus from './crypto-now-status.js';
+import coinbaseCreateCharge from './coinbase-create-charge.js';
+import coinbaseWebhook from './coinbase-webhook.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -60,6 +62,14 @@ export default {
     }
     if (path === '/api/crypto/now/status') {
       return cryptoNowStatus.fetch(request, env, ctx);
+    }
+
+    // Coinbase Commerce routes
+    if (path === '/api/coinbase/create-charge') {
+      return coinbaseCreateCharge(request, env);
+    }
+    if (path === '/api/coinbase/webhook') {
+      return coinbaseWebhook(request, env);
     }
 
     if (path === '/api/test-db') {

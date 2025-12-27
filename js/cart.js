@@ -363,7 +363,7 @@ if (document.readyState === 'loading') {
   initCheckout();
 }
 function updateCryptoLogos(cur){
-  const map = { ltc: 'ltc', btc: 'btc', usdttrc20: 'usdt' };
+  const map = { ltc: 'ltc', btc: 'btc' };
   const key = map[cur] || 'ltc';
   const selLogo = document.getElementById('crypto-logo');
   const panelLogo = document.getElementById('crypto-logo-panel');
@@ -415,7 +415,10 @@ async function startCryptoCheckout(){
   if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
   const items = getCart();
   if (!items.length) { setCryptoMessage('Your cart is empty'); return; }
-  const res = await fetch(`${API_BASE}/api/crypto/now/create`, {
+  
+  setCryptoMessage('Creating payment...');
+  
+  const res = await fetch(`${API_BASE}/api/coinbase/create-charge`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
       cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
@@ -425,6 +428,9 @@ async function startCryptoCheckout(){
   });
   const j = await res.json();
   if (!res.ok) throw new Error(j.error || 'Failed to start crypto payment');
+  
+  setCryptoMessage('');
+  
   const panel = document.getElementById('crypto-panel');
   if (panel) panel.style.display = 'block';
   document.getElementById('btn-create-crypto').style.display = 'none';
@@ -454,32 +460,22 @@ async function startCryptoCheckout(){
       }
     });
   }
-  // Poll status endpoint for real-time updates
+  // Poll orders table for fulfillment (Coinbase webhook delivers accounts instantly)
   try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
-  const paymentId = j.paymentId;
+  const chargeCode = j.chargeCode;
   cryptoPoll = setInterval(async () => {
     try {
-      const statusRes = await fetch(`${API_BASE}/api/crypto/now/status?paymentId=${encodeURIComponent(paymentId)}`);
-      const statusData = await statusRes.json();
-      if (statusRes.ok) {
-        const st = (statusData.status || 'unknown').toLowerCase();
-        setCryptoStatus(st);
-        // On confirmed/finished, check orders for fulfillment
-        if (['confirmed', 'finished'].includes(st)) {
-          try {
-            const ordersRes = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
-            const ordersData = await ordersRes.json();
-            const found = (ordersData.orders||[]).find(o => String(o.payment_intent_id) === String(paymentId));
-            if (found && Array.isArray(found.items) && found.items.length > 0) {
-              clearInterval(cryptoPoll);
-              setCart([]);
-              showCheckout(false);
-              const modal = document.getElementById('success-modal');
-              if (modal) modal.style.display = 'flex';
-            }
-          } catch (e) { console.error('Orders fetch error:', e); }
-        }
+      const ordersRes = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
+      const ordersData = await ordersRes.json();
+      const found = (ordersData.orders||[]).find(o => String(o.payment_intent_id) === String(chargeCode));
+      if (found && Array.isArray(found.items) && found.items.length > 0) {
+        clearInterval(cryptoPoll);
+        setCryptoStatus('confirmed');
+        setCart([]);
+        showCheckout(false);
+        const modal = document.getElementById('success-modal');
+        if (modal) modal.style.display = 'flex';
       }
-    } catch (e) { console.error('Status poll error:', e); }
-  }, 5000); // Poll every 5 seconds
+    } catch (e) { console.error('Orders poll error:', e); }
+  }, 3000); // Poll every 3 seconds
 }
