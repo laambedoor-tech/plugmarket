@@ -9,6 +9,8 @@ import paypalCaptureOrder from './paypal-capture-order.js';
 import testDb from './test-db.js';
 import submitReview from './submit-review.js';
 import getReviews from './get-reviews.js';
+import cryptoNowCreate from './crypto-now-create.js';
+import cryptoNowIpn from './crypto-now-ipn.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -48,6 +50,13 @@ export default {
       return paypalCaptureOrder.fetch(request, env, ctx);
     }
 
+    // NOWPayments crypto routes
+    if (path === '/api/crypto/now/create') {
+      return cryptoNowCreate.fetch(request, env, ctx);
+    }
+    if (path === '/api/crypto/now/ipn') {
+      return cryptoNowIpn.fetch(request, env, ctx);
+    }
 
     if (path === '/api/test-db') {
       return testDb.fetch(request, env, ctx);

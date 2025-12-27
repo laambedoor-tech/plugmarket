@@ -140,14 +140,36 @@
           <p class="muted" style="margin-top:8px;">Payments processed by PayPal.</p>
         </div>
 
-        <!-- Crypto container -->
+        <!-- Crypto container (NOWPayments) -->
         <div id="crypto-container" style="display:none;">
           <div class="card" style="padding:16px; max-width:520px;">
             <h3 style="margin:0 0 8px 0;">Crypto payments</h3>
-            <p class="muted" style="margin:0 0 12px 0;">To pay with crypto please join our Discord and open a ticket.
-              We'll provide the address and amount.</p>
-            <a href="https://discord.gg/4gqvyc9QNJ" target="_blank" rel="noopener" class="btn btn--primary">Open
-              Discord</a>
+            <p class="muted" style="margin:0 0 12px 0;">Send the exact amount to the unique address shown below. Your account will be delivered automatically once confirmed.</p>
+            <label style="display:grid; gap:6px; margin-bottom:10px;">
+              <span style="font-weight:600;">Email</span>
+              <input id="crypto-email" type="email" placeholder="you@example.com" autocomplete="email" required
+                style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+            </label>
+            <div id="crypto-panel" style="display:none;">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <img id="crypto-qr" alt="QR" width="160" height="160" style="border-radius:8px; background:var(--card);" />
+                <div style="flex:1; display:grid; gap:8px;">
+                  <div>
+                    <div class="muted">Amount to send</div>
+                    <div id="crypto-amount" style="font-weight:800; font-size:18px;">—</div>
+                  </div>
+                  <div>
+                    <div class="muted">Destination address</div>
+                    <input id="crypto-address" readonly style="padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)" />
+                  </div>
+                  <div id="crypto-message" class="muted" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+              <button id="btn-cancel-crypto" class="btn btn--ghost" type="button">Cancel</button>
+            </div>
+            <p class="muted" style="margin-top:8px;">Payments processed by NOWPayments.</p>
           </div>
         </div>
       </div>

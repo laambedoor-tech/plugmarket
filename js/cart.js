@@ -262,18 +262,23 @@ addEventListener('DOMContentLoaded', () => {
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
   });
-  document.getElementById('tab-crypto')?.addEventListener('click', () => {
+  document.getElementById('tab-crypto')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
     document.getElementById('tab-crypto')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
   });
   document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
     showCheckout(false); setPaypalMessage('');
   });
-  // No crypto handlers needed; crypto directs to Discord: https://discord.gg/3GRtH6msrb
+  document.getElementById('btn-cancel-crypto')?.addEventListener('click', () => {
+    showCheckout(false);
+    setCryptoMessage('');
+    const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'none';
+  });
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);
     setMessage('');
@@ -334,4 +339,56 @@ addEventListener('DOMContentLoaded', () => {
 
   render(); updateCount();
 });
-// (Crypto helpers removed; Crypto tab now just links to Discord: https://discord.gg/3GRtH6msrb)
+function setCryptoMessage(msg){
+  const el = document.getElementById('crypto-message');
+  if (!el) return;
+  if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+let cryptoPoll = null;
+async function startCryptoCheckout(){
+  const emailEl = document.getElementById('crypto-email');
+  const customerEmail = emailEl ? emailEl.value.trim() : '';
+  if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
+  const items = getCart();
+  if (!items.length) { setCryptoMessage('Your cart is empty'); return; }
+  // Default currency LTC; adjust later to selector if needed
+  const res = await fetch(`${API_BASE}/api/crypto/now/create`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
+      customerEmail,
+      payCurrency: 'ltc'
+    })
+  });
+  const j = await res.json();
+  if (!res.ok) throw new Error(j.error || 'Failed to start crypto payment');
+  const panel = document.getElementById('crypto-panel');
+  if (panel) panel.style.display = 'block';
+  const addrEl = document.getElementById('crypto-address');
+  const amtEl = document.getElementById('crypto-amount');
+  const qrEl = document.getElementById('crypto-qr');
+  if (addrEl) addrEl.value = j.payAddress || '';
+  if (amtEl) amtEl.textContent = `${j.payAmount} ${String(j.payCurrency).toUpperCase()} (${money(j.priceAmount)} USD)`;
+  if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(j.payAddress||'')}`;
+  setCryptoMessage('Send the exact amount. Waiting for confirmation...');
+  // Poll orders by email to open success modal after IPN fulfillment
+  try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
+  const paymentId = j.paymentId;
+  cryptoPoll = setInterval(async () => {
+    try {
+      const resp = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
+      const dj = await resp.json();
+      const found = (dj.orders||[]).find(o => String(o.payment_intent_id) === String(paymentId));
+      if (found && Array.isArray(found.items) && found.items.length > 0) {
+        clearInterval(cryptoPoll);
+        setCart([]);
+        showCheckout(false);
+        const modal = document.getElementById('success-modal');
+        if (modal) modal.style.display = 'flex';
+      }
+    } catch {}
+  }, 10000);
+}
