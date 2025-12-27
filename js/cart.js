@@ -1,4 +1,4 @@
-// Cart page rendering and interactions
+﻿// Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
 const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 
@@ -199,13 +199,13 @@ function render(){
         <img src="./assets/products/${logoFile}" alt="${it.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div>
-        <h4 class="variant__title">${it.title} — ${it.plan}</h4>
+        <h4 class="variant__title">${it.title} ÔÇö ${it.plan}</h4>
         <div class="variant__meta">Unit price: ${money(it.price)}</div>
       </div>
       <div class="variant__actions">
         <div class="variant__price" style="min-width:70px; text-align:right;">${money(it.price * it.qty)}</div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">–</button>
+          <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">ÔÇô</button>
           <span style="min-width:24px; text-align:center;">${it.qty}</span>
           <button class="btn btn--ghost btn--sm js-inc" data-i="${idx}">+</button>
         </div>
@@ -394,14 +394,14 @@ function setCryptoStatus(status){
   const el = document.getElementById('crypto-status');
   if (!el) return;
   const msgs = {
-    'generating': '⚙️ Generating address... ',
+    'generating': 'ÔÜÖ´©Å Generating address... ',
     'waiting': 'Waiting for payment...',
-    'pending': '⏳ Pending confirmation...',
-    'confirming': '⚙️ Confirming transaction...',
-    'confirmed': '✅ Payment confirmed!',
-    'finished': '🎉 Payment finished!',
-    'failed': '❌ Payment failed',
-    'unknown': '❓ Unknown status'
+    'pending': 'ÔÅ│ Pending confirmation...',
+    'confirming': 'ÔÜÖ´©Å Confirming transaction...',
+    'confirmed': 'Ô£à Payment confirmed!',
+    'finished': '­ƒÄë Payment finished!',
+    'failed': 'ÔØî Payment failed',
+    'unknown': 'ÔØô Unknown status'
   };
   const text = msgs[status] || msgs['unknown'];
   const colors = {
@@ -482,271 +482,5 @@ async function startCryptoCheckout(){
       console.warn('Crypto poll error:', err?.message || err);
     }
   }, 2000);
-}atch(() => setCryptoMessage('Failed to copy'));
-    } catch {}
-  }
-});
-
-// Clear and checkout
-function initCheckout() {
-  document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
-  document.getElementById('btn-checkout')?.addEventListener('click', async () => {
-    const items = getCart();
-    if (!items.length) return;
-    try {
-      showCheckout(true);
-      // Slight delay to ensure panel visible, then mount elements
-      setTimeout(() => { mountElements().catch(err => setMessage(err.message)); }, 50);
-      document.getElementById('checkout-email')?.focus();
-    } catch (e) {
-      setMessage(e.message || 'Checkout unavailable');
-    }
-  });
-  // Method tab switching
-  document.getElementById('tab-card')?.addEventListener('click', () => {
-    document.getElementById('payment-form').style.display = 'block';
-    document.getElementById('paypal-container').style.display = 'none';
-    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
-    document.getElementById('tab-card').classList.add('btn--primary');
-    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
-    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
-  });
-  document.getElementById('tab-paypal')?.addEventListener('click', async () => {
-    document.getElementById('payment-form').style.display = 'none';
-    document.getElementById('paypal-container').style.display = 'block';
-    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
-    document.getElementById('tab-paypal').classList.add('btn--primary');
-    document.getElementById('tab-card')?.classList.remove('btn--primary');
-    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
-    try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
-  });
-  document.getElementById('tab-crypto')?.addEventListener('click', async () => {
-    document.getElementById('payment-form').style.display = 'none';
-    document.getElementById('paypal-container').style.display = 'none';
-    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
-    document.getElementById('tab-crypto')?.classList.add('btn--primary');
-    document.getElementById('tab-card')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
-    try {
-      const sel = document.getElementById('crypto-currency');
-      const val = sel ? sel.value : 'ltc';
-      updateCryptoLogos(val);
-    } catch {}
-  });
-  document.getElementById('btn-create-crypto')?.addEventListener('click', async () => {
-    try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
-  });
-  document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
-    showCheckout(false); setPaypalMessage('');
-  });
-  document.getElementById('btn-cancel-crypto')?.addEventListener('click', () => {
-    showCheckout(false);
-    setCryptoMessage('');
-    setCryptoStatus('waiting');
-    const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'none';
-    document.getElementById('btn-create-crypto').style.display = 'inline-block';
-    document.getElementById('btn-cancel-crypto').style.display = 'none';
-    try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
-  });
-  document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
-    showCheckout(false);
-    setMessage('');
-    // Optionally unmount elements to allow re-creating intents
-    try { paymentElement && paymentElement.unmount(); } catch {}
-    paymentElement = null; elements = null; clientSecret = null;
-  });
-
-  // Update crypto logos on currency change
-  const currencySel = document.getElementById('crypto-currency');
-  currencySel?.addEventListener('change', () => {
-    updateCryptoLogos(currencySel.value);
-  });
-
-  document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!stripe || !elements) {
-      try { await mountElements(); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
-    }
-    
-    // Get email from form
-    const emailEl = document.getElementById('checkout-email');
-    const customerEmail = emailEl ? emailEl.value.trim() : '';
-    if (!customerEmail) {
-      setMessage('Please enter your email');
-      return;
-    }
-    
-    setMessage('');
-    const btn = document.getElementById('btn-pay');
-    btn && (btn.disabled = true);
-    
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: { 
-        return_url: window.location.origin + '/cart.html',
-        receipt_email: customerEmail
-      },
-      redirect: 'if_required',
-    });
-    
-    btn && (btn.disabled = false);
-    if (error) {
-      setMessage(error.message || 'Payment failed. Please try again.');
-      return;
-    }
-    if (paymentIntent && paymentIntent.status === 'succeeded') {
-      // Show success modal
-      setCart([]);
-      showCheckout(false);
-      const modal = document.getElementById('success-modal');
-      if (modal) modal.style.display = 'flex';
-    } else {
-      // For some methods, Stripe may redirect instead. We'll rely on return_url.
-      setMessage('Follow the instructions to complete the payment.');
-    }
-  });
-
-  // Close modal button
-  document.getElementById('btn-close-modal')?.addEventListener('click', () => {
-    const modal = document.getElementById('success-modal');
-    if (modal) modal.style.display = 'none';
-  });
-
-  render(); updateCount();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCheckout);
-} else {
-  initCheckout();
-}
-function updateCryptoLogos(cur){
-  const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc', usdttrc20: 'usdt' };
-  const key = map[cur] || 'usdc';
-  const selLogo = document.getElementById('crypto-logo');
-  const panelLogo = document.getElementById('crypto-logo-panel');
-  if (selLogo) selLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
-  if (panelLogo) panelLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
-}
-function setCryptoMessage(msg){
-  const el = document.getElementById('crypto-message');
-  if (!el) return;
-  if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function setCryptoStatus(status){
-  const el = document.getElementById('crypto-status');
-  if (!el) return;
-  const msgs = {
-    'generating': '⚙️ Generating address... ',
-    'waiting': 'Waiting for payment...',
-    'pending': '⏳ Pending confirmation...',
-    'confirming': '⚙️ Confirming transaction...',
-    'confirmed': '✅ Payment confirmed!',
-    'finished': '🎉 Payment finished!',
-    'failed': '❌ Payment failed',
-    'unknown': '❓ Unknown status'
-  };
-  const text = msgs[status] || msgs['unknown'];
-  const colors = {
-    'generating': 'rgba(98,160,255,.2); color:#62a0ff',
-    'waiting': 'rgba(255,171,64,.2); color:#ffab40',
-    'pending': 'rgba(255,171,64,.2); color:#ffab40',
-    'confirming': 'rgba(98,160,255,.2); color:#62a0ff',
-    'confirmed': 'rgba(46,213,115,.2); color:#2ed573',
-    'finished': 'rgba(46,213,115,.2); color:#2ed573',
-    'failed': 'rgba(255,39,67,.2); color:#ff2743',
-    'unknown': 'rgba(255,255,255,.1); color:#ccc'
-  };
-  const color = colors[status] || colors['unknown'];
-  el.style.background = color.split(';')[0];
-  el.style.color = color.split(';')[1].replace('color:', '');
-  el.textContent = text;
-}
-
-let cryptoPoll = null;
-let coinbaseHostedUrl = '';
-async function startCryptoCheckout(){
-  const emailEl = document.getElementById('crypto-email');
-  const currencyEl = document.getElementById('crypto-currency');
-  const customerEmail = emailEl ? emailEl.value.trim() : '';
-  const payCurrency = currencyEl ? currencyEl.value : 'ltc';
-  if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
-  const items = getCart();
-  if (!items.length) { setCryptoMessage('Your cart is empty'); return; }
-  
-  setCryptoMessage('');
-  setCryptoStatus('generating');
-  // Show inline panel, hide/create buttons
-  const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'block';
-  const createBtn = document.getElementById('btn-create-crypto'); if (createBtn) createBtn.style.display = 'none';
-  const cancelBtn = document.getElementById('btn-cancel-crypto'); if (cancelBtn) cancelBtn.style.display = 'inline-block';
-  updateCryptoLogos(payCurrency);
-
-  const res = await fetch(`${API_BASE}/api/coinbase/create-charge`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
-      customerEmail,
-      payCurrency
-    })
-  });
-  const j = await res.json();
-  if (!res.ok) throw new Error(j.error || 'Failed to start crypto payment');
-
-  const chargeCode = j.chargeCode;
-  if (!chargeCode) throw new Error('Missing charge code');
-  coinbaseHostedUrl = j.hostedUrl || '';
-
-  let addressShown = false;
-  try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
-  // Faster polling every 500ms
-  cryptoPoll = setInterval(async () => {
-    try {
-      const r = await fetch(`${API_BASE}/api/coinbase/get-charge?chargeCode=${encodeURIComponent(chargeCode)}`);
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || 'Failed to fetch charge');
-      const curKeyUp = payCurrency.toUpperCase();
-      const addr = (d.addresses?.[curKeyUp]) || (d.addresses?.[curKeyUp.toLowerCase()]) || (d.addresses?.[payCurrency]) || '';
-      const pr = (d.pricing?.[curKeyUp]) || (d.pricing?.[curKeyUp.toLowerCase()]) || {};
-      if (addr && !addressShown) {
-        addressShown = true;
-        const addrEl = document.getElementById('crypto-address'); if (addrEl) addrEl.value = addr;
-        const amtEl = document.getElementById('crypto-amount'); if (amtEl) amtEl.textContent = pr?.amount ? `${pr.amount} ${curKeyUp}` : '—';
-        const qrEl = document.getElementById('crypto-qr'); if (qrEl) qrEl.src = `https://quickchart.io/qr?size=260&text=${encodeURIComponent(addr)}`;
-        setCryptoStatus('waiting');
-      }
-
-      const st = String(d.status || '').toLowerCase();
-      if (st === 'pending') {
-        setCryptoStatus('pending');
-      } else if (st === 'confirmed') {
-        setCryptoStatus('confirmed');
-        clearInterval(cryptoPoll);
-        // Clear cart and show success modal; webhook delivers order
-        try { setCart([]); } catch {}
-        const modal = document.getElementById('success-modal'); if (modal) modal.style.display = 'flex';
-        const createBtn2 = document.getElementById('btn-create-crypto'); if (createBtn2) createBtn2.style.display = 'inline-block';
-        const cancelBtn2 = document.getElementById('btn-cancel-crypto'); if (cancelBtn2) cancelBtn2.style.display = 'none';
-      } else if (st === 'resolved') {
-        setCryptoStatus('finished');
-      } else if (st === 'expired' || st === 'canceled') {
-        setCryptoStatus('failed');
-      }
-    } catch (err){
-      // transient errors while polling
-      console.warn('Crypto poll error:', err?.message || err);
-    }
-  }, 500);
-
-  // If address is not ready quickly, offer instant fallback
-  setTimeout(() => {
-    if (!addressShown && coinbaseHostedUrl) {
-      const btnOpen = document.getElementById('btn-open-coinbase');
-      if (btnOpen) btnOpen.style.display = 'inline-block';
-      setCryptoMessage('Tap “Open on Coinbase” to see QR instantly.');
-    }
-  }, 2000);
-}
