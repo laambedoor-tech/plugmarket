@@ -11,6 +11,7 @@ import submitReview from './submit-review.js';
 import getReviews from './get-reviews.js';
 import cryptoNowCreate from './crypto-now-create.js';
 import cryptoNowIpn from './crypto-now-ipn.js';
+import cryptoNowStatus from './crypto-now-status.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -56,6 +57,9 @@ export default {
     }
     if (path === '/api/crypto/now/ipn') {
       return cryptoNowIpn.fetch(request, env, ctx);
+    }
+    if (path === '/api/crypto/now/status') {
+      return cryptoNowStatus.fetch(request, env, ctx);
     }
 
     if (path === '/api/test-db') {

@@ -142,16 +142,26 @@
 
         <!-- Crypto container (NOWPayments) -->
         <div id="crypto-container" style="display:none;">
-          <div class="card" style="padding:16px; max-width:520px;">
+          <div class="card" style="padding:16px; max-width:620px;">
             <h3 style="margin:0 0 8px 0;">Crypto payments</h3>
             <p class="muted" style="margin:0 0 12px 0;">Send the exact amount to the unique address shown below. Your account will be delivered automatically once confirmed.</p>
-            <label style="display:grid; gap:6px; margin-bottom:10px;">
-              <span style="font-weight:600;">Email</span>
-              <input id="crypto-email" type="email" placeholder="you@example.com" autocomplete="email" required
-                style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
-            </label>
+            <div style="display:grid; gap:10px;">
+              <label style="display:grid; gap:6px;">
+                <span style="font-weight:600;">Email</span>
+                <input id="crypto-email" type="email" placeholder="you@example.com" autocomplete="email" required
+                  style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
+              </label>
+              <label style="display:grid; gap:6px;">
+                <span style="font-weight:600;">Currency</span>
+                <select id="crypto-currency" style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer;">
+                  <option value="ltc">Litecoin (LTC)</option>
+                  <option value="btc">Bitcoin (BTC)</option>
+                  <option value="usdttrc20">Tether on Tron (USDT TRC-20)</option>
+                </select>
+              </label>
+            </div>
             <div id="crypto-panel" style="display:none;">
-              <div style="display:flex; gap:12px; align-items:center;">
+              <div style="display:flex; gap:12px; align-items:flex-start;">
                 <img id="crypto-qr" alt="QR" width="160" height="160" style="border-radius:8px; background:var(--card);" />
                 <div style="flex:1; display:grid; gap:8px;">
                   <div>
@@ -160,16 +170,21 @@
                   </div>
                   <div>
                     <div class="muted">Destination address</div>
-                    <input id="crypto-address" readonly style="padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)" />
+                    <input id="crypto-address" readonly style="padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:12px;" />
+                  </div>
+                  <div>
+                    <div class="muted">Status</div>
+                    <div id="crypto-status" style="padding:6px 10px; border-radius:6px; background:rgba(255,171,64,.2); color:#ffab40; font-weight:600; font-size:13px;">Waiting for payment...</div>
                   </div>
                   <div id="crypto-message" class="muted" style="display:none;"></div>
                 </div>
               </div>
             </div>
             <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
-              <button id="btn-cancel-crypto" class="btn btn--ghost" type="button">Cancel</button>
+              <button id="btn-create-crypto" class="btn btn--primary" type="button">Create Payment</button>
+              <button id="btn-cancel-crypto" class="btn btn--ghost" type="button" style="display:none;">Cancel</button>
             </div>
-            <p class="muted" style="margin-top:8px;">Payments processed by NOWPayments.</p>
+            <p class="muted" style="margin-top:8px;">Payments processed by NOWPayments. <strong>Note:</strong> Ensure you have configured your wallet in NOWPayments for the selected currency.</p>
           </div>
         </div>
       </div>

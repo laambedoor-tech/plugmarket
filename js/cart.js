@@ -269,6 +269,8 @@ addEventListener('DOMContentLoaded', () => {
     document.getElementById('tab-crypto')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+  });
+  document.getElementById('btn-create-crypto')?.addEventListener('click', async () => {
     try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
   });
   document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
@@ -277,7 +279,11 @@ addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-cancel-crypto')?.addEventListener('click', () => {
     showCheckout(false);
     setCryptoMessage('');
+    setCryptoStatus('waiting');
     const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'none';
+    document.getElementById('btn-create-crypto').style.display = 'inline-block';
+    document.getElementById('btn-cancel-crypto').style.display = 'none';
+    try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   });
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);
@@ -347,48 +353,90 @@ function setCryptoMessage(msg){
   el.style.display = 'block';
 }
 
+function setCryptoStatus(status){
+  const el = document.getElementById('crypto-status');
+  if (!el) return;
+  const msgs = {
+    'waiting': 'Waiting for payment...',
+    'pending': '⏳ Pending confirmation...',
+    'confirming': '⚙️ Confirming transaction...',
+    'confirmed': '✅ Payment confirmed!',
+    'finished': '🎉 Payment finished!',
+    'failed': '❌ Payment failed',
+    'unknown': '❓ Unknown status'
+  };
+  const text = msgs[status] || msgs['unknown'];
+  const colors = {
+    'waiting': 'rgba(255,171,64,.2); color:#ffab40',
+    'pending': 'rgba(255,171,64,.2); color:#ffab40',
+    'confirming': 'rgba(98,160,255,.2); color:#62a0ff',
+    'confirmed': 'rgba(46,213,115,.2); color:#2ed573',
+    'finished': 'rgba(46,213,115,.2); color:#2ed573',
+    'failed': 'rgba(255,39,67,.2); color:#ff2743',
+    'unknown': 'rgba(255,255,255,.1); color:#ccc'
+  };
+  const color = colors[status] || colors['unknown'];
+  el.style.background = color.split(';')[0];
+  el.style.color = color.split(';')[1].replace('color:', '');
+  el.textContent = text;
+}
+
 let cryptoPoll = null;
 async function startCryptoCheckout(){
   const emailEl = document.getElementById('crypto-email');
+  const currencyEl = document.getElementById('crypto-currency');
   const customerEmail = emailEl ? emailEl.value.trim() : '';
+  const payCurrency = currencyEl ? currencyEl.value : 'ltc';
   if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
   const items = getCart();
   if (!items.length) { setCryptoMessage('Your cart is empty'); return; }
-  // Default currency LTC; adjust later to selector if needed
   const res = await fetch(`${API_BASE}/api/crypto/now/create`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
       cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
       customerEmail,
-      payCurrency: 'ltc'
+      payCurrency
     })
   });
   const j = await res.json();
   if (!res.ok) throw new Error(j.error || 'Failed to start crypto payment');
   const panel = document.getElementById('crypto-panel');
   if (panel) panel.style.display = 'block';
+  document.getElementById('btn-create-crypto').style.display = 'none';
+  document.getElementById('btn-cancel-crypto').style.display = 'inline-block';
   const addrEl = document.getElementById('crypto-address');
   const amtEl = document.getElementById('crypto-amount');
   const qrEl = document.getElementById('crypto-qr');
   if (addrEl) addrEl.value = j.payAddress || '';
   if (amtEl) amtEl.textContent = `${j.payAmount} ${String(j.payCurrency).toUpperCase()} (${money(j.priceAmount)} USD)`;
   if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(j.payAddress||'')}`;
-  setCryptoMessage('Send the exact amount. Waiting for confirmation...');
-  // Poll orders by email to open success modal after IPN fulfillment
+  setCryptoStatus('waiting');
+  // Poll status endpoint for real-time updates
   try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   const paymentId = j.paymentId;
   cryptoPoll = setInterval(async () => {
     try {
-      const resp = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
-      const dj = await resp.json();
-      const found = (dj.orders||[]).find(o => String(o.payment_intent_id) === String(paymentId));
-      if (found && Array.isArray(found.items) && found.items.length > 0) {
-        clearInterval(cryptoPoll);
-        setCart([]);
-        showCheckout(false);
-        const modal = document.getElementById('success-modal');
-        if (modal) modal.style.display = 'flex';
+      const statusRes = await fetch(`${API_BASE}/api/crypto/now/status?paymentId=${encodeURIComponent(paymentId)}`);
+      const statusData = await statusRes.json();
+      if (statusRes.ok) {
+        const st = (statusData.status || 'unknown').toLowerCase();
+        setCryptoStatus(st);
+        // On confirmed/finished, check orders for fulfillment
+        if (['confirmed', 'finished'].includes(st)) {
+          try {
+            const ordersRes = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
+            const ordersData = await ordersRes.json();
+            const found = (ordersData.orders||[]).find(o => String(o.payment_intent_id) === String(paymentId));
+            if (found && Array.isArray(found.items) && found.items.length > 0) {
+              clearInterval(cryptoPoll);
+              setCart([]);
+              showCheckout(false);
+              const modal = document.getElementById('success-modal');
+              if (modal) modal.style.display = 'flex';
+            }
+          } catch (e) { console.error('Orders fetch error:', e); }
+        }
       }
-    } catch {}
-  }, 10000);
+    } catch (e) { console.error('Status poll error:', e); }
+  }, 5000); // Poll every 5 seconds
 }
