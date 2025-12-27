@@ -375,8 +375,8 @@ if (document.readyState === 'loading') {
   initCheckout();
 }
 function updateCryptoLogos(cur){
-  const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc' };
-  const key = map[cur] || 'ltc';
+  const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc', usdttrc20: 'usdt' };
+  const key = map[cur] || 'usdc';
   const selLogo = document.getElementById('crypto-logo');
   const panelLogo = document.getElementById('crypto-logo-panel');
   if (selLogo) selLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
