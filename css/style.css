@@ -48,9 +48,6 @@ body {
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
-  font-size: 14px;
-  transform: scale(0.92);
-  transform-origin: top left;
 }
 
 /* Canvas de partículas */
