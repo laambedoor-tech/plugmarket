@@ -300,7 +300,6 @@ function initCheckout() {
     const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'none';
     document.getElementById('btn-create-crypto').style.display = 'inline-block';
     document.getElementById('btn-cancel-crypto').style.display = 'none';
-    const btnOpen = document.getElementById('btn-open-coinbase'); if (btnOpen) btnOpen.style.display = 'none';
     try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   });
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
@@ -361,13 +360,6 @@ function initCheckout() {
     }
   });
 
-  // Fallback open hosted Coinbase page in new tab
-  document.getElementById('btn-open-coinbase')?.addEventListener('click', () => {
-    if (coinbaseHostedUrl) {
-      window.open(coinbaseHostedUrl, '_blank');
-    }
-  });
-
   // Close modal button
   document.getElementById('btn-close-modal')?.addEventListener('click', () => {
     const modal = document.getElementById('success-modal');
@@ -383,7 +375,7 @@ if (document.readyState === 'loading') {
   initCheckout();
 }
 function updateCryptoLogos(cur){
-  const map = { ltc: 'ltc', btc: 'btc' };
+  const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc' };
   const key = map[cur] || 'ltc';
   const selLogo = document.getElementById('crypto-logo');
   const panelLogo = document.getElementById('crypto-logo-panel');

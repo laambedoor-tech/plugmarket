@@ -52,9 +52,9 @@ export default {
 
     let payload; try { payload = JSON.parse(raw); } catch { return new Response('bad json', { status: 400 }); }
 
-    // Only act on confirmed/finished
+    // Act on confirming/confirmed/finished for instant delivery
     const status = (payload.payment_status || '').toLowerCase();
-    if (!['confirmed','finished'].includes(status)) {
+    if (!['confirming','confirmed','finished'].includes(status)) {
       return new Response('ok');
     }
 
