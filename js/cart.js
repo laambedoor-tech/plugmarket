@@ -394,14 +394,14 @@ function setCryptoStatus(status){
   const el = document.getElementById('crypto-status');
   if (!el) return;
   const msgs = {
-    'generating': 'ÔÜÖ´©Å Generating address... ',
-    'waiting': 'Waiting for payment...',
-    'pending': 'ÔÅ│ Pending confirmation...',
-    'confirming': 'ÔÜÖ´©Å Confirming transaction...',
-    'confirmed': 'Ô£à Payment confirmed!',
-    'finished': '­ƒÄë Payment finished!',
-    'failed': 'ÔØî Payment failed',
-    'unknown': 'ÔØô Unknown status'
+    'generating': '⚙️ Generating address...',
+    'waiting': '⏳ Waiting for payment...',
+    'pending': '⏳ Pending confirmation...',
+    'confirming': '⚙️ Confirming transaction...',
+    'confirmed': '✅ Payment confirmed!',
+    'finished': '🎉 Payment finished!',
+    'failed': '❌ Payment failed',
+    'unknown': '❓ Unknown status'
   };
   const text = msgs[status] || msgs['unknown'];
   const colors = {
@@ -425,7 +425,10 @@ async function startCryptoCheckout(){
   const emailEl = document.getElementById('crypto-email');
   const currencyEl = document.getElementById('crypto-currency');
   const customerEmail = emailEl ? emailEl.value.trim() : '';
-  const payCurrency = currencyEl ? currencyEl.value : 'usdcpoly';
+  const currencyCode = currencyEl ? currencyEl.value : 'usdcpoly';
+  // Map UI codes to NOWPayments API codes
+  const currencyMap = { 'usdcpoly': 'usdcpoly', 'usdttrc20': 'usdttrc20', 'ltc': 'ltc', 'btc': 'btc' };
+  const payCurrency = currencyMap[currencyCode] || 'usdcpoly';
   if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
   const items = getCart();
   if (!items.length) { setCryptoMessage('Your cart is empty'); return; }

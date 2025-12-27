@@ -57,11 +57,20 @@ export default {
       const apiKey = env.NOWPAYMENTS_API_KEY;
       if (!apiKey) throw new Error('Missing NOWPayments API key');
 
+      // Map UI currency codes to NOWPayments API codes
+      const currencyMap = {
+        'usdcpoly': 'usdcpoly',
+        'usdttrc20': 'usdttrc20',
+        'ltc': 'ltc',
+        'btc': 'btc'
+      };
+      const mappedCurrency = currencyMap[payCurrency] || payCurrency || 'ltc';
+      
       const orderId = 'np_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
       const body = {
         price_amount: totalUSD,
         price_currency: 'usd',
-        pay_currency: (payCurrency || env.NOWPAYMENTS_DEFAULT_CURRENCY || 'ltc').toLowerCase(),
+        pay_currency: mappedCurrency.toLowerCase(),
         ipn_callback_url: (env.APP_URL || 'https://plugmarket-api.laambedoor.workers.dev') + '/api/crypto/now/ipn',
         order_id: orderId,
         order_description: btoa(JSON.stringify({ cart: items, email: customerEmail }))
