@@ -47,18 +47,28 @@ function validateAndPriceCart(cart) {
 }
 
 export default async function handleCoinbaseCreateCharge(request, env) {
-  if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  };
+  
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+  
+  if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: corsHeaders });
   
   try {
     const body = await request.json();
     const { cart, customerEmail, payCurrency } = body;
     
     if (!customerEmail || !/@/.test(customerEmail)) {
-      return new Response(JSON.stringify({ error: 'Invalid email' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: 'Invalid email' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
     
     if (!payCurrency || !['ltc', 'btc'].includes(payCurrency.toLowerCase())) {
-      return new Response(JSON.stringify({ error: 'Only LTC and BTC are supported' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: 'Only LTC and BTC are supported' }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
     
     const totalUSD = validateAndPriceCart(cart);
@@ -100,7 +110,7 @@ export default async function handleCoinbaseCreateCharge(request, env) {
     
     if (!response.ok) {
       console.error('Coinbase API error:', result);
-      return new Response(JSON.stringify({ error: result.error?.message || 'Failed to create charge' }), { status: response.status, headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: result.error?.message || 'Failed to create charge' }), { status: response.status, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
     
     const charge = result.data;
@@ -121,10 +131,10 @@ export default async function handleCoinbaseCreateCharge(request, env) {
       payCurrency: currency,
       priceAmount: totalUSD,
       hostedUrl: charge.hosted_url
-    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     
   } catch (err) {
     console.error('Create charge error:', err);
-    return new Response(JSON.stringify({ error: err.message || 'Internal server error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ error: err.message || 'Internal server error' }), { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
   }
 }
