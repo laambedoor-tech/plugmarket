@@ -300,6 +300,7 @@ function initCheckout() {
     const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'none';
     document.getElementById('btn-create-crypto').style.display = 'inline-block';
     document.getElementById('btn-cancel-crypto').style.display = 'none';
+    const btnOpen = document.getElementById('btn-open-coinbase'); if (btnOpen) btnOpen.style.display = 'none';
     try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   });
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
@@ -357,6 +358,13 @@ function initCheckout() {
     } else {
       // For some methods, Stripe may redirect instead. We'll rely on return_url.
       setMessage('Follow the instructions to complete the payment.');
+    }
+  });
+
+  // Fallback open hosted Coinbase page in new tab
+  document.getElementById('btn-open-coinbase')?.addEventListener('click', () => {
+    if (coinbaseHostedUrl) {
+      window.open(coinbaseHostedUrl, '_blank');
     }
   });
 
@@ -421,6 +429,7 @@ function setCryptoStatus(status){
 }
 
 let cryptoPoll = null;
+let coinbaseHostedUrl = '';
 async function startCryptoCheckout(){
   const emailEl = document.getElementById('crypto-email');
   const currencyEl = document.getElementById('crypto-currency');
@@ -451,9 +460,11 @@ async function startCryptoCheckout(){
 
   const chargeCode = j.chargeCode;
   if (!chargeCode) throw new Error('Missing charge code');
+  coinbaseHostedUrl = j.hostedUrl || '';
 
   let addressShown = false;
   try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
+  // Faster polling every 500ms
   cryptoPoll = setInterval(async () => {
     try {
       const r = await fetch(`${API_BASE}/api/coinbase/get-charge?chargeCode=${encodeURIComponent(chargeCode)}`);
@@ -490,5 +501,14 @@ async function startCryptoCheckout(){
       // transient errors while polling
       console.warn('Crypto poll error:', err?.message || err);
     }
-  }, 1000);
+  }, 500);
+
+  // If address is not ready quickly, offer instant fallback
+  setTimeout(() => {
+    if (!addressShown && coinbaseHostedUrl) {
+      const btnOpen = document.getElementById('btn-open-coinbase');
+      if (btnOpen) btnOpen.style.display = 'inline-block';
+      setCryptoMessage('Tap “Open on Coinbase” to see QR instantly.');
+    }
+  }, 2000);
 }
