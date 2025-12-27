@@ -116,10 +116,14 @@ export default async function handleCoinbaseCreateCharge(request, env) {
     const addresses = charge.addresses || {};
     const pricing = charge.pricing || {};
     
-    // Get address and amount for selected currency
-    const payAddress = addresses[currency.toLowerCase()] || addresses[currency] || '';
-    const currencyPricing = pricing[currency.toLowerCase()] || pricing[currency] || {};
+    console.log('Coinbase charge response:', { code: charge.code, addresses, pricing, currency });
+    
+    // Get address and amount for selected currency (try multiple key formats)
+    const payAddress = addresses[currency.toLowerCase()] || addresses[currency] || addresses[payCurrency] || '';
+    const currencyPricing = pricing[currency.toLowerCase()] || pricing[currency] || pricing[payCurrency] || {};
     const payAmount = currencyPricing.amount || '0';
+    
+    console.log('Extracted values:', { payAddress, payAmount, currency });
     
     return new Response(JSON.stringify({
       chargeCode: charge.code,
