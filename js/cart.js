@@ -375,7 +375,7 @@ if (document.readyState === 'loading') {
   initCheckout();
 }
 function updateCryptoLogos(cur){
-  const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc', usdttrc20: 'usdt' };
+  const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc' };
   const key = map[cur] || 'usdc';
   const selLogo = document.getElementById('crypto-logo');
   const panelLogo = document.getElementById('crypto-logo-panel');
@@ -427,7 +427,7 @@ async function startCryptoCheckout(){
   const customerEmail = emailEl ? emailEl.value.trim() : '';
   const uiCurrency = currencyEl ? currencyEl.value : 'usdcpoly';
   // Map UI codes to NOWPayments API codes (NOWPayments identifiers)
-  const npCurrencyMap = { usdcpoly: 'usdcmatic', usdttrc20: 'usdttrx', ltc: 'ltc', btc: 'btc' };
+  const npCurrencyMap = { usdcpoly: 'usdcmatic', ltc: 'ltc', btc: 'btc' };
   const payCurrency = npCurrencyMap[uiCurrency] || 'ltc';
   if (!customerEmail) { setCryptoMessage('Please enter your email'); return; }
   const items = getCart();
