@@ -438,12 +438,11 @@ async function startCryptoCheckout(){
   const addrEl = document.getElementById('crypto-address');
   const amtEl = document.getElementById('crypto-amount');
   const qrEl = document.getElementById('crypto-qr');
-  if (addrEl) addrEl.value = j.payAddress || '';
-  if (amtEl) amtEl.textContent = `${j.payAmount} ${String(j.payCurrency).toUpperCase()} (${money(j.priceAmount)} USD)`;
-  if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(j.payAddress||'')}`;
+  
   // Set logos based on currency
   try { updateCryptoLogos(payCurrency); } catch {}
   setCryptoStatus('waiting');
+  
   // Copy button functionality
   const copyBtn = document.getElementById('btn-copy-address');
   if (copyBtn) {
@@ -460,22 +459,66 @@ async function startCryptoCheckout(){
       }
     });
   }
-  // Poll orders table for fulfillment (Coinbase webhook delivers accounts instantly)
+  
+  // Poll for charge details (addresses generation)
   try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   const chargeCode = j.chargeCode;
+  const priceAmount = j.priceAmount;
+  
+  setCryptoMessage('Generating payment address...');
+  
   cryptoPoll = setInterval(async () => {
     try {
-      const ordersRes = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
-      const ordersData = await ordersRes.json();
-      const found = (ordersData.orders||[]).find(o => String(o.payment_intent_id) === String(chargeCode));
-      if (found && Array.isArray(found.items) && found.items.length > 0) {
+      const chargeRes = await fetch(`${API_BASE}/api/coinbase/get-charge?chargeCode=${encodeURIComponent(chargeCode)}`);
+      const chargeData = await chargeRes.json();
+      
+      if (chargeRes.ok && chargeData.addresses && chargeData.addresses[payCurrency]) {
+        // Address is ready
         clearInterval(cryptoPoll);
-        setCryptoStatus('confirmed');
-        setCart([]);
-        showCheckout(false);
-        const modal = document.getElementById('success-modal');
-        if (modal) modal.style.display = 'flex';
+        setCryptoMessage('');
+        
+        const payAddress = chargeData.addresses[payCurrency];
+        const payAmount = chargeData.pricing?.[payCurrency]?.amount || chargeData.amount || '0';
+        
+        if (addrEl) addrEl.value = payAddress;
+        if (amtEl) amtEl.textContent = `${payAmount} ${String(payCurrency).toUpperCase()} (${money(priceAmount)} USD)`;
+        if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(payAddress)}`;
+        
+        // Now poll for payment confirmation
+        pollForPayment(chargeCode, customerEmail);
       }
-    } catch (e) { console.error('Orders poll error:', e); }
-  }, 3000); // Poll every 3 seconds
+    } catch (e) { console.error('Charge poll error:', e); }
+  }, 1500); // Poll every 1.5 seconds for address
+}
+
+let paymentPoll = null;
+async function pollForPayment(chargeCode, customerEmail) {
+  try { if (paymentPoll) clearInterval(paymentPoll); } catch {}
+  
+  paymentPoll = setInterval(async () => {
+    try {
+      const chargeRes = await fetch(`${API_BASE}/api/coinbase/get-charge?chargeCode=${encodeURIComponent(chargeCode)}`);
+      const chargeData = await chargeRes.json();
+      
+      if (chargeRes.ok && chargeData.status) {
+        if (chargeData.status === 'confirmed' || chargeData.status === 'completed') {
+          clearInterval(paymentPoll);
+          setCryptoStatus('confirmed');
+          
+          // Check orders table
+          try {
+            const ordersRes = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(customerEmail)}`);
+            const ordersData = await ordersRes.json();
+            const found = (ordersData.orders||[]).find(o => String(o.payment_intent_id) === String(chargeCode));
+            if (found && Array.isArray(found.items) && found.items.length > 0) {
+              setCart([]);
+              showCheckout(false);
+              const modal = document.getElementById('success-modal');
+              if (modal) modal.style.display = 'flex';
+            }
+          } catch (e) { console.error('Orders fetch error:', e); }
+        }
+      }
+    } catch (e) { console.error('Payment poll error:', e); }
+  }, 3000); // Poll every 3 seconds for payment
 }

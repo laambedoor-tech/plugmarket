@@ -13,6 +13,7 @@ import cryptoNowCreate from './crypto-now-create.js';
 import cryptoNowIpn from './crypto-now-ipn.js';
 import cryptoNowStatus from './crypto-now-status.js';
 import coinbaseCreateCharge from './coinbase-create-charge.js';
+import coinbaseGetCharge from './coinbase-get-charge.js';
 import coinbaseWebhook from './coinbase-webhook.js';
 
 export default {
@@ -67,6 +68,9 @@ export default {
     // Coinbase Commerce routes
     if (path === '/api/coinbase/create-charge') {
       return coinbaseCreateCharge(request, env);
+    }
+    if (path === '/api/coinbase/get-charge') {
+      return coinbaseGetCharge(request, env);
     }
     if (path === '/api/coinbase/webhook') {
       return coinbaseWebhook(request, env);
