@@ -269,6 +269,11 @@ function initCheckout() {
     document.getElementById('tab-crypto')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    try {
+      const sel = document.getElementById('crypto-currency');
+      const val = sel ? sel.value : 'ltc';
+      updateCryptoLogos(val);
+    } catch {}
   });
   document.getElementById('btn-create-crypto')?.addEventListener('click', async () => {
     try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
@@ -291,6 +296,12 @@ function initCheckout() {
     // Optionally unmount elements to allow re-creating intents
     try { paymentElement && paymentElement.unmount(); } catch {}
     paymentElement = null; elements = null; clientSecret = null;
+  });
+
+  // Update crypto logos on currency change
+  const currencySel = document.getElementById('crypto-currency');
+  currencySel?.addEventListener('change', () => {
+    updateCryptoLogos(currencySel.value);
   });
 
   document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
@@ -350,6 +361,14 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initCheckout);
 } else {
   initCheckout();
+}
+function updateCryptoLogos(cur){
+  const map = { ltc: 'ltc', btc: 'btc', usdttrc20: 'usdt' };
+  const key = map[cur] || 'ltc';
+  const selLogo = document.getElementById('crypto-logo');
+  const panelLogo = document.getElementById('crypto-logo-panel');
+  if (selLogo) selLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
+  if (panelLogo) panelLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
 }
 function setCryptoMessage(msg){
   const el = document.getElementById('crypto-message');
@@ -415,8 +434,26 @@ async function startCryptoCheckout(){
   const qrEl = document.getElementById('crypto-qr');
   if (addrEl) addrEl.value = j.payAddress || '';
   if (amtEl) amtEl.textContent = `${j.payAmount} ${String(j.payCurrency).toUpperCase()} (${money(j.priceAmount)} USD)`;
-  if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(j.payAddress||'')}`;
+  if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(j.payAddress||'')}`;
+  // Set logos based on currency
+  try { updateCryptoLogos(payCurrency); } catch {}
   setCryptoStatus('waiting');
+  // Copy button functionality
+  const copyBtn = document.getElementById('btn-copy-address');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const addr = addrEl?.value || '';
+      if (!addr) return;
+      try {
+        await navigator.clipboard.writeText(addr);
+        const original = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => { copyBtn.textContent = original; }, 2000);
+      } catch (err) {
+        console.error('Copy error:', err);
+      }
+    });
+  }
   // Poll status endpoint for real-time updates
   try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   const paymentId = j.paymentId;
