@@ -104,7 +104,15 @@ export default {
         body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if (!res.ok) return new Response(JSON.stringify({ error: data.message || 'Failed to create order' }), { status: res.status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      if (!res.ok) {
+        const errorPayload = {
+          error: data?.message || data?.error || 'Failed to create order',
+          name: data?.name,
+          details: data?.details,
+          debug_id: data?.debug_id
+        };
+        return new Response(JSON.stringify(errorPayload), { status: res.status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      }
 
       return new Response(JSON.stringify({ id: data.id }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
     } catch (err){

@@ -73,7 +73,10 @@ async function ensurePaypal(){
   if (!paypalConfig.clientId){ setPaypalMessage('PayPal is not configured yet.'); return false; }
   await new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(paypalConfig.clientId)}&currency=${paypalConfig.currency||'USD'}`;
+    // Use capture intent; disable card/credit to avoid duplicate flows via PayPal
+    const currency = encodeURIComponent(paypalConfig.currency || 'USD');
+    const clientId = encodeURIComponent(paypalConfig.clientId);
+    s.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&intent=capture&disable-funding=card,credit,venmo&components=buttons&commit=true`;
     s.onload = () => { paypalLoaded = true; resolve(); };
     s.onerror = () => reject(new Error('Failed to load PayPal SDK'));
     document.head.appendChild(s);
@@ -109,7 +112,11 @@ async function mountPaypalButtons(){
         body: JSON.stringify({ cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order');
+      if (!res.ok) {
+        const detail = data?.details?.[0]?.issue || data?.details?.[0]?.description || data?.name || '';
+        setPaypalMessage(`PayPal error: ${data.error || detail || 'Failed to create order'}`);
+        throw new Error(data.error || detail || 'Failed to create PayPal order');
+      }
       return data.id;
     },
     onApprove: async (data) => {
@@ -130,7 +137,11 @@ async function mountPaypalButtons(){
           })
         });
         const j = await res.json();
-        if (!res.ok) throw new Error(j.error || 'Capture failed');
+        if (!res.ok) {
+          const detail = j?.details?.[0]?.issue || j?.details?.[0]?.description || j?.name || '';
+          setPaypalMessage(`PayPal capture error: ${j.error || detail || 'Capture failed'}`);
+          throw new Error(j.error || detail || 'Capture failed');
+        }
         // success
         setCart([]);
         showCheckout(false);
