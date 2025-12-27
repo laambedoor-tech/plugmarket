@@ -2,23 +2,19 @@
 // Generates a unique payment address for LTC or BTC
 
 const PRICES_USD = {
-  'netflix': { '1 Month': 3.50, '3 Months': 9.50, '6 Months': 18.00, '12 Months': 35.00 },
-  'spotify': { '1 Month': 2.50, '3 Months': 7.00, '6 Months': 13.00, '12 Months': 24.00 },
-  'youtube-premium': { '1 Month': 3.00, '3 Months': 8.50, '6 Months': 16.00, '12 Months': 30.00 },
-  'disney-plus': { '1 Month': 3.00, '3 Months': 8.50, '6 Months': 16.00, '12 Months': 30.00 },
-  'hbo-max': { '1 Month': 3.00, '3 Months': 8.50, '6 Months': 16.00, '12 Months': 30.00 },
-  'amazon-prime': { '1 Month': 2.50, '3 Months': 7.00, '6 Months': 13.00, '12 Months': 24.00 },
-  'crunchyroll': { '1 Month': 2.50, '3 Months': 7.00, '6 Months': 13.00, '12 Months': 24.00 },
-  'paramount-plus': { '1 Month': 2.00, '3 Months': 5.50, '6 Months': 10.00, '12 Months': 19.00 },
-  'apple-tv': { '1 Month': 2.50, '3 Months': 7.00, '6 Months': 13.00, '12 Months': 24.00 },
-  'dazn': { '1 Month': 4.00, '3 Months': 11.00, '6 Months': 21.00, '12 Months': 40.00 },
-  'plex': { 'Lifetime': 25.00 },
-  'duolingo': { '12 Months': 20.00 },
-  'canva-pro': { '12 Months': 15.00 },
-  'grammarly': { '12 Months': 18.00 },
-  'geoguessr': { '12 Months': 12.00 },
-  'chatgpt-plus': { '1 Month': 15.00 },
-  'nord-vpn': { '12 Months': 35.00, '24 Months': 65.00 }
+  'netflix': { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 18.0 },
+  'spotify': { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 12.5 },
+  'youtube-premium': { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5 },
+  'disney-plus': { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
+  'amazon-prime': { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 11.2 },
+  'hbo-max': { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
+  'nord-vpn': { '1 Month': 0.85, '3 Months': 2.0, '6 Months': 3.6, '12 Months': 6.9 },
+  'crunchyroll': { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
+  'discord-nitro': { 'Boost 1m': 4.79, 'Boost 1 Year': 15.97, 'Basic 1m': 1.35 },
+  'chatgpt-plus': { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 12.5, '12 Months': 24.0 },
+  'capcut-pro': { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
+  'geoguessr': { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0 },
+  'filmora': { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 19.0 }
 };
 
 function normalizePlan(p) {
