@@ -230,7 +230,7 @@ addEventListener('click', (e) => {
 });
 
 // Clear and checkout
-addEventListener('DOMContentLoaded', () => {
+function initCheckout() {
   document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
   document.getElementById('btn-checkout')?.addEventListener('click', async () => {
     const items = getCart();
@@ -344,7 +344,13 @@ addEventListener('DOMContentLoaded', () => {
   });
 
   render(); updateCount();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCheckout);
+} else {
+  initCheckout();
+}
 function setCryptoMessage(msg){
   const el = document.getElementById('crypto-message');
   if (!el) return;
