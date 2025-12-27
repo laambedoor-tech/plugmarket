@@ -224,9 +224,21 @@ addEventListener('click', (e) => {
   const inc = e.target.closest('.js-inc');
   const dec = e.target.closest('.js-dec');
   const rem = e.target.closest('.js-remove');
+  const copy = e.target.closest('#btn-copy-address');
   if (inc){ const i = +inc.dataset.i; const items = getCart(); items[i].qty++; setCart(items); }
   if (dec){ const i = +dec.dataset.i; const items = getCart(); items[i].qty = Math.max(1, items[i].qty - 1); setCart(items); }
   if (rem){ const i = +rem.dataset.i; const items = getCart(); items.splice(i,1); setCart(items); }
+  if (copy){
+    try {
+      const addrEl = document.getElementById('crypto-address');
+      const addr = addrEl ? addrEl.value : '';
+      if (!addr) { setCryptoMessage('No address yet'); return; }
+      navigator.clipboard.writeText(addr).then(() => {
+        setCryptoMessage('Address copied to clipboard');
+        setTimeout(() => setCryptoMessage(''), 1500);
+      }).catch(() => setCryptoMessage('Failed to copy'));
+    } catch {}
+  }
 });
 
 // Clear and checkout
@@ -382,6 +394,7 @@ function setCryptoStatus(status){
   const el = document.getElementById('crypto-status');
   if (!el) return;
   const msgs = {
+    'generating': '⚙️ Generating address... ',
     'waiting': 'Waiting for payment...',
     'pending': '⏳ Pending confirmation...',
     'confirming': '⚙️ Confirming transaction...',
@@ -392,6 +405,7 @@ function setCryptoStatus(status){
   };
   const text = msgs[status] || msgs['unknown'];
   const colors = {
+    'generating': 'rgba(98,160,255,.2); color:#62a0ff',
     'waiting': 'rgba(255,171,64,.2); color:#ffab40',
     'pending': 'rgba(255,171,64,.2); color:#ffab40',
     'confirming': 'rgba(98,160,255,.2); color:#62a0ff',
@@ -416,8 +430,14 @@ async function startCryptoCheckout(){
   const items = getCart();
   if (!items.length) { setCryptoMessage('Your cart is empty'); return; }
   
-  setCryptoMessage('Creating payment...');
-  
+  setCryptoMessage('');
+  setCryptoStatus('generating');
+  // Show inline panel, hide/create buttons
+  const panel = document.getElementById('crypto-panel'); if (panel) panel.style.display = 'block';
+  const createBtn = document.getElementById('btn-create-crypto'); if (createBtn) createBtn.style.display = 'none';
+  const cancelBtn = document.getElementById('btn-cancel-crypto'); if (cancelBtn) cancelBtn.style.display = 'inline-block';
+  updateCryptoLogos(payCurrency);
+
   const res = await fetch(`${API_BASE}/api/coinbase/create-charge`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
@@ -428,11 +448,47 @@ async function startCryptoCheckout(){
   });
   const j = await res.json();
   if (!res.ok) throw new Error(j.error || 'Failed to start crypto payment');
-  
-  // Redirect to Coinbase hosted payment page (instant QR + address display)
-  if (j.hostedUrl) {
-    window.location.href = j.hostedUrl;
-  } else {
-    throw new Error('No hosted URL returned');
-  }
+
+  const chargeCode = j.chargeCode;
+  if (!chargeCode) throw new Error('Missing charge code');
+
+  let addressShown = false;
+  try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
+  cryptoPoll = setInterval(async () => {
+    try {
+      const r = await fetch(`${API_BASE}/api/coinbase/get-charge?chargeCode=${encodeURIComponent(chargeCode)}`);
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Failed to fetch charge');
+      const curKeyUp = payCurrency.toUpperCase();
+      const addr = (d.addresses?.[curKeyUp]) || (d.addresses?.[curKeyUp.toLowerCase()]) || (d.addresses?.[payCurrency]) || '';
+      const pr = (d.pricing?.[curKeyUp]) || (d.pricing?.[curKeyUp.toLowerCase()]) || {};
+      if (addr && !addressShown) {
+        addressShown = true;
+        const addrEl = document.getElementById('crypto-address'); if (addrEl) addrEl.value = addr;
+        const amtEl = document.getElementById('crypto-amount'); if (amtEl) amtEl.textContent = pr?.amount ? `${pr.amount} ${curKeyUp}` : '—';
+        const qrEl = document.getElementById('crypto-qr'); if (qrEl) qrEl.src = `https://quickchart.io/qr?size=260&text=${encodeURIComponent(addr)}`;
+        setCryptoStatus('waiting');
+      }
+
+      const st = String(d.status || '').toLowerCase();
+      if (st === 'pending') {
+        setCryptoStatus('pending');
+      } else if (st === 'confirmed') {
+        setCryptoStatus('confirmed');
+        clearInterval(cryptoPoll);
+        // Clear cart and show success modal; webhook delivers order
+        try { setCart([]); } catch {}
+        const modal = document.getElementById('success-modal'); if (modal) modal.style.display = 'flex';
+        const createBtn2 = document.getElementById('btn-create-crypto'); if (createBtn2) createBtn2.style.display = 'inline-block';
+        const cancelBtn2 = document.getElementById('btn-cancel-crypto'); if (cancelBtn2) cancelBtn2.style.display = 'none';
+      } else if (st === 'resolved') {
+        setCryptoStatus('finished');
+      } else if (st === 'expired' || st === 'canceled') {
+        setCryptoStatus('failed');
+      }
+    } catch (err){
+      // transient errors while polling
+      console.warn('Crypto poll error:', err?.message || err);
+    }
+  }, 1000);
 }
