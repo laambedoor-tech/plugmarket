@@ -68,10 +68,13 @@ async function assignAccount(productId, plan, customerEmail) {
 
   if (updateError) throw new Error(`DB update error: ${updateError.message}`);
 
-  return {
+  const result = {
     email: account.email,
     password: account.password
   };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
 }
 
 // Stripe webhook endpoint for Netlify Functions
@@ -130,13 +133,16 @@ exports.handler = async (event) => {
             
             // TODO: Send email with credentials
             // For now, log the credentials (you'll see them in Netlify Functions logs)
-            console.log('Account credentials:', {
+            const logCreds = {
               product: item.pid,
               plan: item.plan,
               email: credentials.email,
               password: credentials.password,
               customer: customerEmail
-            });
+            };
+            if (credentials.chatgptPassword) logCreds.chatgptPassword = credentials.chatgptPassword;
+            if (credentials.chatgptCode) logCreds.chatgptCode = credentials.chatgptCode;
+            console.log('Account credentials:', logCreds);
           } catch (err) {
             console.error(`❌ Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);
             // If out of stock, stop further attempts for this item

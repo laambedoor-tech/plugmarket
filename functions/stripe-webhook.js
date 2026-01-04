@@ -90,10 +90,13 @@ async function assignAccount(env, productId, plan, customerEmail) {
 
   if (updateError) throw new Error(`DB update error: ${updateError.message}`);
 
-  return {
+  const result = {
     email: account.email,
     password: account.password
   };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
 }
 
 export default {
@@ -165,14 +168,18 @@ export default {
                 console.log(`✅ Assigned account (${i + 1}/${qty}) for ${item.pid} - ${item.plan} to ${customerEmail}`);
 
                 // Store credentials for order record
+                const itemCreds = {
+                  email: credentials.email,
+                  password: credentials.password
+                };
+                if (credentials.chatgptPassword) itemCreds.chatgptPassword = credentials.chatgptPassword;
+                if (credentials.chatgptCode) itemCreds.chatgptCode = credentials.chatgptCode;
+                
                 orderItems.push({
                   pid: item.pid,
                   plan: item.plan,
                   unitAmount: item.unitAmount,
-                  credentials: {
-                    email: credentials.email,
-                    password: credentials.password
-                  }
+                  credentials: itemCreds
                 });
               } catch (err) {
                 console.error(`❌ Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);

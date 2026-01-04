@@ -5,6 +5,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { Buffer } from 'node:buffer';
 
 function getSupabase(env) {
   const url = env.SUPABASE_URL;
@@ -33,7 +34,10 @@ async function assignAccount(env, productId, plan, customerEmail) {
     .update({ status: 'sold', sold_at: new Date().toISOString(), customer_email: customerEmail })
     .eq('id', account.id);
   if (updateError) throw new Error(`DB update error: ${updateError.message}`);
-  return { email: account.email, password: account.password };
+  const result = { email: account.email, password: account.password };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
 }
 
 async function getAccessToken(env){
@@ -41,7 +45,8 @@ async function getAccessToken(env){
   const clientId = env.PAYPAL_CLIENT_ID;
   const secret = env.PAYPAL_SECRET;
   if (!clientId || !secret) throw new Error('Missing PayPal credentials');
-  const creds = btoa(`${clientId}:${secret}`);
+  const pair = `${clientId}:${secret}`;
+  const creds = typeof btoa === 'function' ? btoa(pair) : Buffer.from(pair).toString('base64');
   const res = await fetch(base + '/v1/oauth2/token', {
     method: 'POST',
     headers: { 'Authorization': `Basic ${creds}`, 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -73,6 +78,7 @@ export default {
       if (!res.ok) return new Response(JSON.stringify({ error: data.message || 'Capture failed' }), { status: res.status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
       console.log('[PayPal] Capture succeeded:', orderId);
+      const reference = data?.purchase_units?.[0]?.invoice_id || data?.purchase_units?.[0]?.custom_id || null;
 
       // Assign accounts and build order
       const orderItems = [];
@@ -83,7 +89,10 @@ export default {
           try {
             const credentials = await assignAccount(env, item.pid, item.plan, customerEmail);
             console.log(`✅ [PayPal] Assigned account (${i + 1}/${qty}) for ${item.pid} - ${item.plan} to ${customerEmail}`);
-            orderItems.push({ pid: item.pid, plan: item.plan, credentials: { email: credentials.email, password: credentials.password } });
+            const itemCreds = { email: credentials.email, password: credentials.password };
+            if (credentials.chatgptPassword) itemCreds.chatgptPassword = credentials.chatgptPassword;
+            if (credentials.chatgptCode) itemCreds.chatgptCode = credentials.chatgptCode;
+            orderItems.push({ pid: item.pid, plan: item.plan, credentials: itemCreds });
           } catch (err) {
             console.error(`❌ [PayPal] Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);
             if (String(err.message).includes('No available accounts')) {
@@ -113,7 +122,7 @@ export default {
         }
       }
 
-      return new Response(JSON.stringify({ status: 'captured', order: data }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      return new Response(JSON.stringify({ status: 'captured', order: data, reference }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
     } catch (err){
       return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
     }

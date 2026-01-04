@@ -28,7 +28,10 @@ async function assignAccount(env, productId, plan, customerEmail){
     .update({ status: 'sold', sold_at: new Date().toISOString(), customer_email: customerEmail })
     .eq('id', account.id);
   if (updateError) throw new Error(`DB update error: ${updateError.message}`);
-  return { email: account.email, password: account.password };
+  const result = { email: account.email, password: account.password };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
 }
 
 async function hmacSHA512(key, message){
@@ -79,7 +82,10 @@ export default {
         for (let i=0;i<qty;i++){
           try {
             const creds = await assignAccount(env, item.pid, item.plan, customerEmail);
-            fulfilled.push({ pid: item.pid, plan: item.plan, credentials: { email: creds.email, password: creds.password } });
+            const itemCreds = { email: creds.email, password: creds.password };
+            if (creds.chatgptPassword) itemCreds.chatgptPassword = creds.chatgptPassword;
+            if (creds.chatgptCode) itemCreds.chatgptCode = creds.chatgptCode;
+            fulfilled.push({ pid: item.pid, plan: item.plan, credentials: itemCreds });
           } catch (err) {
             // Stop when stock exhausted for that item
             if (String(err.message).includes('No available accounts')) break;

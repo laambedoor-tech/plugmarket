@@ -97,32 +97,114 @@ function showOrders(email, orders) {
             </div>
 
             <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px;">
-              <div style="margin-bottom: 0.5rem;">
-                <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
-                  Email
-                </label>
-                <code style="
-                  display: block;
-                  padding: 0.5rem;
-                  background: rgba(255,255,255,0.05);
-                  border-radius: 4px;
-                  font-size: 0.9rem;
-                  user-select: all;
-                ">${item.credentials.email}</code>
-              </div>
-              <div>
-                <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
-                  Contraseña
-                </label>
-                <code style="
-                  display: block;
-                  padding: 0.5rem;
-                  background: rgba(255,255,255,0.05);
-                  border-radius: 4px;
-                  font-size: 0.9rem;
-                  user-select: all;
-                ">${item.credentials.password}</code>
-              </div>
+              ${item.pid === 'chatgpt' ? `
+                <div style="margin-bottom: 0.75rem;">
+                  <label style="font-size: 0.875rem; color: var(--accent); display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                    📋 Instrucciones
+                  </label>
+                  <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 4px; margin-bottom: 0.75rem; border-left: 3px solid var(--accent);">
+                    <div style="margin-bottom: 0.5rem;">
+                      <strong style="color: var(--accent);">Domain Access:</strong> outlook/hotmail
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                      <strong>Extra Info:</strong> Si la cuenta no tiene "Plus Plan", por favor inicia sesión en la cuenta y luego usa el código chatgpt (lo encontrarás en la entrega)
+                    </div>
+                  </div>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                  <label style="font-size: 0.875rem; color: var(--accent); display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                    📦 Deliverables
+                  </label>
+                </div>
+
+                <div style="margin-bottom: 0.5rem;">
+                  <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    HOTMAIL (mail)
+                  </label>
+                  <code style="
+                    display: block;
+                    padding: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                    user-select: all;
+                  ">${item.credentials.email}</code>
+                </div>
+                
+                <div style="margin-bottom: 0.5rem;">
+                  <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    HOTMAIL (pw)
+                  </label>
+                  <code style="
+                    display: block;
+                    padding: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                    user-select: all;
+                  ">${item.credentials.password}</code>
+                </div>
+
+                ${item.credentials.chatgptPassword ? `
+                  <div style="margin-bottom: 0.5rem;">
+                    <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                      CHATGPT (pw)
+                    </label>
+                    <code style="
+                      display: block;
+                      padding: 0.5rem;
+                      background: rgba(255,255,255,0.05);
+                      border-radius: 4px;
+                      font-size: 0.9rem;
+                      user-select: all;
+                    ">${item.credentials.chatgptPassword}</code>
+                  </div>
+                ` : ''}
+
+                ${item.credentials.chatgptCode ? `
+                  <div style="margin-bottom: 0.5rem;">
+                    <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                      CHATGPT (Code)
+                    </label>
+                    <code style="
+                      display: block;
+                      padding: 0.5rem;
+                      background: rgba(255,255,255,0.05);
+                      border-radius: 4px;
+                      font-size: 0.9rem;
+                      user-select: all;
+                    ">${item.credentials.chatgptCode}</code>
+                  </div>
+                ` : ''}
+              ` : `
+                <div style="margin-bottom: 0.5rem;">
+                  <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    Email
+                  </label>
+                  <code style="
+                    display: block;
+                    padding: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                    user-select: all;
+                  ">${item.credentials.email}</code>
+                </div>
+                <div>
+                  <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    Contraseña
+                  </label>
+                  <code style="
+                    display: block;
+                    padding: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                    user-select: all;
+                  ">${item.credentials.password}</code>
+                </div>
+              `}
             </div>
           </div>
         `).join('')}

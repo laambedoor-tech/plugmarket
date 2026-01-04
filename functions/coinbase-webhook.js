@@ -63,7 +63,7 @@ export default async function handleCoinbaseWebhook(request, env) {
           // Find available account
           const { data: accounts, error: fetchError } = await supabase
             .from('accounts')
-            .select('id, email, password')
+            .select('id, email, password, chatgpt_password, chatgpt_code')
             .eq('product_id', pid)
             .eq('plan', norm)
             .eq('status', 'available')
@@ -87,12 +87,16 @@ export default async function handleCoinbaseWebhook(request, env) {
             continue;
           }
           
-          assignedItems.push({
+          const itemData = {
             product_id: pid,
             plan: norm,
             email: account.email,
             password: account.password
-          });
+          };
+          if (account.chatgpt_password) itemData.chatgptPassword = account.chatgpt_password;
+          if (account.chatgpt_code) itemData.chatgptCode = account.chatgpt_code;
+          
+          assignedItems.push(itemData);
         }
       }
       
