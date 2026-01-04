@@ -150,6 +150,8 @@ const products = [
   { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
   { id: 'geoguessr', title: 'GeoGuessr', price: '$', tone: 'green' },
   { id: 'filmora', title: 'Wondershare Filmora', price: '$', tone: 'teal' },
+  { id: 'youtube-premium-iphone', title: 'YouTube Premium iPhone', price: '$3.50', tone: 'orange', dedicatedPage: true },
+  { id: 'spotify-premium-iphone', title: 'Spotify Premium iPhone', price: '$3.50', tone: 'green', dedicatedPage: true },
 ];
 
 let stockData = {};
@@ -157,22 +159,22 @@ let stockData = {};
 // Suscripciones por producto (precios según adjuntos, en USD)
 const subscriptions = {
   // Solo Netflix tendrá opción Lifetime
-  netflix: { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 18.0 },
+  netflix: { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 16.65 },
 
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
-  spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 12.5 },
+  spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 11.88 },
   youtube: { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5 },
   disney: { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
-  prime: { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 11.2 },
+  prime: { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 10.64 },
   hbomax: { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
   nordvpn: { '1 Month': 0.85, '3 Months': 2.0, '6 Months': 3.6, '12 Months': 6.9 },
   crunchy: { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
   // Discord Nitro: solo las variantes de la captura
-  nitro: { 'Boost 1m': 4.79, 'Boost 1 Year': 15.97, 'Basic 1m': 1.35 },
-  chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 12.5, '12 Months': 24.0 },
+  nitro: { 'Boost 1m': 4.79, 'Boost 1 Year': 15.17, 'Basic 1m': 1.35 },
+  chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 11.88, '12 Months': 16.85 },
   capcut: { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
   geoguessr: { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0 },
-  filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 19.0 },
+  filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0 },
 };
 
 const toneToGradient = (tone) => {
@@ -227,9 +229,14 @@ const toneToGradient = (tone) => {
 
   grid.innerHTML = products.map((p, index) => {
     const min = getMinPrice(p.id);
-    const priceText = min == null ? 'Plans available' : `From $${min.toFixed(2)}`;
+    // Si el producto tiene un precio fijo, usarlo en lugar del mínimo calculado
+    const priceText = p.price.startsWith('$') && p.price !== '$' ? p.price : (min == null ? 'Plans available' : `From $${min.toFixed(2)}`);
     // Usar PNG para todos los productos (las nuevas imágenes añadidas)
-    const logoFile = p.id === 'geoguessr' ? 'geoguesser.png' : p.id === 'youtube-premium' ? 'youtube.png' : `${p.id}.png`;
+    const logoFile = p.id === 'geoguessr' ? 'geoguesser.png' : 
+                     p.id === 'youtube-premium' ? 'youtube.png' : 
+                     p.id === 'youtube-premium-iphone' ? 'ytiphone.png' :
+                     p.id === 'spotify-premium-iphone' ? 'spotifyiphone.png' :
+                     `${p.id}.png`;
     
     // Primeros 6 productos con prioridad alta para carga rápida
     const isTopProduct = index < 6;
@@ -253,6 +260,19 @@ const toneToGradient = (tone) => {
       </div>
     </article>`;
   }).join('');
+  
+  // Agregar event listeners para los productos
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const pid = card.dataset.pid;
+      const product = products.find(p => p.id === pid);
+      
+      // Si el producto tiene una página dedicada, redirigir a ella
+      if (product && product.dedicatedPage) {
+        window.location.href = `./${pid}.html`;
+      }
+    });
+  });
 })();
 
 // 3) Animación de contadores (simple)

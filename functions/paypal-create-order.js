@@ -1,3 +1,5 @@
+import { Buffer } from 'node:buffer';
+
 /**
  * POST /api/paypal/create-order
  * Body: { cart: [{ pid, plan, qty } ...] }
@@ -30,6 +32,15 @@ const PLAN_ALIASES = {
 function normalizePlan(raw){
   if(!raw) return raw; const key = raw.trim().toLowerCase(); return PLAN_ALIASES[key] || raw.trim();
 }
+function encodeBasicAuth(id, secret){
+  const pair = `${id}:${secret}`;
+  try {
+    return btoa(pair);
+  } catch {
+    // Ensure availability in nodejs_compat workers
+    return Buffer.from(pair).toString('base64');
+  }
+}
 function validateAndPriceCart(cart){
   let totalCents = 0;
   for (const item of cart){
@@ -46,12 +57,18 @@ function validateAndPriceCart(cart){
   return totalCents;
 }
 
+function buildReference(){
+  const ts = Date.now().toString(36).toUpperCase();
+  const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `PM-${ts}-${rand}`;
+}
+
 async function getAccessToken(env){
   const base = (env.PAYPAL_ENV || 'sandbox') === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
   const clientId = env.PAYPAL_CLIENT_ID;
   const secret = env.PAYPAL_SECRET;
   if (!clientId || !secret) throw new Error('Missing PayPal credentials');
-  const creds = btoa(`${clientId}:${secret}`);
+  const creds = encodeBasicAuth(clientId, secret);
   const res = await fetch(base + '/v1/oauth2/token', {
     method: 'POST',
     headers: { 'Authorization': `Basic ${creds}`, 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -76,6 +93,7 @@ export default {
       const totalCents = validateAndPriceCart(cart);
       let amount = (totalCents / 100).toFixed(2);
       const currency = env.PAYPAL_CURRENCY || 'USD';
+      const reference = buildReference();
 
       const { token, base } = await getAccessToken(env);
 
@@ -93,7 +111,9 @@ export default {
         intent: 'CAPTURE',
         purchase_units: [{ 
           amount: { currency_code: currency, value: amount },
-          description: 'Plug Market order'
+          description: 'Plug Market order',
+          custom_id: reference,
+          invoice_id: reference
         }],
         application_context: { shipping_preference: 'NO_SHIPPING', user_action: 'PAY_NOW' }
       };
@@ -114,7 +134,7 @@ export default {
         return new Response(JSON.stringify(errorPayload), { status: res.status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
       }
 
-      return new Response(JSON.stringify({ id: data.id }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      return new Response(JSON.stringify({ id: data.id, reference }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
     } catch (err){
       return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
     }

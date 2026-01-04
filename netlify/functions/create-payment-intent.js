@@ -5,16 +5,16 @@ const toCents = (n) => Math.round(Number(n) * 100);
 
 // Price source of truth. Keep in sync with frontend subscriptions in js/main.js
 const PRICES_USD = {
-  netflix: { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 18.0 },
-  spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 12.5 },
+  netflix: { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 16.65 },
+  spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 11.88 },
   youtube: { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5 },
   disney:  { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
-  prime:   { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 11.2 },
+  prime:   { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 10.64 },
   hbomax:  { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
   nordvpn: { '1 Month': 0.85, '3 Months': 2.0, '6 Months': 3.6, '12 Months': 6.9 },
   crunchy: { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
-  nitro:   { 'Boost 1m': 4.79, 'Boost 1 Year': 15.97, 'Basic 1m': 1.35 },
-  chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 12.5, '12 Months': 24.0 },
+  nitro:   { 'Boost 1m': 4.79, 'Boost 1 Year': 15.17, 'Basic 1m': 1.35 },
+  chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 11.88, '12 Months': 16.85 },
   capcut:  { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
 };
 

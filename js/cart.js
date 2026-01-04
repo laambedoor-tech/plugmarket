@@ -9,6 +9,7 @@ let paymentElement = null;
 let clientSecret = null;
 let paypalLoaded = false;
 let paypalConfig = null;
+let paypalOrderRef = '';
 
 async function fetchJSON(url, opts){
   const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
@@ -117,6 +118,17 @@ async function mountPaypalButtons(){
         setPaypalMessage(`PayPal error: ${data.error || detail || 'Failed to create order'}`);
         throw new Error(data.error || detail || 'Failed to create PayPal order');
       }
+      paypalOrderRef = data.reference || '';
+      const refEl = document.getElementById('paypal-reference');
+      if (refEl) {
+        if (paypalOrderRef) {
+          refEl.textContent = `Referencia PayPal: ${paypalOrderRef}`;
+          refEl.style.display = 'block';
+        } else {
+          refEl.textContent = '';
+          refEl.style.display = 'none';
+        }
+      }
       return data.id;
     },
     onApprove: async (data) => {
@@ -147,6 +159,18 @@ async function mountPaypalButtons(){
         showCheckout(false);
         const modal = document.getElementById('success-modal');
         if (modal) modal.style.display = 'flex';
+        if (modal){
+          const note = modal.querySelector('.paypal-ref');
+          if (note) {
+            if (paypalOrderRef) {
+              note.textContent = `Referencia PayPal: ${paypalOrderRef}`;
+              note.style.display = 'block';
+            } else {
+              note.textContent = '';
+              note.style.display = 'none';
+            }
+          }
+        }
       } catch (e){
         setPaypalMessage(e.message || 'Payment failed');
       }

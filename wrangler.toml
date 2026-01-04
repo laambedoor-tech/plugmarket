@@ -7,8 +7,8 @@ compatibility_flags = ["nodejs_compat"]
 STRIPE_PUBLISHABLE_KEY = "pk_live_51SQAD7GqeSmKEqnwptb6rHCNyCBYmYQQa1HwAIUGjAnwlfp5kUXbCsIw0qhJ3nNZa5YYmCEUFIlevNKetXrXFdJ300ECXpbADy"
 STRIPE_WEBHOOK_SECRET = "whsec_WFWyo9U4IQPHNrQMxklBCntFU7t55WzT"
 SUPABASE_URL = "https://twewcjgphqunpjchwliv.supabase.co"
-PAYPAL_CLIENT_ID = "ATlf_ReXDXEAkuLqTNVyKBQY9BJyFo_QGsFf6YMsDS3E5I-_3-r-r5G-BhfcAB028ZIPM4V3LtjCVqEg"
-PAYPAL_ENV = "live"
+PAYPAL_CLIENT_ID = "AWBRnqorT1clCplKPaT8CetNSktYELNA-YaU0PFe1IdYVDRHtkRaSY9tEWL632gOJ4jlCPAZkPuXTJHD"
+PAYPAL_ENV = "sandbox"
 PAYPAL_CURRENCY = "USD"
 
 # Crypto integration removed; users will be directed to Discord for manual crypto payments.

@@ -132,6 +132,7 @@
                 style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text)">
             </label>
             <div id="paypal-buttons"></div>
+            <div id="paypal-reference" class="muted" style="display:block; font-weight:700;"></div>
             <div id="paypal-message" class="muted" role="alert" style="display:none;"></div>
           </div>
           <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
@@ -269,6 +270,7 @@
       <p style="color: var(--text-muted); margin: 0 0 1.5rem 0; font-size: 1rem;">
         Your payment has been processed successfully. You can now access your account credentials.
       </p>
+      <p class="paypal-ref muted" style="display:none; margin:0 0 1rem 0; font-weight:700;"></p>
 
       <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
         <a href="./orders.html" class="btn btn--primary" style="min-width: 180px;">
