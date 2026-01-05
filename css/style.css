@@ -56,6 +56,7 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+
 }
 
 /* Animación de nieve navideña */
@@ -1586,6 +1587,13 @@ main {
   font-size: 1.2em;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  #bg-particles,
+  .snowflakes {
+    display: none !important;
+  }
+}
+
 .snowflake:nth-child(3) {
   left: 25%;
   animation-duration: 8s;
@@ -1659,4 +1667,49 @@ main {
 /* Subtle Christmas glow effect on cards */
 .card:hover {
   box-shadow: var(--shadow-lg), 0 0 20px rgba(45, 213, 115, 0.1);
+}
+
+/* Scroll indicator under hero */
+.scroll-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 48px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.scroll-indicator__mouse {
+  width: 20px;
+  height: 34px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 20px rgba(255, 39, 67, 0.3);
+}
+
+.scroll-indicator__wheel {
+  width: 2px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 2px;
+  animation: scroll-wheel 1.8s ease-in-out infinite;
+}
+
+.scroll-indicator__label {
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 0.9;
+}
+
+@keyframes scroll-wheel {
+  0% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(12px); opacity: 0.2; }
+  100% { transform: translateY(0); opacity: 1; }
 }

@@ -150,8 +150,6 @@ const products = [
   { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
   { id: 'geoguessr', title: 'GeoGuessr', price: '$', tone: 'green' },
   { id: 'filmora', title: 'Wondershare Filmora', price: '$', tone: 'teal' },
-  { id: 'youtube-premium-iphone', title: 'YouTube Premium iPhone', price: '$3.50', tone: 'orange', dedicatedPage: true },
-  { id: 'spotify-premium-iphone', title: 'Spotify Premium iPhone', price: '$3.50', tone: 'green', dedicatedPage: true },
 ];
 
 let stockData = {};
@@ -233,13 +231,11 @@ const toneToGradient = (tone) => {
     const priceText = p.price.startsWith('$') && p.price !== '$' ? p.price : (min == null ? 'Plans available' : `From $${min.toFixed(2)}`);
     // Usar PNG para todos los productos (las nuevas imágenes añadidas)
     const logoFile = p.id === 'geoguessr' ? 'geoguesser.png' : 
-                     p.id === 'youtube-premium' ? 'youtube.png' : 
-                     p.id === 'youtube-premium-iphone' ? 'ytiphone.png' :
-                     p.id === 'spotify-premium-iphone' ? 'spotifyiphone.png' :
-                     `${p.id}.png`;
+             p.id === 'youtube-premium' ? 'youtube.png' : 
+             `${p.id}.png`;
     
-    // Primeros 6 productos con prioridad alta para carga rápida
-    const isTopProduct = index < 6;
+    // Solo los 3 primeros con prioridad alta; el resto se difiere para mejorar LCP
+    const isTopProduct = index < 3;
     const loadingAttr = isTopProduct ? 'eager' : 'lazy';
     const fetchPriorityAttr = isTopProduct ? 'high' : 'low';
 

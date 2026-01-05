@@ -405,18 +405,18 @@
         <div>
           <p class="reviews-hero__eyebrow">Verified purchases</p>
           <h1 class="section-title reviews-hero__title">Customer Reviews</h1>
-          <p class="reviews-hero__copy">Fresh, verified feedback with weekly follow-ups so you know exactly what to expect before you buy.</p>
+          <p class="reviews-hero__copy">Updated weekly with automatic 7-day follow-ups so you know exactly what to expect before you buy.</p>
           <div class="reviews-hero__metrics">
             <div class="metric">
               <div class="metric__value">4.9★</div>
               <div class="metric__label">Average score</div>
             </div>
             <div class="metric">
-              <div class="metric__value" id="metric-total-reviews">120</div>
+              <div class="metric__value" id="metric-total-reviews">139</div>
               <div class="metric__label">Verified reviews</div>
             </div>
             <div class="metric">
-              <div class="metric__value" id="metric-updated">Dec 26, 2025</div>
+              <div class="metric__value" id="metric-updated">Jan 02, 2026</div>
               <div class="metric__label">Last update</div>
             </div>
           </div>
@@ -556,6 +556,7 @@
     ];
 
     const dateBuckets = [
+      { date: 'Jan 02, 2026', count: 19, autoOnly: true },
       { date: 'Dec 26, 2025', count: 8 },
       { date: 'Dec 25, 2025', count: 8 },
       { date: 'Dec 24, 2025', count: 8 },
@@ -627,7 +628,7 @@
     dateBuckets.forEach(bucket => {
       for (let i = 0; i < bucket.count; i++) {
         const globalIndex = staticReviews.length;
-        const isAuto = (globalIndex % 4) < 3; // ~75% automatic
+        const isAuto = bucket.autoOnly ? true : (globalIndex % 4) < 3; // force auto when flagged
         const product = products[(globalIndex + i) % products.length];
 
         if (isAuto) {
