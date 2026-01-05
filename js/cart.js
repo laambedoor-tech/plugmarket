@@ -1,4 +1,4 @@
-﻿// Cart page rendering and interactions
+// Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
 const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 
@@ -223,13 +223,13 @@ function render(){
         <img src="./assets/products/${logoFile}" alt="${it.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div>
-        <h4 class="variant__title">${it.title} — ${it.plan}</h4>
+        <h4 class="variant__title">${it.title} � ${it.plan}</h4>
         <div class="variant__meta">Unit price: ${money(it.price)}</div>
       </div>
       <div class="variant__actions">
         <div class="variant__price" style="min-width:70px; text-align:right;">${money(it.price * it.qty)}</div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">–</button>
+          <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">�</button>
           <span style="min-width:24px; text-align:center;">${it.qty}</span>
           <button class="btn btn--ghost btn--sm js-inc" data-i="${idx}">+</button>
         </div>
@@ -418,14 +418,14 @@ function setCryptoStatus(status){
   const el = document.getElementById('crypto-status');
   if (!el) return;
   const msgs = {
-    'generating': '⚙️ Generating address...',
-    'waiting': '⏳ Waiting for payment...',
-    'pending': '⏳ Pending confirmation...',
-    'confirming': '⚙️ Confirming transaction...',
-    'confirmed': '✅ Payment confirmed!',
-    'finished': '🎉 Payment finished!',
-    'failed': '❌ Payment failed',
-    'unknown': '❓ Unknown status'
+    'generating': '?? Generating address...',
+    'waiting': '? Waiting for payment...',
+    'pending': '? Pending confirmation...',
+    'confirming': '?? Confirming transaction...',
+    'confirmed': '? Payment confirmed!',
+    'finished': '?? Payment finished!',
+    'failed': '? Payment failed',
+    'unknown': '? Unknown status'
   };
   const text = msgs[status] || msgs['unknown'];
   const colors = {
