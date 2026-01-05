@@ -8,8 +8,39 @@
       <feGaussianBlur stdDeviation="6" result="b"/>
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+      .light-red { animation: blink 1.5s infinite; }
+      .light-green { animation: blink 1.5s infinite 0.3s; }
+      .light-gold { animation: blink 1.5s infinite 0.6s; }
+    </style>
   </defs>
   <rect width="256" height="256" rx="64" fill="#0b0b0c"/>
+  
+  <!-- Luces de navidad parpadeantes -->
+  <circle cx="60" cy="50" r="7" fill="#ff2743" filter="url(#glow)" class="light-red"/>
+  <circle cx="200" cy="55" r="7" fill="#00b050" filter="url(#glow)" class="light-green"/>
+  <circle cx="65" cy="210" r="7" fill="#FFD700" filter="url(#glow)" class="light-gold"/>
+  <circle cx="200" cy="205" r="7" fill="#ff2743" filter="url(#glow)" class="light-red"/>
+  <circle cx="30" cy="120" r="6" fill="#00b050" filter="url(#glow)" class="light-green"/>
+  <circle cx="230" cy="130" r="6" fill="#FFD700" filter="url(#glow)" class="light-gold"/>
+  
+  <!-- Copos de nieve decorativos -->
+  <text x="45" y="35" font-size="16" fill="#ffffff" opacity="0.6">❄</text>
+  <text x="220" y="40" font-size="14" fill="#ffffff" opacity="0.5">❅</text>
+  <text x="50" y="240" font-size="13" fill="#ffffff" opacity="0.5">❆</text>
+  <text x="210" y="235" font-size="15" fill="#ffffff" opacity="0.6">❄</text>
+  
   <g transform="translate(28 28)" filter="url(#shadow)">
     <circle cx="100" cy="100" r="96" fill="none" stroke="url(#g)" stroke-width="18" opacity="0.9"/>
     <!-- icono enchufe estilizado -->
