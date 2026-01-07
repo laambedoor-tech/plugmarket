@@ -215,21 +215,38 @@ function render(){
   empty.style.display = 'none';
 
   list.innerHTML = items.map((it, idx) => {
-    // Usar PNG para todos los productos
-    const logoFile = it.pid === 'geoguessr' ? 'geoguesser.png' : it.pid === 'youtube-premium' ? 'youtube.png' : `${it.pid}.png`;
+    // Mapeo de IDs a nombres de archivos de imÃ¡genes redimensionadas
+    const imageMap = {
+      'netflix': 'resized/nflx84px.png',
+      'spotify': 'resized/spotify84.png',
+      'youtube-premium': 'resized/youtube84.png',
+      'disney': 'resized/disneyplus84.png',
+      'prime': 'resized/prime84.png',
+      'hbomax': 'resized/hbomax84.png',
+      'nordvpn': 'resized/nordvpn84.png',
+      'crunchy': 'resized/crunchyroll84.png',
+      'nitro': 'resized/nitroboost84.png',
+      'chatgpt': 'resized/chatgptplus84.png',
+      'capcut': 'resized/capcutpro84.png',
+      'geoguessr': 'resized/geoguessr84.png',
+      'filmora': 'resized/filmora84.png',
+      'duolingo': 'resized/duolingo84.png',
+      'movistar': 'resized/movistar+84.png'
+    };
+    const logoFile = imageMap[it.pid] || `${it.pid}.png`;
     return `
     <div class="variant" style="border-radius:0; border-left:0; border-right:0;">
       <div class="variant__thumb" style="background:${toneToGradient(it.tone)}">
         <img src="./assets/products/${logoFile}" alt="${it.title} logo" loading="lazy" decoding="async" onerror="this.style.display='none'" />
       </div>
       <div>
-        <h4 class="variant__title">${it.title} — ${it.plan}</h4>
+        <h4 class="variant__title">${it.title} â€” ${it.plan}</h4>
         <div class="variant__meta">Unit price: ${money(it.price)}</div>
       </div>
       <div class="variant__actions">
         <div class="variant__price" style="min-width:70px; text-align:right;">${money(it.price * it.qty)}</div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">–</button>
+          <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">-</button>
           <span style="min-width:24px; text-align:center;">${it.qty}</span>
           <button class="btn btn--ghost btn--sm js-inc" data-i="${idx}">+</button>
         </div>

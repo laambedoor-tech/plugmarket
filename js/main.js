@@ -150,6 +150,8 @@ const products = [
   { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
   { id: 'geoguessr', title: 'GeoGuessr', price: '$', tone: 'green' },
   { id: 'filmora', title: 'Wondershare Filmora', price: '$', tone: 'teal' },
+  { id: 'duolingo', title: 'Duolingo', price: '$', tone: 'green' },
+  { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '$', tone: 'blue' },
 ];
 
 let stockData = {};
@@ -161,7 +163,7 @@ const subscriptions = {
 
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
   spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 11.88 },
-  youtube: { '1 Month': 2.8, '3 Months': 4.32, '12 Months': 12.5 },
+  'youtube-premium': { '1 Month': 2.8, '3 Months': 4.32, '12 Months': 12.5 },
   disney: { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
   prime: { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 10.64 },
   hbomax: { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
@@ -173,6 +175,8 @@ const subscriptions = {
   capcut: { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
   geoguessr: { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0 },
   filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0 },
+  duolingo: { '12 Months': 1.24 },
+  movistar: { '12 Months': 2.44 },
 };
 
 const toneToGradient = (tone) => {
@@ -229,10 +233,20 @@ const toneToGradient = (tone) => {
     const min = getMinPrice(p.id);
     // Si el producto tiene un precio fijo, usarlo en lugar del mínimo calculado
     const priceText = p.price.startsWith('$') && p.price !== '$' ? p.price : (min == null ? 'Plans available' : `From $${min.toFixed(2)}`);
-    // Usar PNG para todos los productos (las nuevas imágenes añadidas)
-    const logoFile = p.id === 'geoguessr' ? 'geoguesser.png' : 
-             p.id === 'youtube-premium' ? 'youtube.png' : 
-             `${p.id}.png`;
+    // Mapeo de IDs a nombres de archivos de imágenes
+    const imageMap = {
+      'spotify': 'spotify.png',
+      'youtube-premium': 'youtube.png',
+      'disney': 'disneyplus.png',
+      'chatgpt': 'chatgptplus.png',
+      'capcut': 'capcutpro.png',
+      'crunchy': 'crunchyroll.png',
+      'geoguessr': 'geoguessr.png',
+      'nitro': 'nitroboost.png',
+      'duolingo': 'duolingo.png',
+      'movistar': 'movistar+.png'
+    };
+    const logoFile = imageMap[p.id] || `${p.id}.png`;
     
     // Solo los 3 primeros con prioridad alta; el resto se difiere para mejorar LCP
     const isTopProduct = index < 3;
@@ -240,7 +254,7 @@ const toneToGradient = (tone) => {
     const fetchPriorityAttr = isTopProduct ? 'high' : 'low';
 
     return `
-    <article class="product-card" data-pid="${p.id}">
+    <article class="product-card" data-pid="${p.id}" data-product-name="${p.title.toLowerCase()}">
       <div class="product-card__media" style="background:${toneToGradient(p.tone)}">
         <img src="./assets/products/${logoFile}"
              alt="${p.title} logo"
@@ -256,6 +270,24 @@ const toneToGradient = (tone) => {
       </div>
     </article>`;
   }).join('');
+  
+  // Implementar funcionalidad de búsqueda
+  const searchInput = document.getElementById('product-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.product-card');
+      
+      cards.forEach(card => {
+        const productName = card.getAttribute('data-product-name');
+        if (productName.includes(searchTerm)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  }
   
   // Agregar event listeners para los productos
   document.querySelectorAll('.product-card').forEach(card => {
@@ -338,8 +370,25 @@ const toneToGradient = (tone) => {
         const stockBadge = available
           ? '<span class="stock-badge stock-badge--in">In Stock</span>'
           : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
-        // Usar PNG para todos los productos
-        const logoFile = product.id === 'geoguessr' ? 'geoguesser.png' : product.id === 'youtube-premium' ? 'youtube.png' : `${product.id}.png`;
+        // Mapeo de IDs a nombres de archivos de imágenes redimensionadas para el modal
+        const imageMap = {
+          'netflix': 'resized/nflx84px.png',
+          'spotify': 'resized/spotify84.png',
+          'youtube-premium': 'resized/youtube84.png',
+          'disney': 'resized/disneyplus84.png',
+          'prime': 'resized/prime84.png',
+          'hbomax': 'resized/hbomax84.png',
+          'nordvpn': 'resized/nordvpn84.png',
+          'crunchy': 'resized/crunchyroll84.png',
+          'nitro': 'resized/nitroboost84.png',
+          'chatgpt': 'resized/chatgptplus84.png',
+          'capcut': 'resized/capcutpro84.png',
+          'geoguessr': 'resized/geoguessr84.png',
+          'filmora': 'resized/filmora84.png',
+          'duolingo': 'resized/duolingo84.png',
+          'movistar': 'resized/movistar+84.png'
+        };
+        const logoFile = imageMap[product.id] || `${product.id}.png`;
 
         return `
         <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${product.id}" data-plan="${label}" data-price="${price}">

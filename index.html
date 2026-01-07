@@ -110,11 +110,11 @@
   <main>
     <section id="home" class="hero anchor-offset" style="position: relative;">
       <div class="hero__content">
-        <p class="eyebrow">🎄 Trusted marketplace 🎄</p>
-        <h1 class="hero__title">Pay less for your favorite services</h1>
+        <p class="eyebrow">⚡ Trusted Marketplace ⚡</p>
+        <h1 class="hero__title">Your direct plug to premium products</h1>
         <p class="hero__subtitle">
-          Instant delivery, real support, and verified sales. Choose from
-          streaming, music, utilities, VPNs, and more.
+          Get the best for Discord without breaking the bank.
+          We connect quality, speed, and support all in one place.
         </p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="#products">Browse products</a>
@@ -131,7 +131,13 @@
     </section>
 
     <section id="products" class="products anchor-offset" aria-labelledby="products-title">
-      <h2 id="products-title" class="section-title" style="color:#f0f0f0;">Inventory</h2>
+      <h2 id="products-title" class="section-title" style="color:#f0f0f0; margin-bottom: 32px;">Our <span style="color: var(--accent);">Inventory</span></h2>
+      <div class="search-bar">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input type="text" id="product-search" placeholder="Search products..." aria-label="Search products">
+      </div>
       <div class="products__grid" id="products-grid" aria-live="polite"></div>
     </section>
 
