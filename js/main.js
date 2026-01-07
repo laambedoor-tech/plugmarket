@@ -161,7 +161,7 @@ const subscriptions = {
 
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
   spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 11.88 },
-  youtube: { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5 },
+  youtube: { '1 Month': 2.8, '3 Months': 4.32, '12 Months': 12.5 },
   disney: { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
   prime: { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 10.64 },
   hbomax: { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
@@ -318,7 +318,7 @@ const toneToGradient = (tone) => {
     const plans = subscriptions[pid];
 
     // Products that require Discord purchase
-    if (pid === 'youtube-premium' || pid === 'nitro') {
+    if (pid === 'nitro') {
       modalContent.innerHTML = `
         <div class="card" style="margin:10px; padding:20px; text-align:center;">
           <h3 style="margin-bottom:15px;">🎮 Purchase via Discord</h3>
