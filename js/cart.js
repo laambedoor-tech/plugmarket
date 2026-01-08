@@ -70,89 +70,109 @@ function setPaypalMessage(msg){
 
 async function ensurePaypal(){
   if (paypalLoaded) return true;
-  // No need to load SDK for manual PayPal flow
-  paypalLoaded = true;
+  paypalConfig = await fetchJSON(`${API_BASE}/api/paypal/config`);
+  if (!paypalConfig.clientId){ setPaypalMessage('PayPal is not configured yet.'); return false; }
+  await new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    // Use capture intent; disable card/credit to avoid duplicate flows via PayPal
+    const currency = encodeURIComponent(paypalConfig.currency || 'USD');
+    const clientId = encodeURIComponent(paypalConfig.clientId);
+    s.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&intent=capture&disable-funding=card,credit,venmo&components=buttons&commit=true`;
+    s.onload = () => { paypalLoaded = true; resolve(); };
+    s.onerror = () => reject(new Error('Failed to load PayPal SDK'));
+    document.head.appendChild(s);
+  });
   return true;
 }
 
 async function mountPaypalButtons(){
   const ok = await ensurePaypal();
   if (!ok) return;
-  
-  // Show manual payment button
+  // @ts-ignore
+  if (!window.paypal) { setPaypalMessage('PayPal SDK not available'); return; }
+  // Prevent PayPal usage for very small orders (< $1.00) which PayPal rejects in live.
+  try {
+    const items = getCart();
+    const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+    if (subtotal < 1) {
+      setPaypalMessage('PayPal requires a minimum of $1.00. Please add more items or use Card.');
+      const container = document.getElementById('paypal-buttons');
+      if (container) container.innerHTML = '';
+      return;
+    }
+  } catch {}
   const container = document.getElementById('paypal-buttons');
-  if (!container) return;
-  
-  container.innerHTML = `
-    <button type="button" id="btn-paypal-manual" class="btn btn--primary" style="width: 100%; padding: 14px; font-size: 16px; margin-top: 10px;">
-      Continuar con PayPal
-    </button>
-  `;
-  
-  document.getElementById('btn-paypal-manual')?.addEventListener('click', async () => {
-    try {
-      const emailEl = document.getElementById('paypal-email');
-      const customerEmail = emailEl ? emailEl.value.trim() : '';
-      if (!customerEmail || !customerEmail.includes('@')) {
-        setPaypalMessage('Por favor ingresa tu email');
-        return;
-      }
-      
-      setPaypalMessage('Generando instrucciones de pago...');
-      
+  container.innerHTML = '';
+  // @ts-ignore
+  window.paypal.Buttons({
+    style: { layout: 'vertical', shape: 'rect', color: 'gold' },
+    createOrder: async () => {
       const items = getCart();
-      const res = await fetch(`${API_BASE}/api/paypal/manual-create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
-          customerEmail
-        })
+      const res = await fetch(`${API_BASE}/api/paypal/create-order`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
       });
-      
       const data = await res.json();
       if (!res.ok) {
-        setPaypalMessage(data.error || 'Error al generar instrucciones');
-        return;
+        const detail = data?.details?.[0]?.issue || data?.details?.[0]?.description || data?.name || '';
+        setPaypalMessage(`PayPal error: ${data.error || detail || 'Failed to create order'}`);
+        throw new Error(data.error || detail || 'Failed to create PayPal order');
       }
-      
-      // Show payment instructions
-      const instructions = data.instructions.es;
-      const instructionsHTML = `
-        <div style="background: rgba(255,171,64,.1); border: 2px solid #ffab40; border-radius: 8px; padding: 20px; margin-top: 15px;">
-          <h3 style="margin: 0 0 15px 0; color: #ffab40; font-size: 18px;">📱 Instrucciones de Pago</h3>
-          <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
-            <li style="margin-bottom: 10px;">${instructions.step1}</li>
-            <li style="margin-bottom: 10px;">${instructions.step2}</li>
-            <li style="margin-bottom: 10px; color: #ff2743; font-weight: 600;">${instructions.step3}</li>
-            <li style="margin-bottom: 10px;">
-              ${instructions.step4}<br>
-              <div style="background: rgba(0,0,0,.3); padding: 10px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 16px; font-weight: 700; color: #2ed573; text-align: center; cursor: pointer;" onclick="navigator.clipboard.writeText('${data.reference}').then(() => alert('✅ Copiado al portapapeles'))">
-                ${data.reference}
-                <span style="font-size: 12px; opacity: 0.8; display: block; margin-top: 4px;">👆 Click para copiar</span>
-              </div>
-            </li>
-            <li style="color: #2ed573; font-weight: 600;">${instructions.step5}</li>
-          </ol>
-          <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,.2); border-radius: 6px;">
-            <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">💰 Monto a enviar:</div>
-            <div style="font-size: 24px; font-weight: 700; color: #2ed573;">$${data.amount} ${data.currency}</div>
-            <div style="font-size: 14px; opacity: 0.9; margin-top: 12px;">📧 Email de PayPal:</div>
-            <div style="font-size: 16px; font-weight: 600; color: #62a0ff; font-family: monospace;">${data.paypalEmail}</div>
-          </div>
-          <div style="margin-top: 15px; padding: 12px; background: rgba(46,213,115,.15); border-radius: 6px; font-size: 13px; text-align: center;">
-            ✅ Tu pedido será procesado automáticamente una vez detectemos el pago
-          </div>
-        </div>
-      `;
-      
-      container.innerHTML = instructionsHTML;
-      setPaypalMessage('');
-      
-    } catch (error) {
-      setPaypalMessage(error.message || 'Error al procesar solicitud');
-    }
-  });
+      paypalOrderRef = data.reference || '';
+      const refEl = document.getElementById('paypal-reference');
+      if (refEl) {
+        if (paypalOrderRef) {
+          refEl.textContent = `Referencia PayPal: ${paypalOrderRef}`;
+          refEl.style.display = 'block';
+        } else {
+          refEl.textContent = '';
+          refEl.style.display = 'none';
+        }
+      }
+      return data.id;
+    },
+    onApprove: async (data) => {
+      try {
+        const emailEl = document.getElementById('paypal-email');
+        const customerEmail = emailEl ? emailEl.value.trim() : '';
+        if (!customerEmail) {
+          setPaypalMessage('Please enter your email');
+          return;
+        }
+        const items = getCart();
+        const res = await fetch(`${API_BASE}/api/paypal/capture-order`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: data.orderID,
+            cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
+            customerEmail
+          })
+        });
+        const j = await res.json();
+        if (!res.ok) {
+          const detail = j?.details?.[0]?.issue || j?.details?.[0]?.description || j?.name || '';
+          setPaypalMessage(`PayPal capture error: ${j.error || detail || 'Capture failed'}`);
+          throw new Error(j.error || detail || 'Capture failed');
+        }
+        // success
+        setCart([]);
+        showCheckout(false);
+        const modal = document.getElementById('success-modal');
+        if (modal) modal.style.display = 'flex';
+        if (modal){
+          const note = modal.querySelector('.paypal-ref');
+          if (note) {
+            note.textContent = paypalOrderRef ? `Referencia: ${paypalOrderRef}` : '';
+            note.style.display = paypalOrderRef ? 'block' : 'none';
+          }
+        }
+      } catch (e) {
+        setPaypalMessage(e.message || 'Capture failed');
+      }
+    },
+    onCancel: () => { setPaypalMessage('Payment was cancelled.'); },
+    onError: (err) => { setPaypalMessage('An error occurred with PayPal.'); }
+  }).render('#paypal-buttons');
 }
 
 // local toneToGradient copy to avoid module scope issues
