@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Confirmar Pagos PayPal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #ffab40;
+    }
+    .card {
+      background: rgba(255,255,255,.05);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-family: monospace;
+    }
+    input:focus {
+      outline: none;
+      border-color: #ffab40;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #ffab40, #ff7b40);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+    .result.success {
+      background: rgba(46, 213, 115, .2);
+      border: 1px solid #2ed573;
+      color: #2ed573;
+    }
+    .result.error {
+      background: rgba(255, 39, 67, .2);
+      border: 1px solid #ff2743;
+      color: #ff2743;
+    }
+    .pending-orders {
+      margin-top: 30px;
+    }
+    .order-item {
+      background: rgba(0,0,0,.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-left: 4px solid #ffab40;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .order-item:hover {
+      background: rgba(0,0,0,.3);
+      transform: translateX(5px);
+    }
+    .order-ref {
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2ed573;
+      margin-bottom: 8px;
+    }
+    .order-details {
+      font-size: 13px;
+      color: #aaa;
+    }
+    .order-amount {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 8px;
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #aaa;
+    }
+    .info-box {
+      background: rgba(98, 160, 255, .1);
+      border: 1px solid #62a0ff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .refresh-btn {
+      background: rgba(98, 160, 255, .3);
+      border: 1px solid #62a0ff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: #62a0ff;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+    .refresh-btn:hover {
+      background: rgba(98, 160, 255, .4);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Admin - Confirmar Pagos PayPal</h1>
+
+    <div class="card">
+      <div class="info-box">
+        ℹ️ <strong>Uso:</strong> Este panel te permite confirmar manualmente pagos de PayPal cuando el sistema automático no los detecte. 
+        Verifica que el pago se recibió en tu PayPal y luego confirma aquí con el código de referencia.
+      </div>
+
+      <div class="input-group">
+        <label for="reference">Código de Referencia del Pedido</label>
+        <input type="text" id="reference" placeholder="PP-L8XYZ12-ABCDEF" />
+      </div>
+
+      <div class="input-group">
+        <label for="confirmCode">Código de Confirmación Admin</label>
+        <input type="password" id="confirmCode" placeholder="Tu código secreto" />
+      </div>
+
+      <button class="btn" id="btnConfirm">Confirmar Pago</button>
+
+      <div class="result" id="result"></div>
+    </div>
+
+    <div class="pending-orders">
+      <h2 style="font-size: 20px; margin-bottom: 15px; color: #ffab40;">
+        📋 Pedidos Pendientes
+        <button class="refresh-btn" id="btnRefresh">🔄 Actualizar</button>
+      </h2>
+      <div id="ordersList" class="loading">Cargando pedidos...</div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
+
+    async function loadPendingOrders() {
+      const list = document.getElementById('ordersList');
+      list.innerHTML = '<div class="loading">Cargando pedidos...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/get-orders`);
+        if (!res.ok) throw new Error('Failed to load orders');
+        
+        const data = await res.json();
+        const pending = data.orders.filter(o => 
+          o.payment_method === 'paypal_manual' && o.status === 'pending_payment'
+        );
+
+        if (pending.length === 0) {
+          list.innerHTML = '<div class="loading">✅ No hay pedidos pendientes</div>';
+          return;
+        }
+
+        list.innerHTML = pending.map(order => `
+          <div class="order-item" onclick="selectOrder('${order.reference}')">
+            <div class="order-ref">${order.reference}</div>
+            <div class="order-details">
+              📧 ${order.customer_email}<br>
+              🕒 ${new Date(order.created_at).toLocaleString('es-ES')}
+            </div>
+            <div class="order-amount">$${order.amount} ${order.currency || 'USD'}</div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        list.innerHTML = `<div class="loading">❌ Error: ${error.message}</div>`;
+      }
+    }
+
+    function selectOrder(reference) {
+      document.getElementById('reference').value = reference;
+      document.getElementById('reference').focus();
+    }
+
+    async function confirmPayment() {
+      const reference = document.getElementById('reference').value.trim();
+      const confirmCode = document.getElementById('confirmCode').value.trim();
+      const resultDiv = document.getElementById('result');
+      const btn = document.getElementById('btnConfirm');
+
+      if (!reference) {
+        showResult('error', 'Por favor ingresa el código de referencia');
+        return;
+      }
+
+      if (!confirmCode) {
+        showResult('error', 'Por favor ingresa el código de confirmación');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Confirmando...';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/paypal/confirm-manual`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reference, confirmCode })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Error al confirmar pago');
+        }
+
+        showResult('success', `✅ Pago confirmado exitosamente! ${data.accountsAssigned} cuentas asignadas a ${data.customerEmail}`);
+        document.getElementById('reference').value = '';
+        
+        // Recargar pedidos pendientes
+        setTimeout(loadPendingOrders, 1000);
+
+      } catch (error) {
+        showResult('error', `❌ ${error.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar Pago';
+      }
+    }
+
+    function showResult(type, message) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.className = `result ${type}`;
+      resultDiv.textContent = message;
+      resultDiv.style.display = 'block';
+
+      if (type === 'success') {
+        setTimeout(() => {
+          resultDiv.style.display = 'none';
+        }, 5000);
+      }
+    }
+
+    // Event listeners
+    document.getElementById('btnConfirm').addEventListener('click', confirmPayment);
+    document.getElementById('btnRefresh').addEventListener('click', loadPendingOrders);
+
+    // Cargar al inicio
+    loadPendingOrders();
+
+    // Auto-refresh cada 30 segundos
+    setInterval(loadPendingOrders, 30000);
+  </script>
+</body>
+</html>

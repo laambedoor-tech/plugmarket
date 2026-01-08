@@ -10,7 +10,8 @@ SUPABASE_URL = "https://twewcjgphqunpjchwliv.supabase.co"
 PAYPAL_CLIENT_ID = "AWBRnqorT1clCplKPaT8CetNSktYELNA-YaU0PFe1IdYVDRHtkRaSY9tEWL632gOJ4jlCPAZkPuXTJHD"
 PAYPAL_ENV = "sandbox"
 PAYPAL_CURRENCY = "USD"
+PAYPAL_MANUAL_EMAIL = "soyalexesp123@gmail.com"
 
 # Crypto integration removed; users will be directed to Discord for manual crypto payments.
 
-# STRIPE_SECRET_KEY, SUPABASE_ANON_KEY, and PAYPAL_SECRET are configured as secrets in Cloudflare Dashboard
+# STRIPE_SECRET_KEY, SUPABASE_ANON_KEY, PAYPAL_SECRET, and EMAIL_WEBHOOK_TOKEN are configured as secrets in Cloudflare Dashboard
