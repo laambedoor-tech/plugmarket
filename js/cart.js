@@ -195,6 +195,25 @@ function updateCount(){ const el = document.getElementById('cart-count'); if (el
 
 function money(n){ return '$' + n.toFixed(2); }
 
+// Calcular descuento por volumen
+function getVolumeDiscount(totalQty) {
+  if (totalQty >= 15) return 0.05; // 5% de descuento con 15+ items
+  if (totalQty >= 5) return 0.03;  // 3% de descuento con 5+ items
+  return 0;
+}
+
+function getDiscountBanner(totalQty) {
+  if (totalQty >= 15) {
+    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">🎉</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">5% Discount Applied!</div><div class="muted" style="font-size: 13px;">You have ' + totalQty + ' items in your cart</div></div></div>';
+  }
+  if (totalQty >= 5) {
+    const itemsNeeded = 15 - totalQty;
+    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">✨</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">3% Discount Applied!</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 5% off (at 15 pcs.)</div></div></div>';
+  }
+  const itemsNeeded = 5 - totalQty;
+  return '<div style="background: linear-gradient(135deg, rgba(98,160,255,.12), rgba(98,160,255,.04)); border: 1px solid rgba(98,160,255,.25); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">💎</span><div><div style="font-weight: 600; color: #62a0ff; margin-bottom: 2px;">Volume Discount Available</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 3% off (at 5 pcs.)</div></div></div>';
+}
+
 function render(){
   const items = getCart();
   const list = document.getElementById('cart-items');
@@ -210,7 +229,11 @@ function render(){
   }
   empty.style.display = 'none';
 
-  list.innerHTML = items.map((it, idx) => {
+  const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+  const discount = getVolumeDiscount(totalQty);
+  const banner = getDiscountBanner(totalQty);
+
+  const itemsHTML = items.map((it, idx) => {
     // Mapeo de IDs a nombres de archivos de imágenes redimensionadas
     const imageMap = {
       'netflix': 'resized/nflx84px.png',
@@ -252,8 +275,16 @@ function render(){
   `;
   }).join('');
 
+  list.innerHTML = banner + itemsHTML;
+
   const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-  subtotalEl.textContent = money(subtotal);
+  const finalTotal = subtotal * (1 - discount);
+  
+  if (discount > 0) {
+    subtotalEl.innerHTML = `<div style="text-decoration: line-through; color: var(--text-500); font-size: 14px; font-weight: 500;">${money(subtotal)}</div><div>${money(finalTotal)} <span style="color: #2ed573; font-size: 13px; font-weight: 600; margin-left: 4px;">(-${(discount * 100).toFixed(0)}%)</span></div>`;
+  } else {
+    subtotalEl.textContent = money(subtotal);
+  }
 }
 
 // Event handlers

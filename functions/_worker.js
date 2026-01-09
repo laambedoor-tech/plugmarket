@@ -3,8 +3,8 @@ import createPaymentIntent from './create-payment-intent.js';
 import stripeWebhook from './stripe-webhook.js';
 import getOrders from './get-orders.js';
 import getStock from './get-stock.js';
-import paypalManualCreate from './paypal-manual-create.js';
-import paypalEmailHook from './paypal-email-hook.js';
+import paypalCreateOrder from './paypal-create-order.js';
+import paypalCaptureOrder from './paypal-capture-order.js';
 import submitReview from './submit-review.js';
 import getReviews from './get-reviews.js';
 import cryptoNowCreate from './crypto-now-create.js';
@@ -26,9 +26,22 @@ export default {
     if (path === '/api/get-orders') return getOrders.fetch(request, env, ctx);
     if (path === '/api/get-stock') return getStock.fetch(request, env, ctx);
 
-    // PayPal manual flow
-    if (path === '/api/paypal/manual-create') return paypalManualCreate.fetch(request, env, ctx);
-    if (path === '/api/paypal/email-hook') return paypalEmailHook.fetch(request, env, ctx);
+    // PayPal Business API
+    if (path === '/api/paypal/config') {
+      return new Response(JSON.stringify({ 
+        clientId: env.PAYPAL_CLIENT_ID || '', 
+        currency: 'USD' 
+      }), { 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        } 
+      });
+    }
+    if (path === '/api/paypal/create-order') return paypalCreateOrder.fetch(request, env, ctx);
+    if (path === '/api/paypal/capture-order') return paypalCaptureOrder.fetch(request, env, ctx);
 
     // NOWPayments crypto routes
     if (path === '/api/crypto/now/create') return cryptoNowCreate.fetch(request, env, ctx);
