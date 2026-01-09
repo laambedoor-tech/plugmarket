@@ -85,8 +85,8 @@ body::before {
 }
 
 .brand__logo {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
 }
 
 .brand__name {
@@ -1091,8 +1091,8 @@ main {
   }
 
   .brand__logo {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
   }
 
   /* Hero móvil */
@@ -1301,8 +1301,8 @@ main {
   }
 
   .brand__logo {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
   }
 
   /* Hero móvil */
