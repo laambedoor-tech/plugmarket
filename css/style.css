@@ -703,10 +703,11 @@ main {
 
 .variant__thumb img {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 130%;
+  height: 130%;
   object-fit: contain;
   filter: none;
+  transform: scale(1.2);
 }
 
 .variant__title {
