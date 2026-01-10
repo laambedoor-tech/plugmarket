@@ -153,6 +153,7 @@ const products = [
   { id: 'filmora', title: 'Wondershare Filmora', price: '$', tone: 'teal' },
   { id: 'duolingo', title: 'Duolingo', price: '$', tone: 'green' },
   { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '$', tone: 'blue' },
+  { id: 'dazn', title: 'DAZN', price: '$1.50', tone: 'orange' },
 ];
 
 let stockData = {};
@@ -179,6 +180,7 @@ const subscriptions = {
   filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0 },
   duolingo: { '12 Months': 1.24 },
   movistar: { '12 Months': 2.44 },
+  dazn: { 'Lifetime': 1.5 },
 };
 
 const toneToGradient = (tone) => {
