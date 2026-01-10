@@ -251,7 +251,8 @@ function render(){
       'geoguessr': 'resized/geoguessr84.png',
       'filmora': 'resized/filmora84.png',
       'duolingo': 'resized/duolingo84.png',
-      'movistar': 'resized/movistar+84.png'
+      'movistar': 'resized/movistar+84.png',
+      'dazn': 'resized/dazn84.png'
     };
     const logoFile = imageMap[it.pid] || `${it.pid}.png`;
     return `
