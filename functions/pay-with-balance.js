@@ -1,4 +1,37 @@
 // Use balance to pay for order
+import { createClient } from '@supabase/supabase-js';
+
+function getSupabase(env) {
+  const url = env.SUPABASE_URL;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_ANON_KEY;
+  if (!url || !key) throw new Error('Missing Supabase credentials');
+  return createClient(url, key);
+}
+
+async function assignAccount(env, productId, plan, customerEmail) {
+  const supabase = getSupabase(env);
+  const { data: accounts, error } = await supabase
+    .from('accounts')
+    .select('*')
+    .eq('product_id', productId)
+    .eq('plan', plan)
+    .eq('status', 'available')
+    .order('created_at', { ascending: true })
+    .limit(1);
+  if (error) throw new Error(`DB fetch error: ${error.message}`);
+  if (!accounts || accounts.length === 0) throw new Error(`No available accounts for ${productId} - ${plan}`);
+  const account = accounts[0];
+  const { error: updateError } = await supabase
+    .from('accounts')
+    .update({ status: 'sold', sold_at: new Date().toISOString(), customer_email: customerEmail })
+    .eq('id', account.id);
+  if (updateError) throw new Error(`DB update error: ${updateError.message}`);
+  const result = { email: account.email, password: account.password };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
+}
+
 export default async function handler(request, env) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -133,45 +166,68 @@ export default async function handler(request, env) {
       });
     }
 
+    // Assign accounts for each item in cart
+    const orderItems = [];
+    let allAssigned = true;
+
+    for (const item of cart) {
+      const qty = Number(item.qty) > 0 ? Number(item.qty) : 1;
+      console.log(`Item ${item.pid} - ${item.plan} requested qty=${qty}`);
+
+      for (let i = 0; i < qty; i++) {
+        try {
+          const credentials = await assignAccount(env, item.pid, item.plan, email);
+          console.log(`✅ Assigned account (${i + 1}/${qty}) for ${item.pid} - ${item.plan} to ${email}`);
+
+          // Store credentials for order record
+          const itemCreds = {
+            pid: item.pid,
+            name: item.name,
+            plan: item.plan,
+            unitAmount: item.price,
+            credentials: {
+              email: credentials.email,
+              password: credentials.password
+            }
+          };
+          
+          if (credentials.chatgptPassword) itemCreds.credentials.chatgptPassword = credentials.chatgptPassword;
+          if (credentials.chatgptCode) itemCreds.credentials.chatgptCode = credentials.chatgptCode;
+          
+          orderItems.push(itemCreds);
+        } catch (err) {
+          console.error(`❌ Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);
+          allAssigned = false;
+
+          if (String(err.message).includes('No available accounts')) {
+            console.warn(`Stock exhausted for ${item.pid} - ${item.plan}. Assigned ${i} of ${qty}.`);
+            break;
+          }
+        }
+      }
+    }
+
     // Create order in orders table
     const orderData = {
       customer_email: email,
       payment_intent_id: 'balance_' + Date.now(),
       total_cents: Math.round(totalAmount * 100),
-      items: cart.map(item => ({
-        name: item.name,
-        price: item.price,
-        quantity: item.qty || 1,
-        pid: item.pid,
-        plan: item.plan
-      }))
+      items: orderItems
     };
 
     console.log('Creating order with data:', JSON.stringify(orderData));
 
-    const orderResponse = await fetch(
-      `${supabaseUrl}/rest/v1/orders`,
-      {
-        method: 'POST',
-        headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(orderData)
-      }
-    );
+    const supabase = getSupabase(env);
+    const { data: orders, error: orderError } = await supabase
+      .from('orders')
+      .insert(orderData)
+      .select();
 
-    console.log('Order response status:', orderResponse.status);
-    
-    if (!orderResponse.ok) {
-      const errorText = await orderResponse.text();
-      console.error('Order creation error:', errorText);
-      throw new Error(`Failed to create order: ${errorText}`);
+    if (orderError) {
+      console.error('Order creation error:', orderError.message);
+      throw new Error(`Failed to create order: ${orderError.message}`);
     }
 
-    const orders = await orderResponse.json();
     console.log('Order created:', JSON.stringify(orders));
     const orderId = orders[0].id;
 
@@ -186,31 +242,22 @@ export default async function handler(request, env) {
 
     console.log('Creating transaction:', JSON.stringify(transactionData));
 
-    const transactionResponse = await fetch(
-      `${supabaseUrl}/rest/v1/balance_transactions`,
-      {
-        method: 'POST',
-        headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(transactionData)
-      }
-    );
+    const { error: transactionError } = await supabase
+      .from('balance_transactions')
+      .insert(transactionData);
 
-    console.log('Transaction response status:', transactionResponse.status);
-    
-    if (!transactionResponse.ok) {
-      const errorText = await transactionResponse.text();
-      console.error('Transaction creation error:', errorText);
+    if (transactionError) {
+      console.error('Transaction creation error:', transactionError.message);
       throw new Error('Failed to create transaction');
     }
+
+    console.log(`✅ Balance payment completed for ${email}. Order ${orderId} with ${orderItems.length} item(s)`);
 
     return new Response(JSON.stringify({ 
       success: true,
       orderId,
-      newBalance: currentBalance - totalAmount
+      newBalance: currentBalance - totalAmount,
+      itemsAssigned: orderItems.length
     }), {
       status: 200,
       headers: { 
