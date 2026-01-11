@@ -37,7 +37,7 @@
       <a href="./orders.html">Orders</a>
     </nav>
     <div class="cta">
-      <a class="btn btn--secondary btn--desktop-only" href="./my-account.html" style="background: linear-gradient(135deg, #ff2743, #ff5f6d); margin-right: 12px;">My Account</a>
+      <a class="btn btn--secondary btn--desktop-only" id="my-account-btn" href="./my-account.html" style="background: linear-gradient(135deg, #ff2743, #ff5f6d); margin-right: 12px;">My Account</a>
       <a class="btn btn--ghost btn--desktop-only" href="./index.html#products">Continue shopping</a>
       <a class="cart-link" href="./cart.html" aria-label="Cart">
         <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
@@ -320,5 +320,17 @@
   <script src="./js/main.js?v=20251227" type="module"></script>
   <script src="./js/cart.js?v=20251227" type="module"></script>
 </body>
+
+<script>
+  // Update My Account button if logged in
+  const myAccountBtn = document.getElementById('my-account-btn');
+  if (myAccountBtn) {
+    const token = localStorage.getItem('auth_token');
+    const email = localStorage.getItem('auth_email');
+    if (token && email) {
+      myAccountBtn.href = './dashboard.html';
+    }
+  }
+</script>
 
 </html>

@@ -269,14 +269,26 @@ async function deleteAccount() {
 }
 
 function showOrderDetails(orderId) {
+  console.log('🔍 showOrderDetails called with orderId:', orderId);
+  console.log('📦 All orders:', allOrders);
+  
   const order = allOrders.find(o => o.id === orderId);
   if (!order) {
+    console.error('❌ Order not found:', orderId);
     alert('Order not found');
     return;
   }
   
+  console.log('✅ Found order:', order);
+  
   const modalContent = document.getElementById('order-modal-content');
+  if (!modalContent) {
+    console.error('❌ Modal content element not found');
+    return;
+  }
+  
   const items = order.items || [];
+  console.log('📋 Order items:', items);
   
   let credentialsHTML = '';
   items.forEach((item, index) => {
