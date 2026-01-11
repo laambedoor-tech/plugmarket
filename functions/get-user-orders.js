@@ -45,6 +45,7 @@ export default {
     const user = users && users.length > 0 ? users[0] : null;
     
     // Get user orders
+    console.log(`🔍 Querying orders for email: ${email}`);
     const ordersResponse = await fetch(
       `${env.SUPABASE_URL}/rest/v1/orders?customer_email=eq.${email}&order=created_at.desc`,
       {
@@ -55,6 +56,8 @@ export default {
       }
     );
     const orders = await ordersResponse.json();
+    console.log(`📦 Found ${orders?.length || 0} orders for ${email}`);
+    console.log(`📋 Orders data:`, JSON.stringify(orders).slice(0, 500));
     
     return new Response(JSON.stringify({
       success: true,

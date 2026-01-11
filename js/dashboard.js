@@ -4,8 +4,37 @@ const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 // Check authentication on page load
 const auth = requireAuth();
 
+let allOrders = []; // Store orders globally
+
 if (auth) {
   loadDashboardData(auth);
+}
+
+// Switch between panels
+function switchPanel(panelName) {
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.dataset.panel === panelName) {
+      link.classList.add('active');
+    }
+  });
+  
+  // Hide all panels
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+  
+  // Show selected panel
+  const panel = document.getElementById(`${panelName}-panel`);
+  if (panel) {
+    panel.classList.add('active');
+    
+    // Load orders if switching to orders panel
+    if (panelName === 'orders') {
+      displayAllOrders(allOrders);
+    }
+  }
 }
 
 async function loadDashboardData(auth) {
@@ -26,13 +55,15 @@ async function loadDashboardData(auth) {
     
     if (response.ok) {
       const data = await response.json();
+      console.log('📦 Dashboard data:', data);
+      allOrders = data.orders || []; // Store globally
       displayDashboardStats(data);
-      displayLatestOrders(data.orders || []);
+      displayLatestOrders(allOrders);
     } else if (response.status === 401) {
       // Token expired or invalid
       logout();
     } else {
-      console.error('Failed to load orders');
+      console.error('Failed to load orders', response.status);
     }
   } catch (error) {
     console.error('Error loading dashboard data:', error);
@@ -92,7 +123,7 @@ function displayLatestOrders(orders) {
       </td>
       <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
       <td>
-        <a href="./orders.html" class="btn-view">View</a>
+        <button class="btn-view" onclick="switchPanel('orders')">View</button>
       </td>
     </tr>
   `).join('');
@@ -126,6 +157,62 @@ function getProductNames(items) {
   } catch (e) {
     return 'Products';
   }
+}
+
+function displayAllOrders(orders) {
+  const container = document.getElementById('all-orders-container');
+  
+  if (!orders || orders.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3 class="empty-title">No orders yet</h3>
+        <p class="empty-text">You haven't made any purchases yet. Browse our products and make your first order!</p>
+        <a href="./index.html#products" class="btn-action">
+          <span>Shop now</span>
+          <span>→</span>
+        </a>
+      </div>
+    `;
+    return;
+  }
+  
+  const ordersHTML = orders.map(order => `
+    <tr>
+      <td>
+        <div class="order-id">#${order.id ? order.id.slice(0, 8) : 'N/A'}</div>
+        <div class="order-product">${getProductNames(order.items)}</div>
+      </td>
+      <td>${formatDate(order.created_at)}</td>
+      <td>
+        <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+          <span>●</span>
+          <span>${capitalizeFirst(order.status || 'pending')}</span>
+        </span>
+      </td>
+      <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
+      <td>
+        <button class="btn-view" onclick="alert('Order details: ' + '${order.id}')">View</button>
+      </td>
+    </tr>
+  `).join('');
+  
+  container.innerHTML = `
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${ordersHTML}
+      </tbody>
+    </table>
+  `;
 }
 
 function formatDate(dateString) {

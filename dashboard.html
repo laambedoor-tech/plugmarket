@@ -155,6 +155,14 @@
       color: #f87171;
     }
     
+    .panel {
+      display: none;
+    }
+    
+    .panel.active {
+      display: block;
+    }
+    
     .main-content {
       background: rgba(20, 23, 34, 0.8);
       border-radius: 20px;
@@ -496,19 +504,19 @@
         <div class="sidebar-title" id="sidebar-email">Loading...</div>
         <ul class="sidebar-menu">
           <li>
-            <a href="#" class="sidebar-link active">
+            <a href="#" class="sidebar-link active" data-panel="dashboard" onclick="switchPanel('dashboard'); return false;">
               <span>📊</span>
               <span>Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="#" class="sidebar-link">
+            <a href="#" class="sidebar-link" data-panel="orders" onclick="switchPanel('orders'); return false;">
               <span>📦</span>
               <span>Orders</span>
             </a>
           </li>
           <li>
-            <a href="#" class="sidebar-link">
+            <a href="#" class="sidebar-link" data-panel="balance" onclick="switchPanel('balance'); return false;">
               <span>💰</span>
               <span>Balance</span>
             </a>
@@ -524,6 +532,8 @@
 
       <!-- Main Content -->
       <div class="main-content">
+        <!-- Dashboard Panel -->
+        <div id="dashboard-panel" class="panel active">
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -546,7 +556,7 @@
         <!-- Latest Orders -->
         <div class="section-header">
           <h2 class="section-title">Latest Order</h2>
-          <a href="./orders.html" class="btn-action">
+          <a href="#" class="btn-action" onclick="switchPanel('orders'); return false;">
             <span>View all orders</span>
             <span>→</span>
           </a>
@@ -569,6 +579,21 @@
         <button class="btn-delete-account" onclick="deleteAccount()">
           Delete Account
         </button>
+        </div>
+        
+        <!-- Orders Panel -->
+        <div id="orders-panel" class="panel">
+          <h2 class="section-title">All Orders</h2>
+          <div id="all-orders-container">
+            <!-- All orders will be loaded here -->
+          </div>
+        </div>
+        
+        <!-- Balance Panel -->
+        <div id="balance-panel" class="panel">
+          <h2 class="section-title">Balance</h2>
+          <p>Balance functionality coming soon...</p>
+        </div>
       </div>
     </div>
   </main>
