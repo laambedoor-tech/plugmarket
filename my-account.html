@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>My Account - Plug Market</title>
+  <meta name="description" content="Access your Plug Market account to view orders and manage your purchases." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
+  <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./css/style.css" />
+  
+  <style>
+    .account-page {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 140px 24px 60px;
+      min-height: calc(100vh - 200px);
+    }
+    
+    .account-container {
+      background: rgba(20, 23, 34, 0.9);
+      border-radius: 24px;
+      padding: 40px 32px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .account-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    .account-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, #d946ef, #9333ea);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    
+    .account-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    
+    .account-subtitle {
+      font-size: 14px;
+      color: #9aa0ad;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s;
+      box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #d946ef;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .form-input::placeholder {
+      color: #6b7280;
+    }
+    
+    .code-input {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .btn-submit {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #d946ef, #9333ea);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(217, 70, 239, 0.4);
+    }
+    
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-back {
+      width: 100%;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 12px;
+    }
+    
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .alert {
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .alert.show {
+      display: block;
+    }
+    
+    .alert-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+    
+    .alert-success {
+      background: rgba(46, 213, 115, 0.1);
+      border: 1px solid rgba(46, 213, 115, 0.3);
+      color: #86efac;
+    }
+    
+    .alert-info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+    }
+    
+    .terms-text {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 20px;
+    }
+    
+    .terms-text a {
+      color: #d946ef;
+      text-decoration: none;
+    }
+    
+    .terms-text a:hover {
+      text-decoration: underline;
+    }
+    
+    .code-expires {
+      text-align: center;
+      font-size: 13px;
+      color: #9aa0ad;
+      margin-top: 16px;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    @media (max-width: 768px) {
+      .account-page {
+        padding: 100px 16px 40px;
+      }
+      
+      .account-container {
+        padding: 32px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+  
+  <!-- Christmas Snow Effect -->
+  <div class="snowflakes" aria-hidden="true">
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+  </div>
+
+  <header class="nav">
+    <a href="./index.html" class="brand">
+      <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
+      <span class="brand__name">Plug Market</span>
+    </a>
+    <nav class="menu">
+      <a href="./index.html#home">Home</a>
+      <a href="./index.html#products">Products</a>
+      <a href="./index.html#faq">FAQ</a>
+      <a href="./index.html#contact">Contact</a>
+      <a href="./orders.html">Orders</a>
+    </nav>
+    <div class="cta">
+      <a class="btn btn--ghost btn--desktop-only" href="./index.html#products">View products</a>
+      <a class="btn btn--primary btn--desktop-only" href="https://discord.gg/plugmarket" target="_blank"
+        rel="noopener noreferrer">Join Discord</a>
+      <a class="cart-link" href="./cart.html" aria-label="Cart">
+        <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Sidebar Menu -->
+  <div class="mobile-sidebar" id="mobile-sidebar">
+    <div class="mobile-sidebar__overlay" id="mobile-sidebar-overlay"></div>
+    <nav class="mobile-sidebar__panel">
+      <div class="mobile-sidebar__header">
+        <span class="mobile-sidebar__title">Menu</span>
+        <button class="mobile-sidebar__close" id="mobile-sidebar-close" aria-label="Close menu">✕</button>
+      </div>
+      <div class="mobile-sidebar__content">
+        <a href="./index.html#home" class="mobile-sidebar__link">Home</a>
+        <a href="./index.html#products" class="mobile-sidebar__link">Products</a>
+        <a href="./index.html#faq" class="mobile-sidebar__link">FAQ</a>
+        <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
+        <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
+        <div class="mobile-sidebar__divider"></div>
+        <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener noreferrer"
+          class="mobile-sidebar__link mobile-sidebar__link--discord">
+          Join Discord
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <main class="account-page">
+    <div class="account-container">
+      <!-- Step 1: Email Form -->
+      <div id="email-step">
+        <div class="account-header">
+          <div class="account-icon">🔐</div>
+          <h1 class="account-title">Login to customer area</h1>
+          <p class="account-subtitle">Enter your email and we'll send you a 6-digit code.</p>
+        </div>
+
+        <div id="alert-email" class="alert"></div>
+
+        <form id="email-form" onsubmit="sendCode(event)">
+          <div class="form-group">
+            <label class="form-label" for="email">E-mail address</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              placeholder="you@email.com"
+              required 
+              autocomplete="email"
+            />
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-send-code">
+            <span>Send code</span>
+            <span>→</span>
+          </button>
+
+          <div class="terms-text">
+            By continuing you accept our <a href="./terms.html">Terms</a> & <a href="#">Privacy</a>.
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Code Verification Form -->
+      <div id="code-step" class="hidden">
+        <div class="account-header">
+          <div class="account-icon">📧</div>
+          <h1 class="account-title">Enter verification code</h1>
+          <p class="account-subtitle">We sent a code to <strong id="sent-email"></strong></p>
+        </div>
+
+        <div id="alert-code" class="alert"></div>
+
+        <form id="code-form" onsubmit="verifyCode(event)">
+          <div class="form-group">
+            <label class="form-label" for="code">6-Digit Code</label>
+            <input 
+              type="text" 
+              id="code" 
+              name="code" 
+              class="form-input code-input" 
+              placeholder="000000"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              required
+              autocomplete="one-time-code"
+            />
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-verify-code">
+            <span>Verify code</span>
+            <span>✓</span>
+          </button>
+
+          <button type="button" class="btn-back" onclick="goBackToEmail()">
+            ← Back to email
+          </button>
+
+          <div class="code-expires">
+            Code expires in <strong id="timer">15:00</strong>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer anchor-offset" id="contact">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="./assets/logo.svg" alt="Plug Market" />
+        <p class="muted">Plug Market © 2025</p>
+      </div>
+      <nav class="footer__links">
+        <a href="./terms.html">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener">Discord</a>
+        <a href="#">Telegram</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="./js/auth.js"></script>
+  <script>
+    // Update cart count on page load
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const countEl = document.getElementById('cart-count');
+      if (countEl) {
+        countEl.textContent = totalItems;
+        countEl.style.display = totalItems > 0 ? 'flex' : 'none';
+      }
+    }
+    updateCartCount();
+
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const mobileSidebarClose = document.getElementById('mobile-sidebar-close');
+    const mobileSidebarOverlay = document.getElementById('mobile-sidebar-overlay');
+
+    function openMobileMenu() {
+      mobileSidebar.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileSidebar.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+    }
+
+    if (mobileSidebarClose) {
+      mobileSidebarClose.addEventListener('click', closeMobileMenu);
+    }
+
+    if (mobileSidebarOverlay) {
+      mobileSidebarOverlay.addEventListener('click', closeMobileMenu);
+    }
+
+    document.querySelectorAll('.mobile-sidebar__link').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Background particles
+    const canvas = document.getElementById('bg-particles');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          radius: Math.random() * 2 + 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    }
+  </script>
+</body>
+
+</html>

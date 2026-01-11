@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>ChatGPT Pro - Plug Market</title>
+  <meta name="description" content="Get ChatGPT Pro subscription for your personal account. Access advanced AI features, unlimited messages, priority access, and more." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
+  <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./css/style.css" />
+  
+  <style>
+    .product-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 24px 60px;
+    }
+    
+    .product-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    
+    .product-left {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .product-image-section {
+      width: 100%;
+    }
+    
+    .product-image {
+      width: 100%;
+    }
+    
+    .product-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+    }
+    
+    .product-details {
+      background: rgba(20, 23, 34, 0.8);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 120px;
+      height: fit-content;
+    }
+    
+    .product-header {
+      margin-bottom: 16px;
+    }
+    
+    .product-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #10a37f, #1a7f64);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      float: right;
+    }
+    
+    .product-price {
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    
+    .stock-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: rgba(46, 213, 115, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(46, 213, 115, 0.3);
+    }
+    
+    .stock-label {
+      font-weight: 600;
+      color: #9aa0ad;
+    }
+    
+    .stock-count {
+      color: #2ed573;
+      font-weight: 700;
+    }
+    
+    .product-features {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .feature-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 14px;
+    }
+    
+    .plan-options {
+      margin-bottom: 16px;
+    }
+    
+    .plan-label {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    
+    .plan-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .plan-btn {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    
+    .plan-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(16, 163, 127, 0.5);
+    }
+    
+    .plan-btn.active {
+      background: linear-gradient(135deg, rgba(16, 163, 127, 0.3), rgba(16, 163, 127, 0.1));
+      border-color: #10a37f;
+      color: #10a37f;
+    }
+    
+    .plan-btn .plan-duration {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .plan-btn .plan-price {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    
+    .quantity-section {
+      margin-bottom: 16px;
+    }
+    
+    .quantity-label {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .quantity-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .quantity-value {
+      flex: 1;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 0;
+    }
+    
+    .btn-add-cart {
+      flex: 1;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #10a37f, #1a7f64);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-add-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(16, 163, 127, 0.4);
+    }
+    
+    .btn-buy-now {
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-buy-now:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .discount-notice {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(138, 43, 226, 0.05));
+      border-radius: 12px;
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      margin-bottom: 32px;
+    }
+    
+    .product-description {
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 100%;
+      margin: 0;
+    }
+    
+    .description-accordion {
+      margin-bottom: 16px;
+    }
+    
+    .description-accordion details {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .description-accordion details:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    
+    .description-accordion details[open] {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .description-accordion summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      list-style: none;
+      user-select: none;
+    }
+    
+    .description-accordion summary::before {
+      content: "▶";
+      display: inline-block;
+      transition: transform 0.3s ease;
+      font-size: 12px;
+      min-width: 16px;
+    }
+    
+    .description-accordion details[open] summary::before {
+      transform: rotate(90deg);
+    }
+    
+    .description-content {
+      padding: 0 16px 16px 16px;
+      color: #9aa0ad;
+      line-height: 1.7;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .feature-list li {
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: #d1d5db;
+      font-size: 14px;
+    }
+    
+    .feature-list li::before {
+      content: "✅";
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    
+    .important-notice {
+      background: linear-gradient(135deg, rgba(255, 171, 64, 0.2), rgba(255, 171, 64, 0.05));
+      border: 1px solid rgba(255, 171, 64, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    
+    .important-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #ffab40;
+    }
+    
+    .requirements-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .requirements-list li {
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: #d1d5db;
+      font-weight: 500;
+    }
+    
+    .requirements-list li::before {
+      content: "⚠️";
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .product-container {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      
+      .product-image-section {
+        position: static;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .product-page {
+        padding: 100px 16px 40px;
+      }
+      
+      .product-descriptions-wrapper {
+        margin-top: 0;
+      }
+      
+      .plan-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+  
+  <!-- Christmas Snow Effect -->
+  <div class="snowflakes" aria-hidden="true">
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+  </div>
+
+  <header class="nav">
+    <a href="./index.html" class="brand">
+      <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
+      <span class="brand__name">Plug Market</span>
+    </a>
+    <nav class="menu">
+      <a href="./index.html#home">Home</a>
+      <a href="./index.html#products">Products</a>
+      <a href="./index.html#faq">FAQ</a>
+      <a href="./index.html#contact">Contact</a>
+      <a href="./orders.html">Orders</a>
+    </nav>
+    <div class="cta">
+      <a class="btn btn--ghost btn--desktop-only" href="./index.html#products">View products</a>
+      <a class="btn btn--primary btn--desktop-only" href="https://discord.gg/plugmarket" target="_blank"
+        rel="noopener noreferrer">Join Discord</a>
+      <a class="cart-link" href="./cart.html" aria-label="Cart">
+        <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Sidebar Menu -->
+  <div class="mobile-sidebar" id="mobile-sidebar">
+    <div class="mobile-sidebar__overlay" id="mobile-sidebar-overlay"></div>
+    <nav class="mobile-sidebar__panel">
+      <div class="mobile-sidebar__header">
+        <span class="mobile-sidebar__title">Menu</span>
+        <button class="mobile-sidebar__close" id="mobile-sidebar-close" aria-label="Close menu">✕</button>
+      </div>
+      <div class="mobile-sidebar__content">
+        <a href="./index.html#home" class="mobile-sidebar__link">Home</a>
+        <a href="./index.html#products" class="mobile-sidebar__link">Products</a>
+        <a href="./index.html#faq" class="mobile-sidebar__link">FAQ</a>
+        <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
+        <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
+        <div class="mobile-sidebar__divider"></div>
+        <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener noreferrer"
+          class="mobile-sidebar__link mobile-sidebar__link--discord">
+          Join Discord
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <main class="product-page">
+    <div class="product-container">
+      <!-- Left Column: Image + Description -->
+      <div class="product-left">
+        <!-- Product Image Section -->
+        <div class="product-image-section">
+          <div class="product-image">
+            <img src="./assets/products/chatgptpro.png" alt="ChatGPT Pro" />
+          </div>
+        </div>
+
+        <!-- Product Description Section -->
+        <div class="product-description">
+          <div class="description-accordion">
+            <details open>
+              <summary>🇺🇸 Product Description - English</summary>
+              <div class="description-content">
+                <ul class="feature-list">
+                  <li>Use Your Personal Account – Add ChatGPT Pro to your existing OpenAI account.</li>
+                  <li>Advanced AI Model – Access to the most advanced GPT-4 and GPT-o1 models.</li>
+                  <li>Unlimited Messages – No daily limits on your conversations.</li>
+                  <li>Priority Access – Faster response times and priority during peak hours.</li>
+                  <li>Enhanced Features – Access to advanced tools and capabilities.</li>
+                  <li>Voice & Vision – Use advanced voice conversations and image analysis.</li>
+                  <li>Instant Delivery – Instructions delivered immediately after purchase.</li>
+                  <li>Full Support – We're here to help if you need any assistance.</li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 13px; color: #9aa0ad;">This subscription allows you to activate ChatGPT Pro features on your personal OpenAI account.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="description-accordion">
+            <details>
+              <summary>🇪🇸 Descripción del Producto - Español</summary>
+              <div class="description-content">
+                <ul class="feature-list">
+                  <li>Usa Tu Cuenta Personal – Añade ChatGPT Pro a tu cuenta de OpenAI existente.</li>
+                  <li>Modelo de IA Avanzado – Acceso a los modelos GPT-4 y GPT-o1 más avanzados.</li>
+                  <li>Mensajes Ilimitados – Sin límites diarios en tus conversaciones.</li>
+                  <li>Acceso Prioritario – Tiempos de respuesta más rápidos y prioridad en horas punta.</li>
+                  <li>Funciones Mejoradas – Acceso a herramientas y capacidades avanzadas.</li>
+                  <li>Voz y Visión – Usa conversaciones de voz avanzadas y análisis de imágenes.</li>
+                  <li>Entrega Instantánea – Instrucciones entregadas inmediatamente después de la compra.</li>
+                  <li>Soporte Completo – Estamos aquí para ayudarte si necesitas asistencia.</li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 13px; color: #9aa0ad;">Esta suscripción te permite activar las funciones de ChatGPT Pro en tu cuenta personal de OpenAI.</p>
+              </div>
+            </details>
+          </div>
+
+          <!-- Important Notice -->
+          <div class="important-notice">
+            <h3 class="important-title">
+              ⚠️ IMPORTANT - Before You Purchase
+            </h3>
+            <div class="description-content">
+              <p style="margin-bottom: 16px; font-weight: 600;">Make sure you meet these requirements before buying:</p>
+              <ul class="requirements-list">
+                <li><strong>Personal OpenAI Account</strong> – You must have an OpenAI account (free account is fine)</li>
+                <li><strong>Valid Email Access</strong> – You need access to your OpenAI account email</li>
+                <li><strong>No Active Subscription</strong> – Your account should not have an active ChatGPT Plus or Pro subscription</li>
+              </ul>
+              <p style="margin-top: 16px; font-weight: 600; color: #ffab40;">
+                Contact us on Discord if you have any questions before purchasing!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Product Details (Sticky) -->
+      <div class="product-details">
+        <div class="product-header">
+          <h1 class="product-title">ChatGPT Pro</h1>
+          <div class="featured-badge">
+            🚀 Premium
+          </div>
+        </div>
+
+        <div class="product-price" id="display-price">$3.50</div>
+        
+        <div style="margin-bottom: 20px; height: 6px; background: linear-gradient(90deg, #10a37f 0%, #1a7f64 100%); border-radius: 3px;"></div>
+        
+        <div class="stock-status">
+          <span class="stock-label">Stock status</span>
+          <span class="stock-count">In Stock</span>
+        </div>
+
+        <div class="product-features">
+          <div class="feature-badge">
+            ○ Use Your Own Account
+          </div>
+          <div class="feature-badge">
+            + Instant Delivery
+          </div>
+        </div>
+
+        <div class="plan-options">
+          <div class="plan-label">Select Plan</div>
+          <div class="plan-buttons">
+            <button class="plan-btn active" data-plan="1 Month" data-price="3.50" onclick="selectPlan(this)">
+              <span class="plan-duration">1 Month</span>
+              <span class="plan-price">$3.50</span>
+            </button>
+            <button class="plan-btn" data-plan="3 Months" data-price="6.00" onclick="selectPlan(this)">
+              <span class="plan-duration">3 Months</span>
+              <span class="plan-price">$6.00</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="quantity-section">
+          <div class="quantity-label">Quantity</div>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="decreaseQuantity()">−</button>
+            <div class="quantity-value" id="quantity">1</div>
+            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-add-cart" onclick="addToCart()">
+            🛒 Add to Cart
+          </button>
+          <button class="btn-buy-now" onclick="buyNow()">
+            Buy Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer anchor-offset" id="contact">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="./assets/logo.svg" alt="Plug Market" />
+        <p class="muted">Plug Market © 2025</p>
+      </div>
+      <nav class="footer__links">
+        <a href="./terms.html">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener">Discord</a>
+        <a href="#">Telegram</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    let quantity = 1;
+    let selectedPlan = '1 Month';
+    let pricePerUnit = 3.50;
+
+    const planPrices = {
+      '1 Month': 3.50,
+      '3 Months': 6.00
+    };
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const countEl = document.getElementById('cart-count');
+      if (countEl) {
+        countEl.textContent = totalItems;
+        countEl.style.display = totalItems > 0 ? 'flex' : 'none';
+      }
+    }
+
+    function selectPlan(button) {
+      document.querySelectorAll('.plan-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      selectedPlan = button.dataset.plan;
+      pricePerUnit = parseFloat(button.dataset.price);
+      document.getElementById('display-price').textContent = `$${pricePerUnit.toFixed(2)}`;
+    }
+
+    function increaseQuantity() {
+      quantity++;
+      document.getElementById('quantity').textContent = quantity;
+    }
+
+    function decreaseQuantity() {
+      if (quantity > 1) {
+        quantity--;
+        document.getElementById('quantity').textContent = quantity;
+      }
+    }
+
+    function addToCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      
+      const itemId = `chatgpt-pro-${selectedPlan.replace(' ', '-').toLowerCase()}`;
+      const existingItem = cart.find(item => item.id === itemId);
+      
+      if (existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + quantity;
+      } else {
+        cart.push({
+          id: itemId,
+          title: `ChatGPT Pro - ${selectedPlan}`,
+          price: pricePerUnit,
+          quantity: quantity,
+          image: './assets/products/chatgptpro.png',
+          plan: selectedPlan
+        });
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      
+      alert(`Added ${quantity} x ChatGPT Pro (${selectedPlan}) to cart!`);
+      quantity = 1;
+      document.getElementById('quantity').textContent = quantity;
+    }
+
+    function buyNow() {
+      addToCart();
+      window.location.href = './cart.html';
+    }
+
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const mobileSidebarClose = document.getElementById('mobile-sidebar-close');
+    const mobileSidebarOverlay = document.getElementById('mobile-sidebar-overlay');
+
+    function openMobileMenu() {
+      mobileSidebar.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileSidebar.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuToggle) {
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
+    }
+
+    if (mobileSidebarClose) {
+      mobileSidebarClose.addEventListener('click', closeMobileMenu);
+    }
+
+    if (mobileSidebarOverlay) {
+      mobileSidebarOverlay.addEventListener('click', closeMobileMenu);
+    }
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.mobile-sidebar__link').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Update cart count on page load
+    updateCartCount();
+
+    // Background particles (reusing from main.js)
+    const canvas = document.getElementById('bg-particles');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          radius: Math.random() * 2 + 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    }
+  </script>
+</body>
+
+</html>

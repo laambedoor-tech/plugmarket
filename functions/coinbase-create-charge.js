@@ -12,7 +12,7 @@ const PRICES_USD = {
   'crunchyroll': { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
   'discord-nitro': { 'Boost 1m': 4.79, 'Boost 1 Year': 15.17, 'Basic 1m': 1.35 },
   'chatgpt-plus': { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 11.88, '12 Months': 16.85 },
-  'chatgpt-pro': { '1 Month': 5.0, '3 Months': 10.0 },
+  'chatgpt-pro': { '1 Month': 3.5, '3 Months': 6.0 },
   'capcut-pro': { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
   'geoguessr': { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0 },
   'filmora': { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0 }
