@@ -13,10 +13,10 @@ import cryptoNowStatus from './crypto-now-status.js';
 import coinbaseCreateCharge from './coinbase-create-charge.js';
 import coinbaseGetCharge from './coinbase-get-charge.js';
 import coinbaseWebhook from './coinbase-webhook.js';
-import sendVerificationCode from './send-verification-code.js';
-import verifyCode from './verify-code.js';
-import getUserOrders from './get-user-orders.js';
-import deleteAccount from './delete-account.js';
+import { onRequestPost as sendVerificationCode } from './send-verification-code.js';
+import { onRequestPost as verifyCode } from './verify-code.js';
+import { onRequestPost as getUserOrders } from './get-user-orders.js';
+import { onRequestPost as deleteAccount } from './delete-account.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -61,10 +61,10 @@ export default {
     if (path === '/api/get-reviews') return getReviews.fetch(request, env, ctx);
 
     // Auth routes
-    if (path === '/send-verification-code') return sendVerificationCode.onRequestPost({ request, env, ctx });
-    if (path === '/verify-code') return verifyCode.onRequestPost({ request, env, ctx });
-    if (path === '/get-user-orders') return getUserOrders.onRequestPost({ request, env, ctx });
-    if (path === '/delete-account') return deleteAccount.onRequestPost({ request, env, ctx });
+    if (path === '/send-verification-code') return sendVerificationCode({ request, env, ctx });
+    if (path === '/verify-code') return verifyCode({ request, env, ctx });
+    if (path === '/get-user-orders') return getUserOrders({ request, env, ctx });
+    if (path === '/delete-account') return deleteAccount({ request, env, ctx });
 
     // 404 for unknown routes
     return new Response('Not Found', { status: 404 });
