@@ -245,6 +245,7 @@ function render(){
       'nordvpn': 'resized/nordvpn84.png',
       'crunchy': 'resized/crunchyroll84.png',
       'nitro': 'resized/nitroboost84.png',
+      'discordpromocode': 'resized/discordpromo84.png',
       'chatgpt': 'resized/chatgptplus84.png',
       'chatgpt-pro': 'resized/chatgptpro84.png',
       'capcut': 'resized/capcutpro84.png',

@@ -146,6 +146,7 @@ const products = [
   { id: 'nordvpn', title: 'NordVPN', price: '$', tone: 'cyan' },
   { id: 'crunchy', title: 'Crunchyroll', price: '$', tone: 'orange' },
   { id: 'nitro', title: 'Discord Nitro', price: '$', tone: 'purple' },
+  { id: 'discordpromocode', title: 'Discord Nitro Promo Code', price: '$', tone: 'purple' },
   { id: 'chatgpt', title: 'ChatGPT Plus', price: '$', tone: 'teal' },
   { id: 'chatgpt-pro', title: 'ChatGPT Pro', price: '$', tone: 'teal' },
   { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
@@ -173,6 +174,7 @@ const subscriptions = {
   crunchy: { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
   // Discord Nitro: solo las variantes de la captura
   nitro: { 'Boost 1m': 4.79, 'Boost 1 Year': 15.17, 'Basic 1m': 1.35 },
+  discordpromocode: { '1 Month': 0.6, '3 Months': 1.05 },
   chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 11.88, '12 Months': 16.85 },
   'chatgpt-pro': { '1 Month': 3.5, '3 Months': 6.0 },
   capcut: { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
@@ -363,6 +365,47 @@ const toneToGradient = (tone) => {
           <a href="https://discord.gg/plugmarket" target="_blank" class="btn btn--primary" style="display:inline-block; text-decoration:none;">Join Discord Server</a>
         </div>
       `;
+    } else if (pid === 'discordpromocode') {
+      // Discord Promo Code with special notice
+      const plans = subscriptions[pid];
+      modalContent.innerHTML = `
+        <div class="card" style="margin:10px 10px 15px 10px; padding:15px; background:rgba(255,171,64,.15); border:1px solid rgba(255,171,64,.3);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <span style="font-size:20px;">⚠️</span>
+            <strong style="color:#ffab40;">Important Notice</strong>
+          </div>
+          <p style="margin:0; font-size:14px; color:#d7d9e0;">Only for accounts that never had Nitro</p>
+        </div>
+        ${Object.entries(plans).map(([label, price]) => {
+          const stockKey = `${pid}:${label}`;
+          const stockCount = stockData[stockKey] || 0;
+          const available = stockCount > 0;
+          const stockBadge = available
+            ? '<span class="stock-badge stock-badge--in">In Stock</span>'
+            : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
+          const logoFile = 'resized/discordpromo84.png';
+
+          return `
+          <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${pid}" data-plan="${label}" data-price="${price}">
+            <div class="variant__thumb" style="background:${toneToGradient(product.tone)}">
+              <img src="./assets/products/${logoFile}"
+                   alt="${product.title} logo"
+                   width="84" height="84"
+                   loading="lazy" decoding="async" fetchpriority="low"
+                   onerror="this.style.display='none'" />
+            </div>
+            <div>
+              <h4 class="variant__title">${product.title} — ${label}</h4>
+              <div class="variant__meta">Instant delivery · ${stockBadge}</div>
+            </div>
+            <div class="variant__actions">
+              <div class="variant__price">$${price}</div>
+              <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart" ${!available ? 'disabled' : ''}>Add to cart</button>
+              <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now" ${!available ? 'disabled' : ''}>Buy now</button>
+            </div>
+          </div>
+        `}).join('')}
+      `;
     } else if (!plans) {
       modalContent.innerHTML = `
         <div class="card" style="margin:10px">We're adding subscription options for this product. Check back soon.</div>
@@ -386,13 +429,15 @@ const toneToGradient = (tone) => {
           'nordvpn': 'resized/nordvpn84.png',
           'crunchy': 'resized/crunchyroll84.png',
           'nitro': 'resized/nitroboost84.png',
+          'discordpromocode': 'resized/discordpromo84.png',
           'chatgpt': 'resized/chatgptplus84.png',
           'chatgpt-pro': 'resized/chatgptpro84.png',
           'capcut': 'resized/capcutpro84.png',
           'geoguessr': 'resized/geoguessr84.png',
           'filmora': 'resized/filmora84.png',
           'duolingo': 'resized/duolingo84.png',
-          'movistar': 'resized/movistar+84.png'
+          'movistar': 'resized/movistar+84.png',
+          'dazn': 'resized/dazn84.png'
         };
         const logoFile = imageMap[product.id] || `${product.id}.png`;
 
