@@ -499,8 +499,21 @@ function setupBalanceUI() {
   // Open modal
   addFundsBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    console.log('Opening modal...');
     modal.style.display = 'flex';
     modal.classList.add('active');
+    
+    // Ensure modal content is visible
+    const modalContent = modal.querySelector('.modal');
+    if (modalContent) {
+      modalContent.style.display = 'block';
+      modalContent.style.position = 'relative';
+      modalContent.style.zIndex = '10001';
+      console.log('Modal content found and styled');
+    } else {
+      console.error('Modal content (.modal) not found');
+    }
+    
     setTimeout(() => initializeStripe(), 100);
   });
   
