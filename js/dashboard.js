@@ -42,10 +42,10 @@ async function loadDashboardData(auth) {
 function displayDashboardStats(data) {
   const orders = data.orders || [];
   const completedOrders = orders.filter(o => o.status === 'completed').length;
-  const totalSpent = orders.reduce((sum, o) => sum + (parseFloat(o.amount) || 0), 0);
+  const totalSpent = orders.reduce((sum, o) => sum + (parseFloat(o.total_cents / 100) || 0), 0);
   
   document.getElementById('completed-orders').textContent = completedOrders;
-  document.getElementById('total-spent').textContent = `$${totalSpent.toFixed(2)}`;
+  document.getElementById('total-spent').textContent = `€${totalSpent.toFixed(2)}`;
   
   if (data.customer_since) {
     const date = new Date(data.customer_since);
@@ -76,8 +76,26 @@ function displayLatestOrders(orders) {
     return;
   }
   
-  // Show only the latest order
-  const latestOrder = orders[0];
+  // Show ALL orders
+  const ordersHTML = orders.map(order => `
+    <tr>
+      <td>
+        <div class="order-id">#${order.id ? order.id.slice(0, 8) : 'N/A'}</div>
+        <div class="order-product">${getProductNames(order.items)}</div>
+      </td>
+      <td>${formatDate(order.created_at)}</td>
+      <td>
+        <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+          <span>●</span>
+          <span>${capitalizeFirst(order.status || 'pending')}</span>
+        </span>
+      </td>
+      <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
+      <td>
+        <a href="./orders.html" class="btn-view">View</a>
+      </td>
+    </tr>
+  `).join('');
   
   container.innerHTML = `
     <table class="orders-table">
@@ -91,26 +109,23 @@ function displayLatestOrders(orders) {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>
-            <div class="order-id">${latestOrder.id || 'N/A'}</div>
-            <div class="order-product">${latestOrder.product_name || 'Product'}</div>
-          </td>
-          <td>${formatDate(latestOrder.created_at)}</td>
-          <td>
-            <span class="status-badge ${latestOrder.status === 'completed' ? 'status-completed' : 'status-pending'}">
-              <span>●</span>
-              <span>${capitalizeFirst(latestOrder.status || 'pending')}</span>
-            </span>
-          </td>
-          <td>$${parseFloat(latestOrder.amount || 0).toFixed(2)}</td>
-          <td>
-            <a href="./orders.html" class="btn-view">View</a>
-          </td>
-        </tr>
+        ${ordersHTML}
       </tbody>
     </table>
   `;
+}
+
+function getProductNames(items) {
+  if (!items || !Array.isArray(items)) return 'Products';
+  
+  try {
+    const products = items.map(item => item.pid || item.name || 'Product');
+    if (products.length === 0) return 'Products';
+    if (products.length === 1) return products[0];
+    return `${products[0]} & ${products.length - 1} more`;
+  } catch (e) {
+    return 'Products';
+  }
 }
 
 function formatDate(dateString) {
