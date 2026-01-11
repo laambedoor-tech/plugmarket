@@ -91,74 +91,74 @@ export default {
 async function sendVerificationEmail(env, email, code) {
   try {
     const emailData = {
-      personalizations: [{
-        to: [{ email }],
-        subject: 'Plug Market - Your login code'
-      }],
-      from: { 
-        email: 'noreply@trial-3zxk54v0pj04jy6v.mlsender.net',
-        name: 'Plug Market'
-      },
-      content: [{
-        type: 'text/html',
-        value: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #0f1117; }
-              .container { max-width: 600px; margin: 40px auto; background: #1a1d2e; border-radius: 16px; overflow: hidden; }
-              .header { background: linear-gradient(135deg, #d946ef, #9333ea); padding: 40px; text-align: center; }
-              .logo { width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
-              .header h1 { color: white; margin: 0; font-size: 24px; }
-              .content { padding: 40px; color: #e5e7eb; }
-              .code-box { background: rgba(217, 70, 239, 0.1); border: 2px solid #d946ef; border-radius: 12px; padding: 24px; text-align: center; margin: 32px 0; }
-              .code { font-size: 48px; font-weight: 900; letter-spacing: 8px; color: #d946ef; font-family: 'Courier New', monospace; }
-              .expires { color: #9ca3af; font-size: 14px; margin-top: 16px; }
-              .footer { padding: 24px; text-align: center; color: #6b7280; font-size: 13px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-              .warning { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 16px; margin: 24px 0; color: #fca5a5; font-size: 14px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <div class="logo">🔐</div>
-                <h1>Your login code</h1>
-              </div>
-              <div class="content">
-                <p>You requested a login code for your <strong>Plug Market</strong> account.</p>
-                <p>Enter the following code to access your dashboard:</p>
-                <div class="code-box">
-                  <div class="code">${code}</div>
-                  <div class="expires">This code expires in <strong>15 minutes</strong>.</div>
-                </div>
-                <div class="warning">
-                  ⚠️ If you did not request this code, you can safely ignore this email.
-                </div>
-                <p style="margin-top: 32px;">Best regards,<br><strong>Plug Market</strong></p>
-              </div>
-              <div class="footer">
-                <p>© 2025 Plug Market. All rights reserved.</p>
-              </div>
+      from: 'PlugMarket <onboarding@resend.dev>',
+      to: [email],
+      subject: 'Plug Market - Your login code',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #0f1117; }
+            .container { max-width: 600px; margin: 40px auto; background: #1a1d2e; border-radius: 16px; overflow: hidden; }
+            .header { background: linear-gradient(135deg, #d946ef, #9333ea); padding: 40px; text-align: center; }
+            .logo { width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
+            .header h1 { color: white; margin: 0; font-size: 24px; }
+            .content { padding: 40px; color: #e5e7eb; }
+            .code-box { background: rgba(217, 70, 239, 0.1); border: 2px solid #d946ef; border-radius: 12px; padding: 24px; text-align: center; margin: 32px 0; }
+            .code { font-size: 48px; font-weight: 900; letter-spacing: 8px; color: #d946ef; font-family: 'Courier New', monospace; }
+            .expires { color: #9ca3af; font-size: 14px; margin-top: 16px; }
+            .footer { padding: 24px; text-align: center; color: #6b7280; font-size: 13px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+            .warning { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 16px; margin: 24px 0; color: #fca5a5; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">🔐</div>
+              <h1>Your login code</h1>
             </div>
-          </body>
-          </html>
-        `
-      }]
+            <div class="content">
+              <p>You requested a login code for your <strong>Plug Market</strong> account.</p>
+              <p>Enter the following code to access your dashboard:</p>
+              <div class="code-box">
+                <div class="code">${code}</div>
+                <div class="expires">This code expires in <strong>15 minutes</strong>.</div>
+              </div>
+              <div class="warning">
+                ⚠️ If you did not request this code, you can safely ignore this email.
+              </div>
+              <p style="margin-top: 32px;">Best regards,<br><strong>Plug Market</strong></p>
+            </div>
+            <div class="footer">
+              <p>© 2025 Plug Market. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
     };
     
-    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${env.SENDGRID_API_KEY}`,
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(emailData)
     });
     
-    return response.ok;
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Resend error:', errorText);
+      return false;
+    }
+    
+    const result = await response.json();
+    console.log('Email sent successfully via Resend:', result.id);
+    return true;
   } catch (error) {
     console.error('Error sending email:', error);
     return false;
