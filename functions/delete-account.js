@@ -26,13 +26,32 @@ export async function onRequestPost(context) {
     }
     
     // Delete user data
-    await env.DB.prepare(`DELETE FROM users WHERE email = ?`).bind(email).run();
-    await env.DB.prepare(`DELETE FROM verification_codes WHERE email = ?`).bind(email).run();
+    await fetch(`${env.SUPABASE_URL}/rest/v1/users?email=eq.${email}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+      }
+    });
+    
+    await fetch(`${env.SUPABASE_URL}/rest/v1/verification_codes?email=eq.${email}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+      }
+    });
     
     // Note: We keep order history for business records, but anonymize the email
-    await env.DB.prepare(`
-      UPDATE orders SET customer_email = 'deleted@user.com' WHERE customer_email = ?
-    `).bind(email).run();
+    await fetch(`${env.SUPABASE_URL}/rest/v1/orders?customer_email=eq.${email}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ customer_email: 'deleted@user.com' })
+    });
     
     return new Response(JSON.stringify({
       success: true,

@@ -1,5 +1,5 @@
 // Send verification code to user email
-// Stores code in D1 database with expiration
+// Stores code in Supabase database with expiration
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -21,10 +21,30 @@ export async function onRequestPost(context) {
     // Store code in database (expires in 15 minutes)
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
     
-    await env.DB.prepare(`
-      INSERT OR REPLACE INTO verification_codes (email, code, expires_at, created_at)
-      VALUES (?, ?, ?, datetime('now'))
-    `).bind(email, code, expiresAt).run();
+    // Delete old codes for this email
+    await fetch(`${env.SUPABASE_URL}/rest/v1/verification_codes?email=eq.${email}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+      }
+    });
+    
+    // Insert new code
+    await fetch(`${env.SUPABASE_URL}/rest/v1/verification_codes`, {
+      method: 'POST',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        email,
+        code,
+        expires_at: expiresAt
+      })
+    });
     
     // Send email with code
     const emailSent = await sendVerificationEmail(env, email, code);
@@ -61,7 +81,7 @@ async function sendVerificationEmail(env, email, code) {
         subject: 'Plug Market - Your login code'
       }],
       from: { 
-        email: env.FROM_EMAIL || 'noreply@plugmarket.com',
+        email: 'noreply@trial-3zxk54v0pj04jy6v.mlsender.net',
         name: 'Plug Market'
       },
       content: [{

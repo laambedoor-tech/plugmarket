@@ -15,14 +15,19 @@ export async function onRequestPost(context) {
     }
     
     // Check if code exists and is valid
-    const result = await env.DB.prepare(`
-      SELECT * FROM verification_codes 
-      WHERE email = ? AND code = ? AND expires_at > datetime('now')
-      ORDER BY created_at DESC
-      LIMIT 1
-    `).bind(email, code).first();
+    const response = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/verification_codes?email=eq.${email}&code=eq.${code}&expires_at=gt.${new Date().toISOString()}&order=created_at.desc&limit=1`,
+      {
+        headers: {
+          'apikey': env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+        }
+      }
+    );
     
-    if (!result) {
+    const codes = await response.json();
+    
+    if (!codes || codes.length === 0) {
       return new Response(JSON.stringify({ error: 'Invalid or expired code' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -30,16 +35,28 @@ export async function onRequestPost(context) {
     }
     
     // Delete used code
-    await env.DB.prepare(`
-      DELETE FROM verification_codes WHERE email = ? AND code = ?
-    `).bind(email, code).run();
+    await fetch(`${env.SUPABASE_URL}/rest/v1/verification_codes?email=eq.${email}&code=eq.${code}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+      }
+    });
     
     // Create or update user record
-    await env.DB.prepare(`
-      INSERT INTO users (email, last_login, created_at)
-      VALUES (?, datetime('now'), datetime('now'))
-      ON CONFLICT(email) DO UPDATE SET last_login = datetime('now')
-    `).bind(email).run();
+    await fetch(`${env.SUPABASE_URL}/rest/v1/users`, {
+      method: 'POST',
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        email,
+        last_login: new Date().toISOString()
+      })
+    });
     
     // Generate JWT token (simple implementation)
     const token = await generateToken(email, env.JWT_SECRET);

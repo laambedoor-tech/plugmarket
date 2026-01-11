@@ -26,19 +26,34 @@ export async function onRequestPost(context) {
     }
     
     // Get user info
-    const user = await env.DB.prepare(`
-      SELECT email, created_at, last_login FROM users WHERE email = ?
-    `).bind(email).first();
+    const userResponse = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/users?email=eq.${email}`,
+      {
+        headers: {
+          'apikey': env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+        }
+      }
+    );
+    const users = await userResponse.json();
+    const user = users && users.length > 0 ? users[0] : null;
     
     // Get user orders
-    const orders = await env.DB.prepare(`
-      SELECT * FROM orders WHERE customer_email = ? ORDER BY created_at DESC
-    `).bind(email).all();
+    const ordersResponse = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/orders?customer_email=eq.${email}&order=created_at.desc`,
+      {
+        headers: {
+          'apikey': env.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_ANON_KEY}`
+        }
+      }
+    );
+    const orders = await ordersResponse.json();
     
     return new Response(JSON.stringify({
       success: true,
       customer_since: user?.created_at,
-      orders: orders.results || []
+      orders: orders || []
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
