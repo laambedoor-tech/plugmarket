@@ -25,9 +25,15 @@ const PRICES_USD = {
   nordvpn: { '1 Month': 85, '3 Months': 200, '6 Months': 360, '12 Months': 690 },
   crunchy: { '1 Month': 90, '3 Months': 210, '6 Months': 380, '12 Months': 720 },
   nitro: { 'Boost 1m': 479, 'Boost 1 Year': 1597, 'Basic 1m': 135 },
+  discordpromocode: { '1 Month': 60, '3 Months': 105 },
   chatgpt: { '1 Month': 320, '3 Months': 780, '6 Months': 1250, '12 Months': 2400 },
+  'chatgpt-pro': { '1 Month': 350, '3 Months': 600 },
   capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 },
-  geoguessr: { '1 Month': 200, '3 Months': 500, '12 Months': 1000 }
+  geoguessr: { '1 Month': 200, '3 Months': 500, '12 Months': 1000 },
+  filmora: { '1 Month': 250, '3 Months': 600, '6 Months': 1050, '12 Months': 1600 },
+  duolingo: { '12 Months': 124 },
+  movistar: { '12 Months': 244 },
+  dazn: { 'Lifetime': 150 }
 };
 
 const PLAN_ALIASES = {

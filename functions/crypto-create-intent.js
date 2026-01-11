@@ -8,6 +8,8 @@ const PRICES_USD = {
   hbo: { '1 mes': 5, '1 Month':5, '6 meses': 12, '6 Months':12, '12 meses': 18, '12 Months':18 },
   crunchyroll: { '1 mes': 5, '1 Month':5, '6 meses': 12, '6 Months':12, '12 meses': 18, '12 Months':18 },
   youtube: { '1 mes': 5, '1 Month':5, '6 meses': 12, '6 Months':12, '12 meses': 18, '12 Months':18 },
+  discordpromocode: { '1 Month': 0.6, '3 Months': 1.05 },
+  dazn: { 'Lifetime': 1.5 }
 };
 
 function validateAndPriceCart(cart){
