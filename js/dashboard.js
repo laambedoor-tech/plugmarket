@@ -281,15 +281,18 @@ function showOrderDetails(orderId) {
   let credentialsHTML = '';
   items.forEach((item, index) => {
     const credentials = item.credentials || {};
-    const credRows = Object.entries(credentials).map(([key, value]) => `
+    const credRows = Object.entries(credentials).map(([key, value]) => {
+      const safeValue = String(value).replace(/'/g, "\\'");
+      return `
       <div class="credential-row">
         <span class="credential-label">${key}</span>
         <div class="credential-value">
           <span>${value}</span>
-          <button class="btn-copy" onclick="copyToClipboard('${value}', this)">Copy</button>
+          <button class="btn-copy" onclick="copyToClipboard('${safeValue}', this)">Copy</button>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
     
     credentialsHTML += `
       <div class="credential-card">

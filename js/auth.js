@@ -1,6 +1,15 @@
 // Auth functions for email verification system
 const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 
+// Auto-redirect to dashboard if already logged in
+if (window.location.pathname.includes('my-account.html')) {
+  const token = localStorage.getItem('auth_token');
+  const email = localStorage.getItem('auth_email');
+  if (token && email) {
+    window.location.href = './dashboard.html';
+  }
+}
+
 // Send verification code to email
 async function sendCode(event) {
   event.preventDefault();
