@@ -86,7 +86,7 @@ export default {
 async function sendVerificationEmail(env, email, code) {
   try {
     const emailData = {
-      from: 'PlugMarket <onboarding@resend.dev>',
+      from: 'PlugMarket <plugmarkethelp@gmail.com>',
       to: [email],
       subject: 'Plug Market - Your login code',
       html: `
@@ -147,12 +147,12 @@ async function sendVerificationEmail(env, email, code) {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Resend error:', errorText);
+      console.error('Resend API error:', response.status, errorText);
       return false;
     }
     
     const result = await response.json();
-    console.log('Email sent successfully via Resend:', result.id);
+    console.log('✅ Email sent successfully via Resend:', result.id);
     return true;
   } catch (error) {
     console.error('Error sending email:', error);
