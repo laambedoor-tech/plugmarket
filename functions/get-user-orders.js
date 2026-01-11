@@ -46,7 +46,7 @@ export default {
     
     // Get user orders
     const ordersResponse = await fetch(
-      `${env.SUPABASE_URL}/rest/v1/orders?customer_email=eq.${email}&order=created_at.desc`,
+      `${env.SUPABASE_URL}/rest/v1/orders?email=eq.${email}&order=created_at.desc`,
       {
         headers: {
           'apikey': env.SUPABASE_ANON_KEY,
