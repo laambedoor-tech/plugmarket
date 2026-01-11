@@ -1,7 +1,13 @@
 // Get user orders from database
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+export default {
+  async fetch(request, env, ctx) {
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
   
   try {
     const authHeader = request.headers.get('Authorization');
@@ -113,3 +119,4 @@ async function verifyToken(token, secret) {
     return false;
   }
 }
+};

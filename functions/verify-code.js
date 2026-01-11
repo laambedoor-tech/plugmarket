@@ -1,7 +1,13 @@
 // Verify the code entered by user and generate JWT token
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+export default {
+  async fetch(request, env, ctx) {
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
   
   try {
     const body = await request.json();
@@ -115,3 +121,4 @@ async function generateToken(email, secret) {
   
   return `${data}.${signatureBase64}`;
 }
+};

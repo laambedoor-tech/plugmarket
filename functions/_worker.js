@@ -13,15 +13,27 @@ import cryptoNowStatus from './crypto-now-status.js';
 import coinbaseCreateCharge from './coinbase-create-charge.js';
 import coinbaseGetCharge from './coinbase-get-charge.js';
 import coinbaseWebhook from './coinbase-webhook.js';
-import { onRequestPost as sendVerificationCode } from './send-verification-code.js';
-import { onRequestPost as verifyCode } from './verify-code.js';
-import { onRequestPost as getUserOrders } from './get-user-orders.js';
-import { onRequestPost as deleteAccount } from './delete-account.js';
+import sendVerificationCode from './send-verification-code.js';
+import verifyCode from './verify-code.js';
+import getUserOrders from './get-user-orders.js';
+import deleteAccount from './delete-account.js';
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // Handle CORS preflight requests
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Max-Age': '86400',
+        }
+      });
+    }
 
     // Route requests to the correct function
     if (path === '/api/get-stripe-config') return getStripeConfig.fetch(request, env, ctx);
@@ -61,10 +73,10 @@ export default {
     if (path === '/api/get-reviews') return getReviews.fetch(request, env, ctx);
 
     // Auth routes
-    if (path === '/send-verification-code') return sendVerificationCode({ request, env, ctx });
-    if (path === '/verify-code') return verifyCode({ request, env, ctx });
-    if (path === '/get-user-orders') return getUserOrders({ request, env, ctx });
-    if (path === '/delete-account') return deleteAccount({ request, env, ctx });
+    if (path === '/send-verification-code') return sendVerificationCode.fetch(request, env, ctx);
+    if (path === '/verify-code') return verifyCode.fetch(request, env, ctx);
+    if (path === '/get-user-orders') return getUserOrders.fetch(request, env, ctx);
+    if (path === '/delete-account') return deleteAccount.fetch(request, env, ctx);
 
     // 404 for unknown routes
     return new Response('Not Found', { status: 404 });
