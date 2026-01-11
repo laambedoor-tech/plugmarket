@@ -53,7 +53,10 @@ export default async function handler(request, env) {
 
     // Get user balance from Supabase
     const supabaseUrl = env.SUPABASE_URL;
-    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_ANON_KEY;
+
+    console.log('Fetching balance for email:', email);
+    console.log('Supabase URL:', supabaseUrl);
 
     const userResponse = await fetch(
       `${supabaseUrl}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=balance`,
@@ -66,11 +69,16 @@ export default async function handler(request, env) {
       }
     );
 
+    console.log('User response status:', userResponse.status);
+
     if (!userResponse.ok) {
-      throw new Error('Failed to fetch user balance');
+      const errorText = await userResponse.text();
+      console.error('Supabase error:', errorText);
+      throw new Error(`Failed to fetch user balance: ${errorText}`);
     }
 
     const users = await userResponse.json();
+    console.log('Users data:', users);
     
     if (!users || users.length === 0) {
       return new Response(JSON.stringify({ balance: 0 }), {
