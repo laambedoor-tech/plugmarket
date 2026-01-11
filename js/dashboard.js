@@ -8,6 +8,9 @@ let allOrders = []; // Store orders globally
 
 // Make switchPanel globally accessible
 window.switchPanel = switchPanel;
+window.showOrderDetails = showOrderDetails;
+window.closeOrderModal = closeOrderModal;
+window.copyToClipboard = copyToClipboard;
 
 if (auth) {
   loadDashboardData(auth);
@@ -126,7 +129,7 @@ function displayLatestOrders(orders) {
       </td>
       <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
       <td>
-        <button class="btn-view" onclick="switchPanel('orders')">View</button>
+        <button class="btn-view" onclick="showOrderDetails('${order.id}')">View</button>
       </td>
     </tr>
   `).join('');
@@ -195,7 +198,7 @@ function displayAllOrders(orders) {
       </td>
       <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
       <td>
-        <button class="btn-view" onclick="alert('Order details: ' + '${order.id}')">View</button>
+        <button class="btn-view" onclick="showOrderDetails('${order.id}')">View</button>
       </td>
     </tr>
   `).join('');
@@ -263,4 +266,95 @@ async function deleteAccount() {
     console.error('Error deleting account:', error);
     alert('Network error. Please try again later.');
   }
+}
+
+function showOrderDetails(orderId) {
+  const order = allOrders.find(o => o.id === orderId);
+  if (!order) {
+    alert('Order not found');
+    return;
+  }
+  
+  const modalContent = document.getElementById('order-modal-content');
+  const items = order.items || [];
+  
+  let credentialsHTML = '';
+  items.forEach((item, index) => {
+    const credentials = item.credentials || {};
+    const credRows = Object.entries(credentials).map(([key, value]) => `
+      <div class="credential-row">
+        <span class="credential-label">${key}</span>
+        <div class="credential-value">
+          <span>${value}</span>
+          <button class="btn-copy" onclick="copyToClipboard('${value}', this)">Copy</button>
+        </div>
+      </div>
+    `).join('');
+    
+    credentialsHTML += `
+      <div class="credential-card">
+        <div class="credential-header">${item.pid || 'Product'} ${items.length > 1 ? `(${index + 1})` : ''}</div>
+        ${credRows || '<p style="color: #6b7280; font-size: 14px;">No credentials available</p>'}
+      </div>
+    `;
+  });
+  
+  modalContent.innerHTML = `
+    <div class="order-detail-section">
+      <div class="order-detail-label">Order ID</div>
+      <div class="order-detail-value">#${order.id.slice(0, 16)}</div>
+    </div>
+    
+    <div class="order-detail-section">
+      <div class="order-detail-label">Date</div>
+      <div class="order-detail-value">${formatDate(order.created_at)}</div>
+    </div>
+    
+    <div class="order-detail-section">
+      <div class="order-detail-label">Status</div>
+      <div class="order-detail-value">
+        <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+          <span>●</span>
+          <span>${capitalizeFirst(order.status || 'pending')}</span>
+        </span>
+      </div>
+    </div>
+    
+    <div class="order-detail-section">
+      <div class="order-detail-label">Total</div>
+      <div class="order-detail-value">€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</div>
+    </div>
+    
+    <div class="order-detail-section">
+      <div class="order-detail-label">Credentials</div>
+      <div class="credentials-grid">
+        ${credentialsHTML}
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('order-modal').classList.add('active');
+}
+
+function closeOrderModal() {
+  document.getElementById('order-modal').classList.remove('active');
+}
+
+function copyToClipboard(text, button) {
+  navigator.clipboard.writeText(text).then(() => {
+    const originalText = button.textContent;
+    button.textContent = 'Copied!';
+    button.style.background = 'rgba(45, 213, 115, 0.2)';
+    button.style.borderColor = 'rgba(45, 213, 115, 0.5)';
+    button.style.color = '#2dd573';
+    
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.background = '';
+      button.style.borderColor = '';
+      button.style.color = '';
+    }, 2000);
+  }).catch(err => {
+    alert('Failed to copy');
+  });
 }
