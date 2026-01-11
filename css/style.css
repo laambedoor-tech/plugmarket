@@ -345,6 +345,30 @@ body::before {
   transform: translateY(-1px);
 }
 
+.btn--icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, .5);
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: 8px;
+  color: #fff;
+  transition: all .2s ease;
+}
+
+.btn--icon:hover {
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .3);
+  transform: translateY(-2px);
+}
+
+.btn--icon svg {
+  flex-shrink: 0;
+}
+
 /* Secciones genéricas */
 main {
   position: relative;
