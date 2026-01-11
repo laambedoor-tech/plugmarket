@@ -31,7 +31,10 @@ export default async function handler(request, env) {
     if (parts.length !== 3) {
       return new Response(JSON.stringify({ error: 'Invalid token' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
@@ -41,7 +44,10 @@ export default async function handler(request, env) {
     if (!email) {
       return new Response(JSON.stringify({ error: 'Invalid token payload' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
@@ -50,19 +56,29 @@ export default async function handler(request, env) {
     if (!cart || cart.length === 0) {
       return new Response(JSON.stringify({ error: 'Cart is empty' }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
     if (!totalAmount || totalAmount <= 0) {
       return new Response(JSON.stringify({ error: 'Invalid amount' }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
     const supabaseUrl = env.SUPABASE_URL;
-    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_ANON_KEY;
+
+    console.log('Processing balance payment for:', email);
+    console.log('Cart:', cart);
+    console.log('Total:', totalAmount);
 
     // Get current balance
     const userResponse = await fetch(
@@ -85,7 +101,10 @@ export default async function handler(request, env) {
     if (!users || users.length === 0) {
       return new Response(JSON.stringify({ error: 'User not found' }), {
         status: 404,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
@@ -99,7 +118,10 @@ export default async function handler(request, env) {
         required: totalAmount
       }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
