@@ -6,6 +6,9 @@ const auth = requireAuth();
 
 let allOrders = []; // Store orders globally
 
+// Make switchPanel globally accessible
+window.switchPanel = switchPanel;
+
 if (auth) {
   loadDashboardData(auth);
 }
