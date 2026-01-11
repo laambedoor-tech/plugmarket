@@ -87,9 +87,7 @@ async function verifyToken(token, secret) {
     
     const payload = JSON.parse(atob(payloadBase64));
     
-    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
-      return false;
-    }
+    // No expiration check - sessions never expire
     
     const encoder = new TextEncoder();
     const data = `${headerBase64}.${payloadBase64}`;

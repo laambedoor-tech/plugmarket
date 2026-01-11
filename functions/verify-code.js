@@ -90,8 +90,8 @@ async function generateToken(email, secret) {
   const header = { alg: 'HS256', typ: 'JWT' };
   const payload = {
     email,
-    iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) // 30 days
+    iat: Math.floor(Date.now() / 1000)
+    // No expiration - session never expires
   };
   
   const encoder = new TextEncoder();
