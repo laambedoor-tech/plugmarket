@@ -508,9 +508,15 @@ function setupBalanceUI() {
   // Open modal
   addFundsBtn.addEventListener('click', () => {
     console.log('Add funds clicked');
+    console.log('Modal element:', modal);
+    console.log('Modal classList before:', modal ? modal.classList.toString() : 'NO MODAL');
     if (modal) {
       modal.classList.add('active');
+      console.log('Modal classList after:', modal.classList.toString());
+      console.log('Modal computed display:', window.getComputedStyle(modal).display);
       initializeStripe();
+    } else {
+      console.error('Modal not found in DOM!');
     }
   });
   
