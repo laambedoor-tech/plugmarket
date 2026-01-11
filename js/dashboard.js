@@ -1,5 +1,5 @@
 // Dashboard functionality
-const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
+// API_BASE is defined in auth.js
 
 // Check authentication on page load
 const auth = requireAuth();
