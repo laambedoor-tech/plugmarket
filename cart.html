@@ -35,6 +35,7 @@
       <a href="./index.html#faq">FAQ</a>
       <a href="./index.html#contact">Contact</a>
       <a href="./orders.html">Orders</a>
+      <a href="./dashboard.html" id="dashboard-link" style="display: none;">Dashboard</a>
     </nav>
     <div class="cta">
       <a class="btn btn--secondary btn--desktop-only" id="my-account-btn" href="./my-account.html" style="background: linear-gradient(135deg, #ff2743, #ff5f6d); margin-right: 12px;">My Account</a>
@@ -65,6 +66,7 @@
         <a href="./index.html#faq" class="mobile-sidebar__link">FAQ</a>
         <a href="./index.html#contact" class="mobile-sidebar__link">Contact</a>
         <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
+        <a href="./dashboard.html" id="dashboard-link-mobile" class="mobile-sidebar__link" style="display: none;">Dashboard</a>
         <div class="mobile-sidebar__divider"></div>
         <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener noreferrer"
           class="mobile-sidebar__link mobile-sidebar__link--discord">
@@ -322,13 +324,21 @@
 </body>
 
 <script>
-  // Update My Account button if logged in
+  // Show Dashboard links if logged in
   (function() {
-    const myAccountBtn = document.getElementById('my-account-btn');
-    if (myAccountBtn) {
-      const token = localStorage.getItem('auth_token');
-      const email = localStorage.getItem('auth_email');
-      if (token && email) {
+    const token = localStorage.getItem('auth_token');
+    const email = localStorage.getItem('auth_email');
+    
+    if (token && email) {
+      // Show Dashboard navigation links
+      const dashboardLink = document.getElementById('dashboard-link');
+      const dashboardLinkMobile = document.getElementById('dashboard-link-mobile');
+      if (dashboardLink) dashboardLink.style.display = 'inline';
+      if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'block';
+      
+      // Update My Account button
+      const myAccountBtn = document.getElementById('my-account-btn');
+      if (myAccountBtn) {
         myAccountBtn.href = './dashboard.html';
         myAccountBtn.textContent = 'Dashboard';
       }

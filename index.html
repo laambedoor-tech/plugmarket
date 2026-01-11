@@ -67,6 +67,7 @@
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
       <a href="./orders.html">Orders</a>
+      <a href="./dashboard.html" id="dashboard-link" style="display: none;">Dashboard</a>
     </nav>
     <div class="cta">
       <a class="btn btn--ghost btn--desktop-only" href="#products">View products</a>
@@ -98,6 +99,7 @@
         <a href="#products" class="mobile-sidebar__link">Products</a>
         <a href="#faq" class="mobile-sidebar__link">FAQ</a>
         <a href="#contact" class="mobile-sidebar__link">Contact</a>
+        <a href="./dashboard.html" id="dashboard-link-mobile" class="mobile-sidebar__link" style="display: none;">Dashboard</a>
         <a href="./orders.html" class="mobile-sidebar__link">Orders</a>
         <div class="mobile-sidebar__divider"></div>
         <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener noreferrer"
@@ -275,13 +277,21 @@
 
   <script src="./js/main.js" type="module"></script>
   <script>
-    // Update My Account button if logged in
+    // Show Dashboard links if logged in
     (function() {
-      const myAccountBtn = document.getElementById('my-account-btn');
-      if (myAccountBtn) {
-        const token = localStorage.getItem('auth_token');
-        const email = localStorage.getItem('auth_email');
-        if (token && email) {
+      const token = localStorage.getItem('auth_token');
+      const email = localStorage.getItem('auth_email');
+      
+      if (token && email) {
+        // Show Dashboard navigation links
+        const dashboardLink = document.getElementById('dashboard-link');
+        const dashboardLinkMobile = document.getElementById('dashboard-link-mobile');
+        if (dashboardLink) dashboardLink.style.display = 'inline';
+        if (dashboardLinkMobile) dashboardLinkMobile.style.display = 'block';
+        
+        // Update My Account button
+        const myAccountBtn = document.getElementById('my-account-btn');
+        if (myAccountBtn) {
           myAccountBtn.href = './dashboard.html';
           myAccountBtn.textContent = 'Dashboard';
         }
