@@ -401,6 +401,7 @@ async function initializeBalance() {
 }
 
 async function loadBalance() {
+  console.log('Loading balance...');
   try {
     const response = await fetch(`${API_BASE}/get-balance`, {
       headers: {
@@ -408,12 +409,23 @@ async function loadBalance() {
       }
     });
     
+    console.log('Balance response status:', response.status);
+    
     if (response.ok) {
       const data = await response.json();
+      console.log('Balance data:', data);
       const balanceEl = document.getElementById('current-balance');
+      console.log('Balance element:', balanceEl);
       if (balanceEl) {
-        balanceEl.textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+        const balanceText = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+        balanceEl.textContent = balanceText;
+        console.log('Balance set to:', balanceText);
+      } else {
+        console.error('current-balance element not found');
       }
+    } else {
+      const errorText = await response.text();
+      console.error('Balance fetch failed:', errorText);
     }
   } catch (error) {
     console.error('Error loading balance:', error);
