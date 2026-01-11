@@ -56,16 +56,11 @@ export default {
     const emailSent = await sendVerificationEmail(env, email, code);
     
     if (!emailSent) {
-      // Log code for testing if email fails
-      console.log(`⚠️ Email failed. CODE FOR ${email}: ${code}`);
-      
-      // Still return success so user can test (remove this in production)
+      console.error(`Failed to send email to ${email}`);
       return new Response(JSON.stringify({ 
-        success: true,
-        message: 'Verification code sent to your email',
-        debug_code: code // REMOVE THIS IN PRODUCTION
+        error: 'Failed to send verification email. Please try again.'
       }), {
-        status: 200,
+        status: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
