@@ -156,4 +156,3 @@ async function sendVerificationEmail(env, email, code) {
     return false;
   }
 }
-};
