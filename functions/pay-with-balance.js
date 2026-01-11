@@ -51,9 +51,13 @@ export default async function handler(request, env) {
       });
     }
 
-    const { cart, totalAmount } = await request.json();
+    const body = await request.json();
+    console.log('Received body:', JSON.stringify(body));
+    
+    const { cart, totalAmount } = body;
 
     if (!cart || cart.length === 0) {
+      console.error('Cart is empty or missing');
       return new Response(JSON.stringify({ error: 'Cart is empty' }), {
         status: 400,
         headers: { 
@@ -77,7 +81,7 @@ export default async function handler(request, env) {
     const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_ANON_KEY;
 
     console.log('Processing balance payment for:', email);
-    console.log('Cart:', cart);
+    console.log('Cart:', JSON.stringify(cart));
     console.log('Total:', totalAmount);
 
     // Get current balance
@@ -92,7 +96,11 @@ export default async function handler(request, env) {
       }
     );
 
+    console.log('User fetch status:', userResponse.status);
+    
     if (!userResponse.ok) {
+      const errorText = await userResponse.text();
+      console.error('User fetch error:', errorText);
       throw new Error('Failed to fetch user balance');
     }
 
@@ -140,6 +148,8 @@ export default async function handler(request, env) {
       created_at: new Date().toISOString()
     };
 
+    console.log('Creating order with data:', JSON.stringify(orderData));
+
     const orderResponse = await fetch(
       `${supabaseUrl}/rest/v1/orders`,
       {
@@ -154,12 +164,16 @@ export default async function handler(request, env) {
       }
     );
 
+    console.log('Order response status:', orderResponse.status);
+    
     if (!orderResponse.ok) {
       const errorText = await orderResponse.text();
+      console.error('Order creation error:', errorText);
       throw new Error(`Failed to create order: ${errorText}`);
     }
 
     const orders = await orderResponse.json();
+    console.log('Order created:', JSON.stringify(orders));
     const orderId = orders[0].id;
 
     // Create balance transaction (this will automatically update balance via trigger)
@@ -170,6 +184,8 @@ export default async function handler(request, env) {
       description: `Order #${orderId}`,
       payment_method: 'balance'
     };
+
+    console.log('Creating transaction:', JSON.stringify(transactionData));
 
     const transactionResponse = await fetch(
       `${supabaseUrl}/rest/v1/balance_transactions`,
@@ -184,7 +200,11 @@ export default async function handler(request, env) {
       }
     );
 
+    console.log('Transaction response status:', transactionResponse.status);
+    
     if (!transactionResponse.ok) {
+      const errorText = await transactionResponse.text();
+      console.error('Transaction creation error:', errorText);
       throw new Error('Failed to create transaction');
     }
 
@@ -202,9 +222,11 @@ export default async function handler(request, env) {
 
   } catch (error) {
     console.error('Error processing balance payment:', error);
+    console.error('Error stack:', error.stack);
     return new Response(JSON.stringify({ 
       error: 'Failed to process payment',
-      details: error.message 
+      details: error.message,
+      stack: error.stack
     }), {
       status: 500,
       headers: { 
