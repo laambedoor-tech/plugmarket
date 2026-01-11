@@ -491,43 +491,30 @@ function setupBalanceUI() {
   const customAmountInput = document.getElementById('custom-amount');
   const submitBtn = document.getElementById('submit-topup');
   
-  console.log('Setting up balance UI:', {
-    addFundsBtn: !!addFundsBtn,
-    modal: !!modal,
-    closeBtn: !!closeBtn,
-    amountOptions: amountOptions.length,
-    customAmountInput: !!customAmountInput,
-    submitBtn: !!submitBtn
-  });
-  
-  if (!addFundsBtn) {
-    console.error('Add funds button not found!');
+  if (!addFundsBtn || !modal) {
+    console.error('Required elements not found');
     return;
   }
   
   // Open modal
-  addFundsBtn.addEventListener('click', () => {
-    console.log('Add funds clicked');
-    console.log('Modal element:', modal);
-    console.log('Modal classList before:', modal ? modal.classList.toString() : 'NO MODAL');
-    if (modal) {
-      modal.classList.add('active');
-      console.log('Modal classList after:', modal.classList.toString());
-      console.log('Modal computed display:', window.getComputedStyle(modal).display);
-      initializeStripe();
-    } else {
-      console.error('Modal not found in DOM!');
-    }
+  addFundsBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+    setTimeout(() => initializeStripe(), 100);
   });
   
   // Close modal
-  closeBtn?.addEventListener('click', () => {
+  closeBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.style.display = 'none';
     modal.classList.remove('active');
     resetTopupForm();
   });
   
   modal?.addEventListener('click', (e) => {
     if (e.target === modal) {
+      modal.style.display = 'none';
       modal.classList.remove('active');
       resetTopupForm();
     }
@@ -667,11 +654,20 @@ function updateSubmitButton() {
 }
 
 function resetTopupForm() {
+  const modal = document.getElementById('topup-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  }
   selectedAmount = 0;
   document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('selected'));
-  document.getElementById('custom-amount').value = '';
-  document.getElementById('submit-topup').textContent = 'Add Funds';
-  document.getElementById('submit-topup').disabled = true;
+  const customInput = document.getElementById('custom-amount');
+  if (customInput) customInput.value = '';
+  const submitBtn = document.getElementById('submit-topup');
+  if (submitBtn) {
+    submitBtn.textContent = 'Add Funds';
+    submitBtn.disabled = true;
+  }
   if (cardElement) {
     cardElement.clear();
   }
