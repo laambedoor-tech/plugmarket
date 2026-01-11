@@ -652,11 +652,27 @@ async function processBalancePayment() {
   }
   
   const total = getTotalAmount();
+  console.log('Cart:', cart);
+  console.log('Total:', total);
+  
   const btn = document.getElementById('btn-pay-balance');
   if (btn) {
     btn.disabled = true;
     btn.textContent = 'Processing...';
   }
+  
+  const payload = {
+    cart: cart.map(item => ({
+      pid: item.pid,
+      name: item.name,
+      plan: item.plan,
+      price: item.price,
+      qty: item.qty || 1
+    })),
+    totalAmount: total
+  };
+  
+  console.log('Sending payload:', JSON.stringify(payload, null, 2));
   
   try {
     const response = await fetch(`${API_BASE}/pay-with-balance`, {
@@ -665,24 +681,16 @@ async function processBalancePayment() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({
-        cart: cart.map(item => ({
-          pid: item.pid,
-          name: item.name,
-          plan: item.plan,
-          price: item.price,
-          qty: item.qty || 1
-        })),
-        totalAmount: total
-      })
+      body: JSON.stringify(payload)
     });
     
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Payment failed');
-    }
+    console.log('Response status:', response.status);
+    const responseData = await response.json();
+    console.log('Response data:', responseData);
     
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(responseData.error || responseData.details || 'Payment failed');
+    }
     
     // Clear cart and show success
     setCart([]);
@@ -692,6 +700,7 @@ async function processBalancePayment() {
     
   } catch (error) {
     console.error('Balance payment error:', error);
+    console.error('Full error:', error.message, error.stack);
     alert(error.message || 'Failed to process payment');
   } finally {
     if (btn) {
