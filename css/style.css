@@ -280,6 +280,19 @@ body::before {
   font-weight: 600;
 }
 
+.mobile-sidebar__link--my-account {
+  background: linear-gradient(135deg, #ff2743, #ff5f6d);
+  color: #fff;
+  font-weight: 600;
+  margin: 8px 12px;
+  border-radius: 8px;
+}
+
+.mobile-sidebar__link--my-account:hover {
+  background: linear-gradient(135deg, #ff5f6d, #ff2743);
+  color: #fff;
+}
+
 .mobile-sidebar__divider {
   height: 1px;
   background: var(--border);
@@ -1116,6 +1129,19 @@ main {
     display: flex;
   }
 
+  /* Botón My Account solo icono en móvil */
+  #my-account-btn {
+    padding: 8px;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    font-size: 0 !important;
+  }
+
+  #my-account-btn svg {
+    margin: 0;
+  }
+
   .brand__name {
     font-size: 16px;
   }
@@ -1324,6 +1350,19 @@ main {
 
   .mobile-menu-toggle {
     display: flex;
+  }
+
+  /* Botón My Account solo icono en móvil */
+  #my-account-btn {
+    padding: 8px;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    font-size: 0 !important;
+  }
+
+  #my-account-btn svg {
+    margin: 0;
   }
 
   .brand__name {
