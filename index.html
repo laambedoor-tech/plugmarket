@@ -282,6 +282,8 @@
       const token = localStorage.getItem('auth_token');
       const email = localStorage.getItem('auth_email');
       
+      console.log('Auth check:', { hasToken: !!token, hasEmail: !!email, token: token?.substring(0, 20) + '...', email });
+      
       if (token && email) {
         // Show Dashboard navigation links
         const dashboardLink = document.getElementById('dashboard-link');

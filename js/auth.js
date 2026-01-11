@@ -100,9 +100,9 @@ async function verifyCode(event) {
     const data = await response.json();
     
     if (response.ok && data.token) {
-      // Store auth token
+      // Store auth token permanently (no expiration)
       localStorage.setItem('auth_token', data.token);
-      localStorage.setItem('user_email', email);
+      localStorage.setItem('auth_email', email);
       
       // Clear session storage
       sessionStorage.removeItem('verification_email');
@@ -175,7 +175,7 @@ function startTimer() {
 // Check if user is already authenticated
 function checkAuth() {
   const token = localStorage.getItem('auth_token');
-  const email = localStorage.getItem('user_email');
+  const email = localStorage.getItem('auth_email');
   
   if (token && email) {
     return { token, email };
@@ -200,7 +200,7 @@ function requireAuth() {
 function logout() {
   if (confirm('Are you sure you want to logout?')) {
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_email');
+    localStorage.removeItem('auth_email');
     sessionStorage.clear();
     window.location.href = './my-account.html';
   }
