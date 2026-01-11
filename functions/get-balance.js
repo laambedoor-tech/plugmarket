@@ -31,7 +31,10 @@ export default async function handler(request, env) {
     if (parts.length !== 3) {
       return new Response(JSON.stringify({ error: 'Invalid token' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
@@ -41,7 +44,10 @@ export default async function handler(request, env) {
     if (!email) {
       return new Response(JSON.stringify({ error: 'Invalid token payload' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
@@ -69,7 +75,10 @@ export default async function handler(request, env) {
     if (!users || users.length === 0) {
       return new Response(JSON.stringify({ balance: 0 }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       });
     }
 
