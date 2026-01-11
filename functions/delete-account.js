@@ -74,7 +74,8 @@ export default {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
   }
-}
+  }
+};
 
 async function verifyToken(token, secret) {
   try {
@@ -119,4 +120,3 @@ async function verifyToken(token, secret) {
     return false;
   }
 }
-};

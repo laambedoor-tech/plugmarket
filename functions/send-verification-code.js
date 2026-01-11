@@ -77,7 +77,8 @@ export default {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
   }
-}
+  }
+};
 
 async function sendVerificationEmail(env, email, code) {
   try {

@@ -83,7 +83,8 @@ export default {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
   }
-}
+  }
+};
 
 async function generateToken(email, secret) {
   const header = { alg: 'HS256', typ: 'JWT' };
@@ -121,4 +122,3 @@ async function generateToken(email, secret) {
   
   return `${data}.${signatureBase64}`;
 }
-};
