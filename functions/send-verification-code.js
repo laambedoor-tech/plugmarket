@@ -86,7 +86,7 @@ export default {
 async function sendVerificationEmail(env, email, code) {
   try {
     const emailData = {
-      from: 'PlugMarket <plugmarkethelp@gmail.com>',
+      from: 'PlugMarket <noreply@plugmarket.es>',
       to: [email],
       subject: 'Plug Market - Your login code',
       html: `
