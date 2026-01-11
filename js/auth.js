@@ -35,14 +35,24 @@ async function sendCode(event) {
       sessionStorage.setItem('code_sent_at', Date.now().toString());
       
       // Show success and switch to code step
-      showAlert(alertEl, 'Code sent! Check your email.', 'success');
+      let message = 'Code sent! Check your email.';
+      if (data.debug_code) {
+        message = `⚠️ DEBUG MODE: Your code is ${data.debug_code}`;
+      }
+      showAlert(alertEl, message, 'success');
       
       setTimeout(() => {
         document.getElementById('email-step').classList.add('hidden');
         document.getElementById('code-step').classList.remove('hidden');
         document.getElementById('sent-email').textContent = email;
+        
+        // Auto-fill code in debug mode
+        if (data.debug_code) {
+          document.getElementById('code').value = data.debug_code;
+        }
+        
         startTimer();
-      }, 1000);
+      }, data.debug_code ? 3000 : 1000);
     } else {
       showAlert(alertEl, data.error || 'Failed to send code. Please try again.', 'error');
     }
