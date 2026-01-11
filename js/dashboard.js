@@ -6,18 +6,23 @@ const auth = requireAuth();
 
 let allOrders = []; // Store orders globally
 
+// Balance management
+let selectedAmount = 0;
+let stripe, cardElement;
+
 // Make switchPanel globally accessible
 window.switchPanel = switchPanel;
 window.toggleOrderDetails = toggleOrderDetails;
 window.copyToClipboard = copyToClipboard;
 
-// Balance management
-let selectedAmount = 0;
-let stripe, cardElement;
-
 if (auth) {
   loadDashboardData(auth);
-  initializeBalance();
+  // Initialize balance after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initializeBalance());
+  } else {
+    initializeBalance();
+  }
 }
 
 // Switch between panels
@@ -486,10 +491,27 @@ function setupBalanceUI() {
   const customAmountInput = document.getElementById('custom-amount');
   const submitBtn = document.getElementById('submit-topup');
   
+  console.log('Setting up balance UI:', {
+    addFundsBtn: !!addFundsBtn,
+    modal: !!modal,
+    closeBtn: !!closeBtn,
+    amountOptions: amountOptions.length,
+    customAmountInput: !!customAmountInput,
+    submitBtn: !!submitBtn
+  });
+  
+  if (!addFundsBtn) {
+    console.error('Add funds button not found!');
+    return;
+  }
+  
   // Open modal
-  addFundsBtn?.addEventListener('click', () => {
-    modal.classList.add('active');
-    initializeStripe();
+  addFundsBtn.addEventListener('click', () => {
+    console.log('Add funds clicked');
+    if (modal) {
+      modal.classList.add('active');
+      initializeStripe();
+    }
   });
   
   // Close modal
