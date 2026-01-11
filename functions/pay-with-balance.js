@@ -136,16 +136,15 @@ export default async function handler(request, env) {
     // Create order in orders table
     const orderData = {
       customer_email: email,
-      products: cart.map(item => ({
+      payment_intent_id: 'balance_' + Date.now(),
+      total_cents: Math.round(totalAmount * 100),
+      items: cart.map(item => ({
         name: item.name,
         price: item.price,
-        quantity: item.qty || 1
-      })),
-      total_amount: totalAmount,
-      payment_method: 'balance',
-      payment_status: 'completed',
-      order_status: 'completed',
-      created_at: new Date().toISOString()
+        quantity: item.qty || 1,
+        pid: item.pid,
+        plan: item.plan
+      }))
     };
 
     console.log('Creating order with data:', JSON.stringify(orderData));
