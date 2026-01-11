@@ -11,8 +11,13 @@ window.switchPanel = switchPanel;
 window.toggleOrderDetails = toggleOrderDetails;
 window.copyToClipboard = copyToClipboard;
 
+// Balance management
+let selectedAmount = 0;
+let stripe, cardElement;
+
 if (auth) {
   loadDashboardData(auth);
+  initializeBalance();
 }
 
 // Switch between panels
@@ -381,4 +386,265 @@ function copyToClipboard(text, button) {
   }).catch(err => {
     alert('Failed to copy');
   });
+}
+
+// Balance Functions
+async function initializeBalance() {
+  await loadBalance();
+  await loadTransactions();
+  setupBalanceUI();
+}
+
+async function loadBalance() {
+  try {
+    const response = await fetch(`${API_BASE}/get-balance`, {
+      headers: {
+        'Authorization': `Bearer ${auth.token}`
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const balanceEl = document.getElementById('current-balance');
+      if (balanceEl) {
+        balanceEl.textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading balance:', error);
+  }
+}
+
+async function loadTransactions() {
+  try {
+    const response = await fetch(`${API_BASE}/get-balance-transactions`, {
+      headers: {
+        'Authorization': `Bearer ${auth.token}`
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      displayTransactions(data.transactions || []);
+    }
+  } catch (error) {
+    console.error('Error loading transactions:', error);
+  }
+}
+
+function displayTransactions(transactions) {
+  const listEl = document.getElementById('transactions-list');
+  if (!listEl) return;
+  
+  if (transactions.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">No transactions yet</div>';
+    return;
+  }
+  
+  listEl.innerHTML = transactions.map(tx => {
+    const isPositive = tx.type === 'topup' || tx.type === 'refund';
+    const amountClass = isPositive ? 'positive' : 'negative';
+    const amountSign = isPositive ? '+' : '-';
+    
+    const date = new Date(tx.created_at);
+    const dateStr = date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+    return `
+      <div class="transaction-item">
+        <div class="transaction-info">
+          <div class="transaction-type">${formatTransactionType(tx.type)}</div>
+          <div class="transaction-desc">${tx.description || 'N/A'} • ${dateStr}</div>
+        </div>
+        <div class="transaction-amount ${amountClass}">
+          ${amountSign}$${parseFloat(tx.amount).toFixed(2)}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function formatTransactionType(type) {
+  const types = {
+    'topup': 'Balance Top-up',
+    'purchase': 'Purchase',
+    'refund': 'Refund'
+  };
+  return types[type] || type;
+}
+
+function setupBalanceUI() {
+  const addFundsBtn = document.getElementById('add-funds-btn');
+  const modal = document.getElementById('topup-modal');
+  const closeBtn = document.getElementById('close-topup-modal');
+  const amountOptions = document.querySelectorAll('.amount-option');
+  const customAmountInput = document.getElementById('custom-amount');
+  const submitBtn = document.getElementById('submit-topup');
+  
+  // Open modal
+  addFundsBtn?.addEventListener('click', () => {
+    modal.classList.add('active');
+    initializeStripe();
+  });
+  
+  // Close modal
+  closeBtn?.addEventListener('click', () => {
+    modal.classList.remove('active');
+    resetTopupForm();
+  });
+  
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      resetTopupForm();
+    }
+  });
+  
+  // Amount selection
+  amountOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      amountOptions.forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      selectedAmount = parseFloat(option.dataset.amount);
+      customAmountInput.value = '';
+      submitBtn.disabled = false;
+      updateSubmitButton();
+    });
+  });
+  
+  // Custom amount input
+  customAmountInput?.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    if (value >= 5 && value <= 500) {
+      amountOptions.forEach(opt => opt.classList.remove('selected'));
+      selectedAmount = value;
+      submitBtn.disabled = false;
+      updateSubmitButton();
+    } else {
+      selectedAmount = 0;
+      submitBtn.disabled = true;
+    }
+  });
+  
+  // Submit top-up
+  submitBtn?.addEventListener('click', handleTopupSubmit);
+}
+
+async function initializeStripe() {
+  if (stripe) return;
+  
+  try {
+    // Get Stripe publishable key
+    const configResponse = await fetch(`${API_BASE}/api/get-stripe-config`);
+    const config = await configResponse.json();
+    
+    stripe = Stripe(config.publishableKey);
+    const elements = stripe.elements();
+    
+    cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#fff',
+          fontSize: '16px',
+          '::placeholder': {
+            color: '#9aa0ad'
+          }
+        },
+        invalid: {
+          color: '#ff2743'
+        }
+      }
+    });
+    
+    cardElement.mount('#card-element');
+    
+    cardElement.on('change', (event) => {
+      const errorEl = document.getElementById('card-errors');
+      if (event.error) {
+        errorEl.textContent = event.error.message;
+      } else {
+        errorEl.textContent = '';
+      }
+    });
+  } catch (error) {
+    console.error('Error initializing Stripe:', error);
+  }
+}
+
+async function handleTopupSubmit() {
+  if (!selectedAmount || selectedAmount < 5) {
+    alert('Please select or enter an amount of at least $5');
+    return;
+  }
+  
+  const submitBtn = document.getElementById('submit-topup');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Processing...';
+  
+  try {
+    // Create payment intent
+    const response = await fetch(`${API_BASE}/create-topup-intent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${auth.token}`
+      },
+      body: JSON.stringify({ amount: selectedAmount })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to create payment intent');
+    }
+    
+    const { clientSecret } = await response.json();
+    
+    // Confirm payment
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardElement
+      }
+    });
+    
+    if (error) {
+      throw new Error(error.message);
+    }
+    
+    if (paymentIntent.status === 'succeeded') {
+      alert('Funds added successfully!');
+      document.getElementById('topup-modal').classList.remove('active');
+      resetTopupForm();
+      await loadBalance();
+      await loadTransactions();
+    }
+  } catch (error) {
+    console.error('Error processing topup:', error);
+    alert(error.message || 'Failed to process payment');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Add Funds';
+  }
+}
+
+function updateSubmitButton() {
+  const submitBtn = document.getElementById('submit-topup');
+  if (submitBtn && selectedAmount > 0) {
+    submitBtn.textContent = `Add $${selectedAmount.toFixed(2)}`;
+  }
+}
+
+function resetTopupForm() {
+  selectedAmount = 0;
+  document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('selected'));
+  document.getElementById('custom-amount').value = '';
+  document.getElementById('submit-topup').textContent = 'Add Funds';
+  document.getElementById('submit-topup').disabled = true;
+  if (cardElement) {
+    cardElement.clear();
+  }
 }

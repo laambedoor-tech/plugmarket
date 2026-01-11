@@ -106,6 +106,30 @@
           <button id="tab-card" class="btn btn--primary" type="button">Card</button>
           <button id="tab-paypal" class="btn btn--ghost" type="button">PayPal</button>
           <button id="tab-crypto" class="btn btn--ghost" type="button">Crypto</button>
+          <button id="tab-balance" class="btn btn--ghost" type="button" style="display: none;">Balance</button>
+        </div>
+
+        <!-- Balance payment form -->
+        <div id="balance-container" style="display:none;">
+          <div style="max-width:520px;">
+            <div style="background: rgba(255, 39, 67, 0.1); border: 1px solid rgba(255, 39, 67, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="color: #9aa0ad;">Available Balance:</span>
+                <span id="balance-amount" style="font-size: 24px; font-weight: 700; color: #fff;">$0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #9aa0ad;">Order Total:</span>
+                <span id="balance-total" style="font-size: 18px; font-weight: 600; color: #fff;">$0.00</span>
+              </div>
+            </div>
+            <div id="balance-insufficient" style="display: none; background: rgba(255, 39, 67, 0.1); border: 1px solid #ff2743; border-radius: 12px; padding: 16px; margin-bottom: 16px; color: #ff2743;">
+              Insufficient balance. Please add funds to your account or choose another payment method.
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button id="btn-pay-balance" class="btn btn--primary" type="button">Pay with Balance</button>
+              <button id="btn-cancel-balance" class="btn btn--ghost" type="button">Cancel</button>
+            </div>
+          </div>
         </div>
 
         <!-- Card (Stripe) form -->

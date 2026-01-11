@@ -140,7 +140,8 @@ export default {
           console.log('Payment succeeded', {
             id: pi.id,
             amount: pi.amount,
-            receipt_email: pi.receipt_email
+            receipt_email: pi.receipt_email,
+            metadata: pi.metadata
           });
 
           const customerEmail = pi.receipt_email;
@@ -149,7 +150,44 @@ export default {
             break;
           }
 
-          // Parse cart from metadata
+          // Check if this is a balance top-up
+          if (pi.metadata?.type === 'balance_topup') {
+            console.log('Processing balance top-up:', {
+              email: customerEmail,
+              amount: pi.metadata.amount
+            });
+            
+            try {
+              const supabase = getSupabase(env);
+              const topupAmount = parseFloat(pi.metadata.amount);
+              
+              // Create balance transaction (trigger will update user balance)
+              const { error: txError } = await supabase
+                .from('balance_transactions')
+                .insert({
+                  user_email: customerEmail,
+                  type: 'topup',
+                  amount: topupAmount,
+                  description: `Balance top-up via Stripe`,
+                  payment_method: 'stripe',
+                  payment_intent_id: pi.id
+                });
+                
+              if (txError) {
+                console.error('Failed to create balance transaction:', txError);
+              } else {
+                console.log('✅ Balance top-up completed:', {
+                  email: customerEmail,
+                  amount: topupAmount
+                });
+              }
+            } catch (error) {
+              console.error('Error processing balance top-up:', error);
+            }
+            break;
+          }
+
+          // Parse cart from metadata (normal purchase)
           const cart = JSON.parse(pi.metadata?.cart || '[]');
           console.log('Processing cart:', cart);
 

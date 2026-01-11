@@ -17,6 +17,10 @@ import sendVerificationCode from './send-verification-code.js';
 import verifyCode from './verify-code.js';
 import getUserOrders from './get-user-orders.js';
 import deleteAccount from './delete-account.js';
+import getBalance from './get-balance.js';
+import createTopupIntent from './create-topup-intent.js';
+import getBalanceTransactions from './get-balance-transactions.js';
+import payWithBalance from './pay-with-balance.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -77,6 +81,12 @@ export default {
     if (path === '/verify-code') return verifyCode.fetch(request, env, ctx);
     if (path === '/get-user-orders') return getUserOrders.fetch(request, env, ctx);
     if (path === '/delete-account') return deleteAccount.fetch(request, env, ctx);
+    
+    // Balance routes
+    if (path === '/get-balance') return getBalance(request, env);
+    if (path === '/create-topup-intent') return createTopupIntent(request, env);
+    if (path === '/get-balance-transactions') return getBalanceTransactions(request, env);
+    if (path === '/pay-with-balance') return payWithBalance(request, env);
 
     // 404 for unknown routes
     return new Response('Not Found', { status: 404 });

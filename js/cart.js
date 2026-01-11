@@ -331,31 +331,48 @@ function initCheckout() {
     document.getElementById('payment-form').style.display = 'block';
     document.getElementById('paypal-container').style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-card').classList.add('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
+    document.getElementById('tab-balance')?.classList.remove('btn--primary');
   });
   document.getElementById('tab-paypal')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'block';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-paypal').classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
+    document.getElementById('tab-balance')?.classList.remove('btn--primary');
     try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
   });
   document.getElementById('tab-crypto')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
+    const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-crypto')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-balance')?.classList.remove('btn--primary');
     try {
       const sel = document.getElementById('crypto-currency');
       const val = sel ? sel.value : 'usdcpoly';
       updateCryptoLogos(val);
     } catch {}
+  });
+  document.getElementById('tab-balance')?.addEventListener('click', async () => {
+    document.getElementById('payment-form').style.display = 'none';
+    document.getElementById('paypal-container').style.display = 'none';
+    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'block';
+    document.getElementById('tab-balance')?.classList.add('btn--primary');
+    document.getElementById('tab-card')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
+    try { await loadBalanceInfo(); } catch (e){ console.error('Failed to load balance:', e); }
   });
   document.getElementById('btn-create-crypto')?.addEventListener('click', async () => {
     try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
@@ -379,6 +396,17 @@ function initCheckout() {
     try { paymentElement && paymentElement.unmount(); } catch {}
     paymentElement = null; elements = null; clientSecret = null;
   });
+  
+  // Balance payment buttons
+  document.getElementById('btn-pay-balance')?.addEventListener('click', async () => {
+    await processBalancePayment();
+  });
+  document.getElementById('btn-cancel-balance')?.addEventListener('click', () => {
+    showCheckout(false);
+  });
+  
+  // Check if user is logged in and show balance tab
+  checkBalanceAvailability();
 
   // Update crypto logos on currency change
   const currencySel = document.getElementById('crypto-currency');
@@ -557,5 +585,127 @@ async function startCryptoCheckout(){
       console.warn('Crypto poll error:', err?.message || err);
     }
   }, 2000);
+}
+
+// Balance payment functions
+async function checkBalanceAvailability() {
+  const token = localStorage.getItem('auth_token');
+  const email = localStorage.getItem('auth_email');
+  
+  if (token && email) {
+    const balanceTab = document.getElementById('tab-balance');
+    if (balanceTab) {
+      balanceTab.style.display = 'inline-block';
+    }
+  }
+}
+
+async function loadBalanceInfo() {
+  const token = localStorage.getItem('auth_token');
+  if (!token) return;
+  
+  try {
+    // Get current balance
+    const response = await fetch(`${API_BASE}/get-balance`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const balance = parseFloat(data.balance || 0);
+      const total = getTotalAmount();
+      
+      const balanceAmountEl = document.getElementById('balance-amount');
+      const balanceTotalEl = document.getElementById('balance-total');
+      const insufficientEl = document.getElementById('balance-insufficient');
+      const payBtn = document.getElementById('btn-pay-balance');
+      
+      if (balanceAmountEl) balanceAmountEl.textContent = `$${balance.toFixed(2)}`;
+      if (balanceTotalEl) balanceTotalEl.textContent = `$${total.toFixed(2)}`;
+      
+      if (balance < total) {
+        if (insufficientEl) insufficientEl.style.display = 'block';
+        if (payBtn) payBtn.disabled = true;
+      } else {
+        if (insufficientEl) insufficientEl.style.display = 'none';
+        if (payBtn) payBtn.disabled = false;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading balance:', error);
+  }
+}
+
+async function processBalancePayment() {
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    alert('Please log in to use balance payment');
+    return;
+  }
+  
+  const cart = getCart();
+  if (cart.length === 0) {
+    alert('Your cart is empty');
+    return;
+  }
+  
+  const total = getTotalAmount();
+  const btn = document.getElementById('btn-pay-balance');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+  }
+  
+  try {
+    const response = await fetch(`${API_BASE}/pay-with-balance`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        cart: cart.map(item => ({
+          pid: item.pid,
+          name: item.name,
+          plan: item.plan,
+          price: item.price,
+          quantity: item.qty || 1
+        })),
+        totalAmount: total
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Payment failed');
+    }
+    
+    const data = await response.json();
+    
+    // Clear cart and show success
+    setCart([]);
+    showCheckout(false);
+    const modal = document.getElementById('success-modal');
+    if (modal) modal.style.display = 'flex';
+    
+  } catch (error) {
+    console.error('Balance payment error:', error);
+    alert(error.message || 'Failed to process payment');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Pay with Balance';
+    }
+  }
+}
+
+function getTotalAmount() {
+  const cart = getCart();
+  return cart.reduce((sum, item) => {
+    const qty = item.qty || 1;
+    return sum + (item.price * qty);
+  }, 0);
 }
 
