@@ -671,7 +671,7 @@ async function processBalancePayment() {
           name: item.name,
           plan: item.plan,
           price: item.price,
-          quantity: item.qty || 1
+          qty: item.qty || 1
         })),
         totalAmount: total
       })

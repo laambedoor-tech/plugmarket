@@ -131,7 +131,7 @@ export default async function handler(request, env) {
       products: cart.map(item => ({
         name: item.name,
         price: item.price,
-        quantity: item.quantity
+        quantity: item.qty || 1
       })),
       total_amount: totalAmount,
       payment_method: 'balance',
