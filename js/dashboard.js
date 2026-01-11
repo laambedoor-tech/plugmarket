@@ -8,8 +8,7 @@ let allOrders = []; // Store orders globally
 
 // Make switchPanel globally accessible
 window.switchPanel = switchPanel;
-window.showOrderDetails = showOrderDetails;
-window.closeOrderModal = closeOrderModal;
+window.toggleOrderDetails = toggleOrderDetails;
 window.copyToClipboard = copyToClipboard;
 
 if (auth) {
@@ -114,25 +113,62 @@ function displayLatestOrders(orders) {
   }
   
   // Show ALL orders
-  const ordersHTML = orders.map(order => `
-    <tr>
-      <td>
-        <div class="order-id">#${order.id ? order.id.slice(0, 8) : 'N/A'}</div>
-        <div class="order-product">${getProductNames(order.items)}</div>
-      </td>
-      <td>${formatDate(order.created_at)}</td>
-      <td>
-        <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
-          <span>●</span>
-          <span>${capitalizeFirst(order.status || 'pending')}</span>
-        </span>
-      </td>
-      <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
-      <td>
-        <button class="btn-view" onclick="showOrderDetails('${order.id}')">View</button>
-      </td>
-    </tr>
-  `).join('');
+  let ordersHTML = '';
+  orders.forEach(order => {
+    const detailsId = `details-${order.id}`;
+    const items = order.items || [];
+    
+    let credentialsHTML = '';
+    items.forEach((item, index) => {
+      const credentials = item.credentials || {};
+      Object.entries(credentials).forEach(([key, value]) => {
+        const safeValue = String(value).replace(/'/g, "\\\\'").replace(/"/g, '&quot;');
+        credentialsHTML += `
+          <div class="credential-item">
+            <div class="credential-info">
+              <div class="credential-label">${key}</div>
+              <div class="credential-value">${value}</div>
+            </div>
+            <button class="btn-copy" onclick="copyToClipboard('${safeValue}', this)">Copy</button>
+          </div>
+        `;
+      });
+    });
+    
+    if (!credentialsHTML) {
+      credentialsHTML = '<p style="color: #6b7280; font-size: 14px;">No credentials available for this order</p>';
+    }
+    
+    ordersHTML += `
+      <tr>
+        <td>
+          <div class="order-id">#${order.id ? order.id.slice(0, 8) : 'N/A'}</div>
+          <div class="order-product">${getProductNames(order.items)}</div>
+        </td>
+        <td>${formatDate(order.created_at)}</td>
+        <td>
+          <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+            <span>●</span>
+            <span>${capitalizeFirst(order.status || 'pending')}</span>
+          </span>
+        </td>
+        <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
+        <td>
+          <button class="btn-view" onclick="toggleOrderDetails('${detailsId}', this)">View</button>
+        </td>
+      </tr>
+      <tr class="order-details-row" id="${detailsId}">
+        <td colspan="5">
+          <div class="order-details-content">
+            <h3 style="color: #fff; font-size: 16px; margin-bottom: 16px;">Order #${order.id.slice(0, 16)}</h3>
+            <div class="credentials-section">
+              ${credentialsHTML}
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
   
   container.innerHTML = `
     <table class="orders-table">
@@ -183,25 +219,62 @@ function displayAllOrders(orders) {
     return;
   }
   
-  const ordersHTML = orders.map(order => `
-    <tr>
-      <td>
-        <div class="order-id">#${order.id ? order.id.slice(0, 8) : 'N/A'}</div>
-        <div class="order-product">${getProductNames(order.items)}</div>
-      </td>
-      <td>${formatDate(order.created_at)}</td>
-      <td>
-        <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
-          <span>●</span>
-          <span>${capitalizeFirst(order.status || 'pending')}</span>
-        </span>
-      </td>
-      <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
-      <td>
-        <button class="btn-view" onclick="showOrderDetails('${order.id}')">View</button>
-      </td>
-    </tr>
-  `).join('');
+  let ordersHTML = '';
+  orders.forEach(order => {
+    const detailsId = `details-all-${order.id}`;
+    const items = order.items || [];
+    
+    let credentialsHTML = '';
+    items.forEach((item, index) => {
+      const credentials = item.credentials || {};
+      Object.entries(credentials).forEach(([key, value]) => {
+        const safeValue = String(value).replace(/'/g, "\\\\'").replace(/"/g, '&quot;');
+        credentialsHTML += `
+          <div class="credential-item">
+            <div class="credential-info">
+              <div class="credential-label">${key}</div>
+              <div class="credential-value">${value}</div>
+            </div>
+            <button class="btn-copy" onclick="copyToClipboard('${safeValue}', this)">Copy</button>
+          </div>
+        `;
+      });
+    });
+    
+    if (!credentialsHTML) {
+      credentialsHTML = '<p style="color: #6b7280; font-size: 14px;">No credentials available for this order</p>';
+    }
+    
+    ordersHTML += `
+      <tr>
+        <td>
+          <div class="order-id">#${order.id ? order.id.slice(0, 8) : 'N/A'}</div>
+          <div class="order-product">${getProductNames(order.items)}</div>
+        </td>
+        <td>${formatDate(order.created_at)}</td>
+        <td>
+          <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+            <span>●</span>
+            <span>${capitalizeFirst(order.status || 'pending')}</span>
+          </span>
+        </td>
+        <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
+        <td>
+          <button class="btn-view" onclick="toggleOrderDetails('${detailsId}', this)">View</button>
+        </td>
+      </tr>
+      <tr class="order-details-row" id="${detailsId}">
+        <td colspan="5">
+          <div class="order-details-content">
+            <h3 style="color: #fff; font-size: 16px; margin-bottom: 16px;">Order #${order.id.slice(0, 16)}</h3>
+            <div class="credentials-section">
+              ${credentialsHTML}
+            </div>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
   
   container.innerHTML = `
     <table class="orders-table">
@@ -219,6 +292,29 @@ function displayAllOrders(orders) {
       </tbody>
     </table>
   `;
+}
+
+function toggleOrderDetails(detailsId, button) {
+  const detailsRow = document.getElementById(detailsId);
+  if (!detailsRow) return;
+  
+  const isActive = detailsRow.classList.contains('active');
+  
+  // Close all other details
+  document.querySelectorAll('.order-details-row').forEach(row => {
+    row.classList.remove('active');
+  });
+  document.querySelectorAll('.btn-view').forEach(btn => {
+    btn.classList.remove('active');
+    btn.textContent = 'View';
+  });
+  
+  // Toggle current details
+  if (!isActive) {
+    detailsRow.classList.add('active');
+    button.classList.add('active');
+    button.textContent = 'Hide';
+  }
 }
 
 function formatDate(dateString) {
@@ -266,93 +362,6 @@ async function deleteAccount() {
     console.error('Error deleting account:', error);
     alert('Network error. Please try again later.');
   }
-}
-
-function showOrderDetails(orderId) {
-  console.log('🔍 showOrderDetails called with orderId:', orderId);
-  console.log('📦 All orders:', allOrders);
-  
-  const order = allOrders.find(o => o.id === orderId);
-  if (!order) {
-    console.error('❌ Order not found:', orderId);
-    alert('Order not found');
-    return;
-  }
-  
-  console.log('✅ Found order:', order);
-  
-  const modalContent = document.getElementById('order-modal-content');
-  if (!modalContent) {
-    console.error('❌ Modal content element not found');
-    return;
-  }
-  
-  const items = order.items || [];
-  console.log('📋 Order items:', items);
-  
-  let credentialsHTML = '';
-  items.forEach((item, index) => {
-    const credentials = item.credentials || {};
-    const credRows = Object.entries(credentials).map(([key, value]) => {
-      const safeValue = String(value).replace(/'/g, "\\'");
-      return `
-      <div class="credential-row">
-        <span class="credential-label">${key}</span>
-        <div class="credential-value">
-          <span>${value}</span>
-          <button class="btn-copy" onclick="copyToClipboard('${safeValue}', this)">Copy</button>
-        </div>
-      </div>
-    `;
-    }).join('');
-    
-    credentialsHTML += `
-      <div class="credential-card">
-        <div class="credential-header">${item.pid || 'Product'} ${items.length > 1 ? `(${index + 1})` : ''}</div>
-        ${credRows || '<p style="color: #6b7280; font-size: 14px;">No credentials available</p>'}
-      </div>
-    `;
-  });
-  
-  modalContent.innerHTML = `
-    <div class="order-detail-section">
-      <div class="order-detail-label">Order ID</div>
-      <div class="order-detail-value">#${order.id.slice(0, 16)}</div>
-    </div>
-    
-    <div class="order-detail-section">
-      <div class="order-detail-label">Date</div>
-      <div class="order-detail-value">${formatDate(order.created_at)}</div>
-    </div>
-    
-    <div class="order-detail-section">
-      <div class="order-detail-label">Status</div>
-      <div class="order-detail-value">
-        <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
-          <span>●</span>
-          <span>${capitalizeFirst(order.status || 'pending')}</span>
-        </span>
-      </div>
-    </div>
-    
-    <div class="order-detail-section">
-      <div class="order-detail-label">Total</div>
-      <div class="order-detail-value">€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</div>
-    </div>
-    
-    <div class="order-detail-section">
-      <div class="order-detail-label">Credentials</div>
-      <div class="credentials-grid">
-        ${credentialsHTML}
-      </div>
-    </div>
-  `;
-  
-  document.getElementById('order-modal').classList.add('active');
-}
-
-function closeOrderModal() {
-  document.getElementById('order-modal').classList.remove('active');
 }
 
 function copyToClipboard(text, button) {

@@ -132,14 +132,17 @@
   <script src="./js/orders.js" type="module"></script>
   <script>
     // Update My Account button if logged in
-    const myAccountBtn = document.getElementById('my-account-btn');
-    if (myAccountBtn) {
-      const token = localStorage.getItem('auth_token');
-      const email = localStorage.getItem('auth_email');
-      if (token && email) {
-        myAccountBtn.href = './dashboard.html';
+    (function() {
+      const myAccountBtn = document.getElementById('my-account-btn');
+      if (myAccountBtn) {
+        const token = localStorage.getItem('auth_token');
+        const email = localStorage.getItem('auth_email');
+        if (token && email) {
+          myAccountBtn.href = './dashboard.html';
+          myAccountBtn.textContent = 'Dashboard';
+        }
       }
-    }
+    })();
   </script>
 </body>
 
