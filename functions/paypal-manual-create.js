@@ -34,7 +34,8 @@ const PRICES_USD = {
   filmora: { '1 Month': 250, '3 Months': 600, '6 Months': 1050, '12 Months': 1600 },
   duolingo: { '12 Months': 124 },
   movistar: { '12 Months': 244 },
-  dazn: { 'Lifetime': 150 }
+  dazn: { 'Lifetime': 150 },
+  steamaccount: { 'Random Games': 25 }
 };
 
 const PLAN_ALIASES = {

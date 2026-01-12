@@ -23,7 +23,8 @@ const PRICES_USD = {
   filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0 },
   duolingo: { '12 Months': 1.24 },
   movistar: { '12 Months': 2.44 },
-  dazn: { 'Lifetime': 1.5 }
+  dazn: { 'Lifetime': 1.5 },
+  steamaccount: { 'Random Games': 0.25 }
 };
 
 function normalizePlan(raw){

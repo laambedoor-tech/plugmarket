@@ -155,6 +155,7 @@ const products = [
   { id: 'duolingo', title: 'Duolingo', price: '€', tone: 'green' },
   { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '€', tone: 'blue' },
   { id: 'dazn', title: 'DAZN', price: '€1.35', tone: 'orange' },
+  { id: 'steamaccount', title: 'Random Games', price: '€0.25', tone: 'blue' },
   { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
 ];
 
@@ -184,6 +185,7 @@ const subscriptions = {
   duolingo: { '12 Months': 1.12 },
   movistar: { '12 Months': 2.2 },
   dazn: { 'Lifetime': 1.35 },
+  steamaccount: { 'Random Games': 0.25 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
 };
 
@@ -254,6 +256,7 @@ const toneToGradient = (tone) => {
       'nitro': 'nitroboost.png',
       'duolingo': 'duolingo.png',
       'movistar': 'movistar+.png',
+      'steamaccount': 'steamaccounts.png',
       'realmembers': 'realmembers.png'
     };
     const logoFile = imageMap[p.id] || `${p.id}.png`;
@@ -415,7 +418,9 @@ const toneToGradient = (tone) => {
       `;
     } else {
       // Add description for realmembers
-      const descriptionHTML = pid === 'realmembers' ? `
+      let descriptionHTML = '';
+      if (pid === 'realmembers') {
+        descriptionHTML = `
         <div class="card" style="margin:10px 10px 15px 10px; padding:15px; background:rgba(46, 213, 115, 0.1); border:1px solid rgba(46, 213, 115, 0.3);">
           <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
             <span style="font-size:20px;">👥</span>
@@ -425,7 +430,8 @@ const toneToGradient = (tone) => {
             Boost your Discord server with real, active members. Increase interaction, visibility, and server activity with authentic users.
           </p>
         </div>
-      ` : '';
+      `;
+      }
       
       modalContent.innerHTML = descriptionHTML + Object.entries(plans).map(([label, price]) => {
         const stockKey = `${pid}:${label}`;
@@ -454,6 +460,7 @@ const toneToGradient = (tone) => {
           'duolingo': 'resized/duolingo84.png',
           'movistar': 'resized/movistar+84.png',
           'dazn': 'resized/dazn84.png',
+          'steamaccount': 'resized/steamaccounts84.png',
           'realmembers': 'resized/realmembers84.png'
         };
         const logoFile = imageMap[product.id] || `${product.id}.png`;
@@ -468,7 +475,7 @@ const toneToGradient = (tone) => {
                  onerror="this.style.display='none'" />
           </div>
           <div>
-            <h4 class="variant__title">${product.title} — ${label}</h4>
+            <h4 class="variant__title">${pid === 'steamaccount' ? label : product.title + ' — ' + label}${pid === 'steamaccount' && label === 'Random Games' ? ' (Maybe with balance)' : ''}</h4>
             <div class="variant__meta">Instant delivery · ${stockBadge}</div>
           </div>
           <div class="variant__actions">
