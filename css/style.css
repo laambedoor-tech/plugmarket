@@ -1112,6 +1112,22 @@ main {
     padding: 12px 16px;
   }
 
+  /* Description cards in modals - mobile optimized */
+  .modal__content .card {
+    margin: 8px !important;
+    padding: 12px !important;
+    font-size: 13px;
+  }
+
+  .modal__content .card strong {
+    font-size: 14px;
+  }
+
+  .modal__content .card p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
   .menu {
     display: none;
   }

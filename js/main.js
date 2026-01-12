@@ -414,7 +414,20 @@ const toneToGradient = (tone) => {
         <div class="card" style="margin:10px">We're adding subscription options for this product. Check back soon.</div>
       `;
     } else {
-      modalContent.innerHTML = Object.entries(plans).map(([label, price]) => {
+      // Add description for realmembers
+      const descriptionHTML = pid === 'realmembers' ? `
+        <div class="card" style="margin:10px 10px 15px 10px; padding:15px; background:rgba(46, 213, 115, 0.1); border:1px solid rgba(46, 213, 115, 0.3);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <span style="font-size:20px;">👥</span>
+            <strong style="color:#2ed573;">About Real Server Members</strong>
+          </div>
+          <p style="margin:0; font-size:14px; color:#d7d9e0; line-height:1.5;">
+            Boost your Discord server with real, active members. Increase interaction, visibility, and server activity with authentic users.
+          </p>
+        </div>
+      ` : '';
+      
+      modalContent.innerHTML = descriptionHTML + Object.entries(plans).map(([label, price]) => {
         const stockKey = `${pid}:${label}`;
         const stockCount = stockData[stockKey] || 0;
         const available = stockCount > 0;
