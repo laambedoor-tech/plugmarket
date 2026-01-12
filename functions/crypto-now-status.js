@@ -5,12 +5,21 @@
 
 export default {
   async fetch(request, env){
-    if (request.method === 'OPTIONS') return new Response(null, { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
-    if (request.method !== 'GET') return new Response('Method Not Allowed', { status: 405 });
-    const url = new URL(request.url);
-    if (!url.pathname.startsWith('/api/crypto/now/status')) return new Response('Not Found', { status: 404 });
+    if (request.method === 'OPTIONS') return new Response(null, { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
+    
+    let paymentId;
+    
+    if (request.method === 'GET') {
+      const url = new URL(request.url);
+      if (!url.pathname.startsWith('/api/crypto/now/status')) return new Response('Not Found', { status: 404 });
+      paymentId = url.searchParams.get('paymentId');
+    } else if (request.method === 'POST') {
+      const body = await request.json();
+      paymentId = body.paymentId;
+    } else {
+      return new Response('Method Not Allowed', { status: 405 });
+    }
 
-    const paymentId = url.searchParams.get('paymentId');
     if (!paymentId) return new Response(JSON.stringify({ error: 'Missing paymentId' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
     const apiKey = env.NOWPAYMENTS_API_KEY;

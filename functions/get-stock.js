@@ -42,19 +42,23 @@ export default {
     try {
       const supabase = getSupabase(env);
 
-      // Get count of available accounts grouped by product_id and plan
-      const { data: stock, error } = await supabase
+      // Get stock from stock table (for products like realmembers)
+      const { data: stockData, error: stockError } = await supabase
+        .from('stock')
+        .select('product_key, quantity');
+
+      // Get count of available accounts from accounts table
+      const { data: accountsData, error: accountsError } = await supabase
         .from('accounts')
         .select('product_id, plan')
         .eq('status', 'available');
 
-      if (error) {
-        console.error('Supabase error:', error);
+      if (stockError && accountsError) {
+        console.error('Supabase errors:', { stockError, accountsError });
         return new Response(
           JSON.stringify({ 
             error: 'Failed to fetch stock', 
-            details: error.message,
-            hint: error.hint 
+            details: stockError?.message || accountsError?.message
           }),
           { 
             status: 500, 
@@ -66,11 +70,19 @@ export default {
         );
       }
 
-      // Count stock for each product/plan combination
+      // Build combined stock map
       const stockMap = {};
       
-      if (stock && stock.length > 0) {
-        stock.forEach(item => {
+      // Add stock from stock table
+      if (stockData && stockData.length > 0) {
+        stockData.forEach(item => {
+          stockMap[item.product_key] = item.quantity;
+        });
+      }
+
+      // Add stock from accounts table
+      if (accountsData && accountsData.length > 0) {
+        accountsData.forEach(item => {
           const key = `${item.product_id}:${item.plan}`;
           stockMap[key] = (stockMap[key] || 0) + 1;
         });
@@ -80,8 +92,9 @@ export default {
         JSON.stringify({ 
           stock: stockMap,
           debug: {
-            count: stock ? stock.length : 0,
-            hasData: !!stock
+            stockTableCount: stockData ? stockData.length : 0,
+            accountsTableCount: accountsData ? accountsData.length : 0,
+            totalProducts: Object.keys(stockMap).length
           }
         }),
         { 

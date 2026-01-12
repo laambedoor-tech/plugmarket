@@ -97,7 +97,33 @@ function showOrders(email, orders) {
             </div>
 
             <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px;">
-              ${item.pid === 'chatgpt' ? `
+              ${item.pid === 'realmembers' ? `
+                <div style="margin-bottom: 0.75rem;">
+                  <label style="font-size: 0.875rem; color: var(--accent); display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                    📋 Instructions
+                  </label>
+                  <div style="background: rgba(46, 213, 115, 0.1); padding: 1rem; border-radius: 4px; border-left: 3px solid #2ed573;">
+                    <div style="font-size: 0.95rem; color: #d7d9e0; line-height: 1.6;">
+                      <strong style="color: #2ed573;">✅ How to claim your members:</strong><br>
+                      Open a ticket on Discord to claim your members. Our team will process your order and deliver the members to your server.
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                  <a href="https://discord.gg/plugmarket" target="_blank" style="
+                    display: inline-block;
+                    padding: 0.75rem 1.5rem;
+                    background: linear-gradient(135deg, #2ed573, #26c65e);
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    transition: transform 0.2s;
+                  " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🎫 Open Ticket on Discord
+                  </a>
+                </div>
+              ` : item.pid === 'chatgpt' ? `
                 <div style="margin-bottom: 0.75rem;">
                   <label style="font-size: 0.875rem; color: var(--accent); display: block; margin-bottom: 0.5rem; font-weight: 600;">
                     📋 Instrucciones

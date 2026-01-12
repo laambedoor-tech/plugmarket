@@ -41,9 +41,36 @@ export default {
   async fetch(request, env) {
     if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
     try{
-      const { cart, token: requestedToken, network: requestedNetwork } = await request.json();
-      const { totalUSD } = validateAndPriceCart(cart);
-      const token = (requestedToken || env.CRYPTO_TOKEN || 'USDC').toUpperCase();
+      const body = await request.json();
+      const { cart, token: requestedToken, network: requestedNetwork, amount: topupAmount, type, currency } = body;
+      
+      let totalUSD;
+      
+      // Check if this is a topup request
+      if (type === 'topup' && topupAmount) {
+        totalUSD = Number(topupAmount);
+      } else if (cart) {
+        // Original cart logic
+        const { totalUSD: cartTotal } = validateAndPriceCart(cart);
+        totalUSD = cartTotal;
+      } else {
+        throw new Error('Either cart or topup amount required');
+      }
+      
+      // Handle currency parameter from crypto selector
+      let token = requestedToken || currency || env.CRYPTO_TOKEN || 'USDC';
+      token = token.toUpperCase();
+      
+      // Map currency codes to actual token names
+      const currencyMap = {
+        'BTC': 'BTC',
+        'ETH': 'ETH',
+        'LTC': 'LTC',
+        'USDT_TRX': 'USDT'
+      };
+      
+      token = currencyMap[token] || token;
+      
       const network = (requestedNetwork || env.CRYPTO_NETWORK || 'Polygon');
       const address = env.CRYPTO_ADDRESS || '0x0000000000000000000000000000000000000000';
 
@@ -52,7 +79,7 @@ export default {
         amount = totalUSD; // 1:1 stable
       } else {
         // Map token to coingecko id
-        const map = { ETH:'ethereum', BTC:'bitcoin', MATIC:'matic-network' };
+        const map = { ETH:'ethereum', BTC:'bitcoin', MATIC:'matic-network', LTC:'litecoin' };
         const id = map[token];
         if(!id) throw new Error('Unsupported token');
         const price = await fetchPriceUSD(id); // USD per token
@@ -61,7 +88,22 @@ export default {
       // Formatting: show up to 6 decimals for volatile
       const decimals = ['USDC','USDT'].includes(token) ? 2 : 6;
       amount = Number(amount.toFixed(decimals));
-      return new Response(JSON.stringify({ address, network, token, amount, totalUSD }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      
+      // Generate a unique payment ID for tracking
+      const paymentId = `crypto_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      return new Response(JSON.stringify({ 
+        address, 
+        network, 
+        currency: token,
+        cryptoAmount: amount,
+        usdAmount: totalUSD,
+        paymentId,
+        type: type || 'purchase'
+      }), { 
+        status: 200, 
+        headers: { 'Content-Type': 'application/json' } 
+      });
     }catch(err){
       return new Response(JSON.stringify({ error: err.message || 'Failed to create crypto intent' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }

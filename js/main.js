@@ -155,6 +155,7 @@ const products = [
   { id: 'duolingo', title: 'Duolingo', price: '$', tone: 'green' },
   { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '$', tone: 'blue' },
   { id: 'dazn', title: 'DAZN', price: '$1.50', tone: 'orange' },
+  { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: '$', tone: 'green' },
 ];
 
 let stockData = {};
@@ -183,6 +184,7 @@ const subscriptions = {
   duolingo: { '12 Months': 1.24 },
   movistar: { '12 Months': 2.44 },
   dazn: { 'Lifetime': 1.5 },
+  realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
 };
 
 const toneToGradient = (tone) => {
@@ -251,7 +253,8 @@ const toneToGradient = (tone) => {
       'geoguessr': 'geoguessr.png',
       'nitro': 'nitroboost.png',
       'duolingo': 'duolingo.png',
-      'movistar': 'movistar+.png'
+      'movistar': 'movistar+.png',
+      'realmembers': 'realmembers.png'
     };
     const logoFile = imageMap[p.id] || `${p.id}.png`;
     
@@ -383,7 +386,7 @@ const toneToGradient = (tone) => {
           const stockBadge = available
             ? '<span class="stock-badge stock-badge--in">In Stock</span>'
             : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
-          const logoFile = 'resized/discordpromo84.png';
+          const logoFile = 'resized/discordpromocode84.png';
 
           return `
           <div class="variant${!available ? ' variant--disabled' : ''}" data-pid="${pid}" data-plan="${label}" data-price="${price}">
@@ -429,7 +432,7 @@ const toneToGradient = (tone) => {
           'nordvpn': 'resized/nordvpn84.png',
           'crunchy': 'resized/crunchyroll84.png',
           'nitro': 'resized/nitroboost84.png',
-          'discordpromocode': 'resized/discordpromo84.png',
+          'discordpromocode': 'resized/discordpromocode84.png',
           'chatgpt': 'resized/chatgptplus84.png',
           'chatgpt-pro': 'resized/chatgptpro84.png',
           'capcut': 'resized/capcutpro84.png',
@@ -437,7 +440,8 @@ const toneToGradient = (tone) => {
           'filmora': 'resized/filmora84.png',
           'duolingo': 'resized/duolingo84.png',
           'movistar': 'resized/movistar+84.png',
-          'dazn': 'resized/dazn84.png'
+          'dazn': 'resized/dazn84.png',
+          'realmembers': 'resized/realmembers84.png'
         };
         const logoFile = imageMap[product.id] || `${product.id}.png`;
 
