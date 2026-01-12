@@ -144,7 +144,7 @@ const products = [
   { id: 'prime', title: 'Prime Video', price: '€', tone: 'blue' },
   { id: 'hbomax', title: 'HBO Max', price: '€', tone: 'purple' },
   { id: 'nordvpn', title: 'NordVPN', price: '€', tone: 'cyan' },
-  { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
+  { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: '€', tone: 'green' },
   { id: 'nitro', title: 'Discord Nitro', price: '€', tone: 'purple' },
   { id: 'discordpromocode', title: 'Discord Nitro Promo Code', price: '€', tone: 'purple' },
   { id: 'chatgpt', title: 'ChatGPT Plus', price: '€', tone: 'teal' },
@@ -155,7 +155,7 @@ const products = [
   { id: 'duolingo', title: 'Duolingo', price: '€', tone: 'green' },
   { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '€', tone: 'blue' },
   { id: 'dazn', title: 'DAZN', price: '€1.35', tone: 'orange' },
-  { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: '€', tone: 'green' },
+  { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
 ];
 
 let stockData = {};
