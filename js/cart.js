@@ -193,7 +193,7 @@ function getCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)) || [
 function setCart(items){ localStorage.setItem(CART_KEY, JSON.stringify(items)); render(); updateCount(); }
 function updateCount(){ const el = document.getElementById('cart-count'); if (el) el.textContent = String(getCart().reduce((a,b)=>a+b.qty,0)); }
 
-function money(n){ return '$' + n.toFixed(2); }
+function money(n){ return '€' + n.toFixed(2); }
 
 // Calcular descuento por volumen
 function getVolumeDiscount(totalQty) {

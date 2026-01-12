@@ -80,7 +80,7 @@ export default async function handler(request, env) {
       },
       body: new URLSearchParams({
         amount: amountInCents.toString(),
-        currency: 'usd',
+        currency: 'eur',
         'metadata[type]': 'balance_topup',
         'metadata[user_email]': email,
         'metadata[amount]': amount.toString(),

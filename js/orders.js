@@ -6,7 +6,7 @@ let currentEmail = null;
 
 // Helper to format money
 function money(cents) {
-  return '$' + (cents / 100).toFixed(2);
+  return '€' + (cents / 100).toFixed(2);
 }
 
 // Helper to format date

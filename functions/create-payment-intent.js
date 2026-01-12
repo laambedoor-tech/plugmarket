@@ -133,7 +133,7 @@ export default {
       // Create Stripe PaymentIntent
       const paymentIntentData = {
         amount: totalCents,
-        currency: 'usd',
+        currency: 'eur',
         automatic_payment_methods: { enabled: true },
         metadata: {
           cart: JSON.stringify(normalizedCart),

@@ -137,25 +137,25 @@
 const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
 
 const products = [
-  { id: 'netflix', title: 'Netflix', price: '$', tone: 'red' },
-  { id: 'spotify', title: 'Spotify Premium', price: '$', tone: 'green' },
-  { id: 'youtube-premium', title: 'YouTube Premium', price: '$', tone: 'orange' },
-  { id: 'disney', title: 'Disney+ ', price: '$', tone: 'blue' },
-  { id: 'prime', title: 'Prime Video', price: '$', tone: 'blue' },
-  { id: 'hbomax', title: 'HBO Max', price: '$', tone: 'purple' },
-  { id: 'nordvpn', title: 'NordVPN', price: '$', tone: 'cyan' },
-  { id: 'crunchy', title: 'Crunchyroll', price: '$', tone: 'orange' },
-  { id: 'nitro', title: 'Discord Nitro', price: '$', tone: 'purple' },
-  { id: 'discordpromocode', title: 'Discord Nitro Promo Code', price: '$', tone: 'purple' },
-  { id: 'chatgpt', title: 'ChatGPT Plus', price: '$', tone: 'teal' },
-  { id: 'chatgpt-pro', title: 'ChatGPT Pro', price: '$', tone: 'teal' },
-  { id: 'capcut', title: 'CapCut Pro', price: '$', tone: 'cyan' },
-  { id: 'geoguessr', title: 'GeoGuessr', price: '$', tone: 'green' },
-  { id: 'filmora', title: 'Wondershare Filmora', price: '$', tone: 'teal' },
-  { id: 'duolingo', title: 'Duolingo', price: '$', tone: 'green' },
-  { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '$', tone: 'blue' },
-  { id: 'dazn', title: 'DAZN', price: '$1.50', tone: 'orange' },
-  { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: '$', tone: 'green' },
+  { id: 'netflix', title: 'Netflix', price: '€', tone: 'red' },
+  { id: 'spotify', title: 'Spotify Premium', price: '€', tone: 'green' },
+  { id: 'youtube-premium', title: 'YouTube Premium', price: '€', tone: 'orange' },
+  { id: 'disney', title: 'Disney+ ', price: '€', tone: 'blue' },
+  { id: 'prime', title: 'Prime Video', price: '€', tone: 'blue' },
+  { id: 'hbomax', title: 'HBO Max', price: '€', tone: 'purple' },
+  { id: 'nordvpn', title: 'NordVPN', price: '€', tone: 'cyan' },
+  { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
+  { id: 'nitro', title: 'Discord Nitro', price: '€', tone: 'purple' },
+  { id: 'discordpromocode', title: 'Discord Nitro Promo Code', price: '€', tone: 'purple' },
+  { id: 'chatgpt', title: 'ChatGPT Plus', price: '€', tone: 'teal' },
+  { id: 'chatgpt-pro', title: 'ChatGPT Pro', price: '€', tone: 'teal' },
+  { id: 'capcut', title: 'CapCut Pro', price: '€', tone: 'cyan' },
+  { id: 'geoguessr', title: 'GeoGuessr', price: '€', tone: 'green' },
+  { id: 'filmora', title: 'Wondershare Filmora', price: '€', tone: 'teal' },
+  { id: 'duolingo', title: 'Duolingo', price: '€', tone: 'green' },
+  { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '€', tone: 'blue' },
+  { id: 'dazn', title: 'DAZN', price: '€1.35', tone: 'orange' },
+  { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: '€', tone: 'green' },
 ];
 
 let stockData = {};
@@ -163,28 +163,28 @@ let stockData = {};
 // Suscripciones por producto (precios según adjuntos, en USD)
 const subscriptions = {
   // Solo Netflix tendrá opción Lifetime
-  netflix: { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 16.65 },
+  netflix: { '1 Month': 1.35, '3 Months': 3.15, '6 Months': 5.4, '12 Months': 9.9, 'Lifetime': 14.99 },
 
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
-  spotify: { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 11.88 },
-  'youtube-premium': { '1 Month': 2.8, '3 Months': 4.32, '12 Months': 12.5 },
-  disney: { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5 },
-  prime: { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 10.64 },
-  hbomax: { '1 Month': 1.4, '3 Months': 3.1, '6 Months': 4.7, '12 Months': 9.8 },
-  nordvpn: { '1 Month': 0.85, '3 Months': 2.0, '6 Months': 3.6, '12 Months': 6.9 },
-  crunchy: { '1 Month': 0.9, '3 Months': 2.1, '6 Months': 3.8, '12 Months': 7.2 },
+  spotify: { '1 Month': 1.98, '3 Months': 3.42, '6 Months': 5.58, '12 Months': 10.69 },
+  'youtube-premium': { '1 Month': 2.52, '3 Months': 3.89, '12 Months': 11.25 },
+  disney: { '1 Month': 0.99, '3 Months': 2.43, '6 Months': 4.32, '12 Months': 8.55 },
+  prime: { '1 Month': 1.62, '3 Months': 3.06, '6 Months': 5.22, '12 Months': 9.58 },
+  hbomax: { '1 Month': 1.26, '3 Months': 2.79, '6 Months': 4.23, '12 Months': 8.82 },
+  nordvpn: { '1 Month': 0.77, '3 Months': 1.8, '6 Months': 3.24, '12 Months': 6.21 },
+  crunchy: { '1 Month': 0.81, '3 Months': 1.89, '6 Months': 3.42, '12 Months': 6.48 },
   // Discord Nitro: solo las variantes de la captura
-  nitro: { 'Boost 1m': 4.79, 'Boost 1 Year': 15.17, 'Basic 1m': 1.35 },
-  discordpromocode: { '1 Month': 0.6, '3 Months': 1.05 },
-  chatgpt: { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 11.88, '12 Months': 16.85 },
-  'chatgpt-pro': { '1 Month': 3.5, '3 Months': 6.0 },
-  capcut: { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0 },
-  geoguessr: { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0 },
-  filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0 },
-  duolingo: { '12 Months': 1.24 },
-  movistar: { '12 Months': 2.44 },
-  dazn: { 'Lifetime': 1.5 },
-  realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
+  nitro: { 'Boost 1m': 4.31, 'Boost 1 Year': 13.65, 'Basic 1m': 1.22 },
+  discordpromocode: { '1 Month': 0.54, '3 Months': 0.95 },
+  chatgpt: { '1 Month': 2.88, '3 Months': 7.02, '6 Months': 10.69, '12 Months': 15.17 },
+  'chatgpt-pro': { '1 Month': 3.15, '3 Months': 5.4 },
+  capcut: { '1 Month': 1.08, '3 Months': 2.25, '6 Months': 3.78, '12 Months': 7.2 },
+  geoguessr: { '1 Month': 1.8, '3 Months': 4.5, '12 Months': 9.0 },
+  filmora: { '1 Month': 2.25, '3 Months': 5.4, '6 Months': 9.45, '12 Months': 14.4 },
+  duolingo: { '12 Months': 1.12 },
+  movistar: { '12 Months': 2.2 },
+  dazn: { 'Lifetime': 1.35 },
+  realmembers: { '[500]': 2.03, '[1000]': 3.83, '[2000]': 7.09, '[3000]': 10.47, '[4000]': 11.02, '[5000]': 14.05 },
 };
 
 const toneToGradient = (tone) => {
@@ -240,7 +240,7 @@ const toneToGradient = (tone) => {
   grid.innerHTML = products.map((p, index) => {
     const min = getMinPrice(p.id);
     // Si el producto tiene un precio fijo, usarlo en lugar del mínimo calculado
-    const priceText = p.price.startsWith('$') && p.price !== '$' ? p.price : (min == null ? 'Plans available' : `From $${min.toFixed(2)}`);
+    const priceText = p.price.startsWith('€') && p.price !== '€' ? p.price : (min == null ? 'Plans available' : `From €${min.toFixed(2)}`);
     // Mapeo de IDs a nombres de archivos de imágenes
     const imageMap = {
       'spotify': 'spotify.png',
@@ -402,7 +402,7 @@ const toneToGradient = (tone) => {
               <div class="variant__meta">Instant delivery · ${stockBadge}</div>
             </div>
             <div class="variant__actions">
-              <div class="variant__price">$${price}</div>
+              <div class="variant__price">€${price}</div>
               <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart" ${!available ? 'disabled' : ''}>Add to cart</button>
               <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now" ${!available ? 'disabled' : ''}>Buy now</button>
             </div>
@@ -459,7 +459,7 @@ const toneToGradient = (tone) => {
             <div class="variant__meta">Instant delivery · ${stockBadge}</div>
           </div>
           <div class="variant__actions">
-            <div class="variant__price">$${price}</div>
+            <div class="variant__price">€${price}</div>
             <button class="btn btn--ghost btn--sm js-add-cart" aria-label="Add to cart" ${!available ? 'disabled' : ''}>Add to cart</button>
             <button class="btn btn--primary btn--sm js-buy-now" aria-label="Buy now" ${!available ? 'disabled' : ''}>Buy now</button>
           </div>

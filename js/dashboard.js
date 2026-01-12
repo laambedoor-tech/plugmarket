@@ -130,8 +130,12 @@ function displayLatestOrders(orders) {
     
     let credentialsHTML = '';
     items.forEach((item, index) => {
+      // Debug: Check all possible product identifier fields
+      const productId = item.pid || item.product_id || item.productId || item.name || '';
+      console.log('Dashboard item:', item, 'productId:', productId);
+      
       // Special handling for Discord Real Server Members
-      if (item.pid === 'realmembers') {
+      if (productId === 'realmembers' || productId.includes('realmembers')) {
         credentialsHTML += `
           <div style="background: rgba(46, 213, 115, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #2ed573; margin-bottom: 1rem;">
             <div style="font-size: 0.95rem; color: #d7d9e0; line-height: 1.6;">
