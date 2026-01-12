@@ -17,6 +17,7 @@ const PRICES_USD = {
   crunchy: { '1 Month': 90, '3 Months': 210, '6 Months': 380, '12 Months': 720 },
   nitro: { 'Boost 1m': 479, 'Boost 1 Year': 1597, 'Basic 1m': 135 },
   discordpromocode: { '1 Month': 60, '3 Months': 105 },
+  realmembers: { '[500]': 225, '[1000]': 425, '[2000]': 788, '[3000]': 1163, '[4000]': 1224, '[5000]': 1561 },
   chatgpt: { '1 Month': 320, '3 Months': 780, '6 Months': 1250, '12 Months': 2400 },
   'chatgpt-pro': { '1 Month': 350, '3 Months': 600 },
   capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 },

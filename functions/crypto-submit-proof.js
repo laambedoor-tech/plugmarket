@@ -28,6 +28,7 @@ const PRICES_USD = {
   crunchyroll: { '1 mes': 5, '1 Month':5, '6 meses': 12, '6 Months':12, '12 meses': 18, '12 Months':18 },
   youtube: { '1 mes': 5, '1 Month':5, '6 meses': 12, '6 Months':12, '12 meses': 18, '12 Months':18 },
   discordpromocode: { '1 Month': 0.6, '3 Months': 1.05 },
+  realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
   dazn: { 'Lifetime': 1.5 }
 };
 
