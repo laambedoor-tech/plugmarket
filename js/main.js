@@ -155,7 +155,7 @@ const products = [
   { id: 'duolingo', title: 'Duolingo', price: '€', tone: 'green' },
   { id: 'movistar', title: 'Movistar+ (LaLiga+)', price: '€', tone: 'blue' },
   { id: 'dazn', title: 'DAZN', price: '€1.35', tone: 'orange' },
-  { id: 'steamaccount', title: 'Random Games', price: '€0.25', tone: 'blue' },
+  { id: 'steamaccount', title: 'Steam Accounts', price: '€0.25', tone: 'blue' },
   { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
 ];
 
