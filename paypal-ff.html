@@ -414,6 +414,17 @@
         displayPaymentInfo(data, cart);
 
       } catch (error) {
+        console.error('Error:', error);
+        alert('Error creando la orden: ' + error.message);
+        window.location.href = 'cart.html';
+      } finally {
+        document.getElementById('loadingContainer').style.display = 'none';
+      }
+    }
+
+    // Display payment information
+    function displayPaymentInfo(data, cart) {
+      document.getElementById('paymentContent').style.display = 'block';
       
       // Set invoice info
       document.getElementById('invoiceId').textContent = data.orderId;
@@ -449,18 +460,7 @@
         }, 3000);
       }).catch(err => {
         console.error('Error copying:', err);
-        alert('Copied: ' + tif present
-      const cleanText = text.replace(/\s+/g, ' ').trim();
-      
-      navigator.clipboard.writeText(cleanText).then(() => {
-        const notification = document.getElementById('copiedNotification');
-        notification.style.display = 'block';
-        setTimeout(() => {
-          notification.style.display = 'none';
-        }, 3000);
-      }).catch(err => {
-        console.error('Error copying:', err);
-        alert('Copiado: ' + cleanText);
+        alert('Copied: ' + text);
       });
     }
 
