@@ -6,221 +6,233 @@
   <title>PayPal Friends & Family - PlugMarket</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: #0a0a0a;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
       color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      padding: 20px;
-      margin: 0;
-    }
-
-    .paypal-ff-container {
-      max-width: 650px;
-      margin: 40px auto;
-      background: #1a1a1a;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    .header-section {
-      background: linear-gradient(135deg, #0070ba, #003087);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .paypal-logo {
-      width: 40px;
-      height: 40px;
-      background: white;
-      border-radius: 8px;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      height: 90vh;
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .left-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .paypal-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #0070ba, #003087);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
       font-weight: bold;
-      color: #0070ba;
+      box-shadow: 0 4px 16px rgba(0, 112, 186, 0.3);
+    }
+
+    .header h1 {
+      font-size: 20px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .info-grid {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+    }
+
+    .info-label {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .info-value.highlight {
+      color: #00ff88;
       font-size: 18px;
     }
 
-    .header-section h1 {
-      margin: 0;
-      font-size: 22px;
-      color: white;
-    }
-
-    .invoice-info {
-      padding: 24px;
-      background: #141414;
-      border-bottom: 1px solid #2a2a2a;
-    }
-
-    .invoice-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font-size: 14px;
-    }
-
-    .invoice-label {
-      color: #888;
-    }
-
-    .invoice-value {
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .invoice-value.highlight {
-      color: #00ff88;
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    .alert-box {
-      margin: 24px;
-      padding: 16px 20px;
+    .alert {
+      margin-top: auto;
+      padding: 16px;
       background: rgba(219, 39, 119, 0.1);
       border: 1px solid rgba(219, 39, 119, 0.3);
       border-radius: 12px;
+      font-size: 13px;
       color: #fb7185;
-      font-size: 14px;
       text-align: center;
     }
 
-    .instructions-section {
-      padding: 24px;
-    }
-
-    .instruction-step {
-      margin-bottom: 24px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid #2a2a2a;
-    }
-
-    .instruction-step:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .step-header {
+    .right-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 40px;
       display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
       align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
     }
 
     .step-number {
-      min-width: 32px;
-      height: 32px;
+      width: 44px;
+      height: 44px;
       background: linear-gradient(135deg, #db2777, #be185d);
-      border-radius: 50%;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 16px;
-      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);
+    }
+
+    .step-content {
+      flex: 1;
     }
 
     .step-title {
-      flex: 1;
       font-size: 16px;
       font-weight: 600;
+      margin-bottom: 8px;
       color: #fff;
-      margin: 0;
-      padding-top: 4px;
     }
 
-    .step-description {
-      margin: 8px 0 12px 44px;
+    .step-subtitle {
+      font-size: 13px;
       color: #888;
-      font-size: 14px;
+      margin-bottom: 12px;
     }
 
     .copy-button {
-      margin-left: 44px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: linear-gradient(135deg, #db2777, #be185d);
       color: white;
       border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
+      padding: 12px 20px;
+      border-radius: 10px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(219, 39, 119, 0.3);
     }
 
     .copy-button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);
+      box-shadow: 0 4px 16px rgba(219, 39, 119, 0.5);
     }
 
     .copy-button:active {
       transform: translateY(0);
     }
 
-    .copy-icon {
-      width: 16px;
-      height: 16px;
-    }
-
-    .action-section {
-      padding: 24px;
-      background: #141414;
-      border-top: 1px solid #2a2a2a;
-      text-align: center;
-    }
-
-    .btn-check-status {
+    .open-paypal-btn {
+      width: 100%;
+      padding: 16px;
       background: linear-gradient(135deg, #0070ba, #003087);
       color: white;
       border: none;
-      padding: 14px 32px;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
-      width: 100%;
-      max-width: 300px;
+      margin-top: 16px;
+      box-shadow: 0 4px 16px rgba(0, 112, 186, 0.3);
     }
 
-    .btn-check-status:hover {
+    .open-paypal-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0, 112, 186, 0.4);
+      box-shadow: 0 6px 24px rgba(0, 112, 186, 0.5);
     }
 
-    .status-text {
+    .check-status-btn {
+      width: 100%;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
       margin-top: 12px;
-      color: #888;
-      font-size: 13px;
     }
 
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 40px;
-    }
-
-    .spinner {
-      border: 3px solid #2a2a2a;
-      border-top: 3px solid #db2777;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .check-status-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .copied-notification {
@@ -232,7 +244,7 @@
       padding: 14px 24px;
       border-radius: 10px;
       font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+      box-shadow: 0 8px 24px rgba(0, 255, 136, 0.5);
       animation: slideIn 0.3s, slideOut 0.3s 2.7s;
       z-index: 9999;
       display: none;
@@ -247,6 +259,35 @@
       from { transform: translateX(0); opacity: 1; }
       to { transform: translateX(400px); opacity: 0; }
     }
+
+    .loading {
+      display: none;
+      text-align: center;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top: 3px solid #db2777;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 968px) {
+      .container {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -257,109 +298,100 @@
     <p style="color: #888;">Creando orden...</p>
   </div>
 
-  <div class="paypal-ff-container" id="paymentContent" style="display: none;">
-    <!-- Header -->
-    <div class="header-section">
-      <div class="paypal-logo">P</div>
-      <h1>PayPal (Friends & Family)</h1>
+  <div class="container" id="paymentContent" style="display: none;">
+    <!-- Left Panel: Order Info -->
+    <div class="left-panel">
+      <div class="header">
+        <div class="paypal-icon">P</div>
+        <div>
+          <h1>PayPal Friends & Family</h1>
+          <p>Pago seguro y automático</p>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Order ID</span>
+          <span class="info-value" id="invoiceId">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email</span>
+          <span class="info-value" id="customerEmail">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Total</span>
+          <span class="info-value highlight" id="totalPrice">€0.00</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Creado</span>
+          <span class="info-value" id="createdAt">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Expira</span>
+          <span class="info-value" id="expiresAt">-</span>
+        </div>
+      </div>
+
+      <div class="alert">
+        Tu orden será procesada automáticamente cuando recibamos el pago.
+      </div>
     </div>
 
-    <!-- Invoice Info -->
-    <div class="invoice-info">
-      <div class="invoice-row">
-        <span class="invoice-label">Invoice ID</span>
-        <span class="invoice-value" id="invoiceId">-</span>
-      </div>
-      <div class="invoice-row">
-        <span class="invoice-label">E-mail Address</span>
-        <span class="invoice-value" id="customerEmail">-</span>
-      </div>
-      <div class="invoice-row">
-        <span class="invoice-label">Total Price</span>
-        <span class="invoice-value" id="totalPrice">€0.00</span>
-      </div>
-      <div class="invoice-row">
-        <span class="invoice-label">Total Price (USD)</span>
-        <span class="invoice-value highlight" id="totalPriceUSD">$0.00</span>
-      </div>
-      <div class="invoice-row">
-        <span class="invoice-label">Created At</span>
-        <span class="invoice-value" id="createdAt">-</span>
-      </div>
-      <div class="invoice-row">
-        <span class="invoice-label">Expires At</span>
-        <span class="invoice-value" id="expiresAt">-</span>
-      </div>
-    </div>
-
-    <!-- Alert -->
-    <div class="alert-box">
-      Your order will be automatically processed once the payment is received.
-    </div>
-
-    <!-- Instructions -->
-    <div class="instructions-section">
-      <div class="instruction-step">
-        <div class="step-header">
+    <!-- Right Panel: Payment Steps -->
+    <div class="right-panel">
+      <div class="steps">
+        <div class="step">
           <div class="step-number">1</div>
-          <h3 class="step-title">You should send a Friends & Family payment with a note to the following account.</h3>
+          <div class="step-content">
+            <div class="step-title">Envía el pago a esta cuenta</div>
+            <div class="step-subtitle">Copia el correo de PayPal</div>
+            <button class="copy-button" onclick="copyText('emailToCopy')">
+              <span id="emailToCopy">soyalexesp123@gmail.com</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+            <button class="open-paypal-btn" onclick="window.open('https://www.paypal.com/myaccount/transfer/homepage', '_blank')">
+              Abrir PayPal ↗
+            </button>
+          </div>
         </div>
-        <p class="step-description">If you do not send as Friends & Family, your order won't be automatically processed.</p>
-        <p class="step-description">Copy the PayPal e-mail address below.</p>
-        <button class="copy-button" onclick="copyText('emailToCopy')">
-          <span id="emailToCopy">soyalexesp123@gmail.com</span>
-          <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
-        <button class="copy-button" onclick="window.open('https://www.paypal.com/myaccount/transfer/homepage', '_blank')" style="margin-left: 8px; background: linear-gradient(135deg, #0070ba, #003087);">
-          Open PayPal
-          <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-        </button>
-      </div>
 
-      <div class="instruction-step">
-        <div class="step-header">
+        <div class="step">
           <div class="step-number">2</div>
-          <h3 class="step-title">Add a note to the payment, otherwise it will be ignored.</h3>
+          <div class="step-content">
+            <div class="step-title">Agrega esta nota al pago</div>
+            <div class="step-subtitle">Sin esto, tu orden no será procesada</div>
+            <button class="copy-button" onclick="copyText('noteToCopy')">
+              <span id="noteToCopy">-</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
         </div>
-        <p class="step-description">You can copy it below.</p>
-        <button class="copy-button" onclick="copyText('noteToCopy')">
-          <span id="noteToCopy">order-id</span>
-          <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
-      </div>
 
-      <div class="instruction-step">
-        <div class="step-header">
+        <div class="step">
           <div class="step-number">3</div>
-          <h3 class="step-title">Make sure to send the exact amount.</h3>
+          <div class="step-content">
+            <div class="step-title">Envía la cantidad exacta</div>
+            <div class="step-subtitle">Verifica el monto antes de enviar</div>
+            <button class="copy-button" onclick="copyText('amountToCopy')">
+              <span id="amountToCopy">€0.00</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
         </div>
-        <p class="step-description">You can copy it below.</p>
-        <button class="copy-button" onclick="copyText('amountToCopy')">
-          <span id="amountToCopy">$0.00</span>
-          <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
       </div>
-    </div>
 
-    <!-- Action Section -->
-    <div class="action-section">
-      <button class="btn-check-status" onclick="checkPaymentStatus()">
-        Check Payment Status
+      <button class="check-status-btn" onclick="checkStatus()">
+        Verificar Estado del Pago
       </button>
-      <p class="status-text">Payment will be verified automatically within 1-5 minutes</p>
     </div>
   </div>
 
@@ -367,45 +399,36 @@
     const API_URL = 'https://plugmarket-api.laambedoor.workers.dev';
     let currentOrderId = null;
 
-    // Get cart from URL params or localStorage
     function getCart() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const cartParam = urlParams.get('cart');
-      
-      if (cartParam) {
-        try {
-          return JSON.parse(decodeURIComponent(cartParam));
-        } catch (e) {
-          console.error('Error parsing cart from URL:', e);
-        }
+      const params = new URLSearchParams(window.location.search);
+      const cartParam = params.get('cart');
+      if (!cartParam) return [];
+      try {
+        return JSON.parse(decodeURIComponent(cartParam));
+      } catch {
+        return [];
       }
-      
-      // Fallback to localStorage
-      const cartData = localStorage.getItem('cart');
-      return cartData ? JSON.parse(cartData) : [];
     }
 
-    // Create PayPal F&F order
     async function createOrder() {
-      const cart = getCart();
+      document.getElementById('loadingContainer').style.display = 'block';
       
+      const cart = getCart();
       if (!cart || cart.length === 0) {
         alert('Carrito vacío');
         window.location.href = 'cart.html';
         return;
       }
 
-      document.getElementById('loadingContainer').style.display = 'block';
-
       try {
         const response = await fetch(`${API_URL}/api/paypal-ff/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cart })
+          body: JSON.stringify({ cart: cart.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
         });
 
         const data = await response.json();
-
+        
         if (!response.ok || !data.success) {
           throw new Error(data.error || 'Error creando orden');
         }
@@ -422,33 +445,30 @@
       }
     }
 
-    // Display payment information
     function displayPaymentInfo(data, cart) {
-      document.getElementById('paymentContent').style.display = 'block';
+      document.getElementById('paymentContent').style.display = 'grid';
       
-      // Set invoice info
+      // Convert USD to EUR (approximate rate: 1 USD = 0.92 EUR)
+      const eurAmount = (parseFloat(data.amount) * 0.92).toFixed(2);
+      
       document.getElementById('invoiceId').textContent = data.orderId;
-      document.getElementById('customerEmail').textContent = localStorage.getItem('userEmail') || 'No email provided';
-      document.getElementById('totalPrice').textContent = `€${(parseFloat(data.amount) * 0.92).toFixed(2)}`;
-      document.getElementById('totalPriceUSD').textContent = `$${data.amount}`;
+      document.getElementById('customerEmail').textContent = localStorage.getItem('userEmail') || 'No email';
+      document.getElementById('totalPrice').textContent = `€${eurAmount}`;
       
-      // Set dates
       const now = new Date();
       const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-      document.getElementById('createdAt').textContent = now.toLocaleString('en-US', { 
-        month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true 
+      document.getElementById('createdAt').textContent = now.toLocaleString('es-ES', { 
+        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
       });
-      document.getElementById('expiresAt').textContent = expires.toLocaleString('en-US', { 
-        month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true 
+      document.getElementById('expiresAt').textContent = expires.toLocaleString('es-ES', { 
+        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
       });
       
-      // Set copy values
       document.getElementById('emailToCopy').textContent = data.paypalEmail;
       document.getElementById('noteToCopy').textContent = data.casualNote;
-      document.getElementById('amountToCopy').textContent = `$${data.amount}`;
+      document.getElementById('amountToCopy').textContent = `€${eurAmount}`;
     }
 
-    // Copy text function
     function copyText(elementId) {
       const text = document.getElementById(elementId).textContent;
       
@@ -458,21 +478,17 @@
         setTimeout(() => {
           notification.style.display = 'none';
         }, 3000);
-      }).catch(err => {
-        console.error('Error copying:', err);
-        alert('Copied: ' + text);
       });
     }
 
-    // Check payment status
-    async function checkPaymentStatus() {
+    async function checkStatus() {
       if (!currentOrderId) {
         alert('No hay orden activa');
         return;
       }
 
       try {
-        const response = await fetch(`${API_URL}/get-user-orders`, {
+        const response = await fetch(`${API_URL}/api/get-user-orders`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderIds: [currentOrderId] })
@@ -482,26 +498,21 @@
         
         if (data.orders && data.orders.length > 0) {
           const order = data.orders[0];
-          
-          if (order.payment_status === 'completed') {
-            alert('✅ ¡Pago confirmado! Redirigiendo a tus pedidos...');
-            localStorage.removeItem('cart');
-            window.location.href = 'my-account.html';
-          } else if (order.payment_status === 'failed') {
-            alert('❌ El pago falló. Por favor, contacta con soporte.');
+          if (order.customer_email && order.customer_email.includes('@')) {
+            alert('¡Pago recibido! Tu orden está siendo procesada.');
+            window.location.href = 'orders.html';
           } else {
-            alert('⏳ Pago pendiente. Espera 1-5 minutos y verifica de nuevo.');
+            alert('Aún no hemos recibido tu pago. Por favor espera unos minutos.');
           }
         } else {
-          alert('⏳ Aún no hemos recibido tu pago. Por favor espera unos minutos.');
+          alert('No se encontró la orden');
         }
       } catch (error) {
-        console.error('Error checking status:', error);
-        alert('Error verificando el estado del pago');
+        console.error('Error:', error);
+        alert('Error verificando el estado');
       }
     }
 
-    // Initialize on page load
     window.addEventListener('DOMContentLoaded', createOrder);
   </script>
 </body>

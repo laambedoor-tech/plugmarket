@@ -134,6 +134,7 @@ export default {
       const orderId = generateOrderId();
       const casualNote = getRandomNote();
       const amountUSD = (totalCents / 100).toFixed(2);
+      const amountEUR = (amountUSD * 0.92).toFixed(2); // Convert to EUR
       const paypalEmail = env.PAYPAL_MANUAL_EMAIL || 'soyalexesp123@gmail.com';
 
       // Store order in database using Supabase REST API
@@ -188,11 +189,12 @@ export default {
         success: true,
         orderId: savedOrder[0].id,
         casualNote: casualNote,
-        amount: amountUSD,
-        currency: 'USD',
+        amount: amountEUR,
+        amountUSD: amountUSD,
+        currency: 'EUR',
         paypalEmail: paypalEmail,
         instructions: {
-          step1: `Send $${amountUSD} USD via PayPal Friends & Family`,
+          step1: `Send €${amountEUR} EUR via PayPal Friends & Family`,
           step2: `To: ${paypalEmail}`,
           step3: `In the note field, include: ${casualNote}`,
           step4: 'Payment will be verified automatically within 1-5 minutes'

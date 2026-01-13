@@ -396,11 +396,9 @@ function initCheckout() {
     try { await loadBalanceInfo(); } catch (e){ console.error('Failed to load balance:', e); }
   });
   
-  // PayPal F&F button
+  // PayPal F&F button - Show warning modal first
   document.getElementById('btn-pay-paypal-ff')?.addEventListener('click', () => {
-    const cart = getCart();
-    const cartParam = encodeURIComponent(JSON.stringify(cart));
-    window.location.href = `paypal-ff.html?cart=${cartParam}`;
+    showPayPalFFWarning();
   });
   document.getElementById('btn-cancel-paypal-ff')?.addEventListener('click', () => {
     showCheckout(false);
@@ -748,5 +746,126 @@ function getTotalAmount() {
     const qty = item.qty || 1;
     return sum + (item.price * qty);
   }, 0);
+}
+
+function showPayPalFFWarning() {
+  // Create modal overlay
+  const modal = document.createElement('div');
+  modal.id = 'paypal-ff-modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const modalContent = document.createElement('div');
+  modalContent.style.cssText = `
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideUp 0.4s ease;
+  `;
+
+  modalContent.innerHTML = `
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    </style>
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #0070ba, #003087); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(0, 112, 186, 0.4);">
+        <span style="font-size: 32px;">⚠️</span>
+      </div>
+      <h2 style="color: #fff; font-size: 24px; margin-bottom: 16px; font-weight: 700;">Importante - Friends & Family</h2>
+      <p style="color: #aaa; font-size: 15px; line-height: 1.6; margin-bottom: 28px;">
+        Asegúrate de enviar el pago como <strong style="color: #00ff88;">Friends & Family</strong> 
+        y de agregar la <strong style="color: #00ff88;">nota</strong> al pago, de lo contrario tu orden 
+        <strong style="color: #ff5555;">no será procesada automáticamente</strong>.
+      </p>
+      
+      <div style="background: rgba(0, 112, 186, 0.1); border: 1px solid rgba(0, 112, 186, 0.3); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="width: 36px; height: 36px; background: rgba(0, 112, 186, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" fill="none" stroke="#0070ba" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div style="text-align: left;">
+            <div style="color: #0070ba; font-size: 13px; font-weight: 600;">Para amigos y familia</div>
+            <div style="color: #666; font-size: 12px;">La protección del comprador no se aplica a este pago</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button id="cancel-paypal-ff" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          Cancelar
+        </button>
+        <button id="continue-paypal-ff" style="flex: 1; padding: 14px; background: linear-gradient(135deg, #db2777, #be185d); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);">
+          Continuar →
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
+  // Add hover effects
+  const cancelBtn = modal.querySelector('#cancel-paypal-ff');
+  const continueBtn = modal.querySelector('#continue-paypal-ff');
+
+  cancelBtn.addEventListener('mouseenter', () => {
+    cancelBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+  });
+  cancelBtn.addEventListener('mouseleave', () => {
+    cancelBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+  });
+
+  continueBtn.addEventListener('mouseenter', () => {
+    continueBtn.style.transform = 'translateY(-2px)';
+    continueBtn.style.boxShadow = '0 6px 24px rgba(219, 39, 119, 0.6)';
+  });
+  continueBtn.addEventListener('mouseleave', () => {
+    continueBtn.style.transform = 'translateY(0)';
+    continueBtn.style.boxShadow = '0 4px 16px rgba(219, 39, 119, 0.4)';
+  });
+
+  // Event listeners
+  cancelBtn.addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+
+  continueBtn.addEventListener('click', () => {
+    document.body.removeChild(modal);
+    const cart = getCart();
+    const cartParam = encodeURIComponent(JSON.stringify(cart));
+    window.location.href = `paypal-ff.html?cart=${cartParam}`;
+  });
+
+  // Close on overlay click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
 }
 
