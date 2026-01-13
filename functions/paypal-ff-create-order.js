@@ -126,11 +126,11 @@ export default {
 
       const orderData = {
         order_id: orderId,
-        items: items,
-        amount_cents: totalCents,
-        currency: 'USD',
+        customer_email: 'paypal-ff-pending',
         payment_method: 'paypal_ff',
         payment_status: 'pending',
+        total_cents: totalCents,
+        items: items,
         created_at: new Date().toISOString()
       };
 

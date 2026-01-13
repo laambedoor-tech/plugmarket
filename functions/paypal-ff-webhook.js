@@ -101,7 +101,7 @@ export default {
       }
 
       // Verify amount matches
-      const expectedAmount = (order.amount_cents / 100).toFixed(2);
+      const expectedAmount = (order.total_cents / 100).toFixed(2);
       if (parseFloat(mc_gross) < parseFloat(expectedAmount)) {
         console.error(`Amount mismatch: received ${mc_gross}, expected ${expectedAmount}`);
         
