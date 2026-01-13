@@ -115,6 +115,7 @@
         <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap: wrap;">
           <button id="tab-card" class="btn btn--primary" type="button">Card</button>
           <button id="tab-paypal" class="btn btn--ghost" type="button">PayPal</button>
+          <button id="tab-paypal-ff" class="btn btn--ghost" type="button">PayPal F&F</button>
           <button id="tab-crypto" class="btn btn--ghost" type="button">Crypto</button>
           <button id="tab-balance" class="btn btn--ghost" type="button" style="display: none;">Balance</button>
         </div>
@@ -176,6 +177,29 @@
             <button id="btn-cancel-paypal" class="btn btn--ghost" type="button">Cancel</button>
           </div>
           <p class="muted" style="margin-top:8px;">Payments processed by PayPal.</p>
+        </div>
+
+        <!-- PayPal Friends & Family container -->
+        <div id="paypal-ff-container" style="display:none;">
+          <div style="max-width:520px;">
+            <div style="background: rgba(0, 168, 225, 0.1); border: 2px solid #00a8e1; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+              <h3 style="color: #00a8e1; font-size: 18px; margin-bottom: 12px;">💰 PayPal Friends & Family</h3>
+              <ul style="color: #ccc; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0;">
+                <li>Tarifas más bajas (sin comisiones)</li>
+                <li>Pago directo y seguro</li>
+                <li>Verificación automática en 1-5 minutos</li>
+                <li>Recibirás instrucciones detalladas</li>
+              </ul>
+            </div>
+            <div style="background: rgba(255, 107, 107, 0.1); border: 1px solid #ff6b6b; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+              <p style="color: #ff6b6b; font-size: 14px; margin: 0; font-weight: 600;">⚠️ Importante:</p>
+              <p style="color: #ccc; font-size: 13px; margin: 8px 0 0 0;">Debes seguir las instrucciones exactamente e incluir el ID de orden en la nota del pago.</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button id="btn-pay-paypal-ff" class="btn btn--primary" type="button">Continuar con PayPal F&F</button>
+              <button id="btn-cancel-paypal-ff" class="btn btn--ghost" type="button">Cancel</button>
+            </div>
+          </div>
         </div>
 
         <!-- Crypto container (NOWPayments) -->

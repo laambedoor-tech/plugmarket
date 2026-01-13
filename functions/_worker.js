@@ -21,6 +21,8 @@ import getBalance from './get-balance.js';
 import createTopupIntent from './create-topup-intent.js';
 import getBalanceTransactions from './get-balance-transactions.js';
 import payWithBalance from './pay-with-balance.js';
+import paypalFFCreateOrder from './paypal-ff-create-order.js';
+import paypalFFWebhook from './paypal-ff-webhook.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -62,6 +64,10 @@ export default {
     }
     if (path === '/api/paypal/create-order') return paypalCreateOrder.fetch(request, env, ctx);
     if (path === '/api/paypal/capture-order') return paypalCaptureOrder.fetch(request, env, ctx);
+
+    // PayPal Friends & Family routes
+    if (path === '/api/paypal-ff/create-order') return paypalFFCreateOrder.fetch(request, env, ctx);
+    if (path === '/api/paypal-ff/webhook') return paypalFFWebhook.fetch(request, env, ctx);
 
     // NOWPayments crypto routes
     if (path === '/api/crypto/now/create') return cryptoNowCreate.fetch(request, env, ctx);

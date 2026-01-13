@@ -331,32 +331,50 @@ function initCheckout() {
   document.getElementById('tab-card')?.addEventListener('click', () => {
     document.getElementById('payment-form').style.display = 'block';
     document.getElementById('paypal-container').style.display = 'none';
+    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-card').classList.add('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
   });
   document.getElementById('tab-paypal')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'block';
+    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-paypal').classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
     try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
   });
+  document.getElementById('tab-paypal-ff')?.addEventListener('click', () => {
+    document.getElementById('payment-form').style.display = 'none';
+    document.getElementById('paypal-container').style.display = 'none';
+    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'block';
+    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
+    document.getElementById('tab-paypal-ff')?.classList.add('btn--primary');
+    document.getElementById('tab-card')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
+    document.getElementById('tab-balance')?.classList.remove('btn--primary');
+  });
   document.getElementById('tab-crypto')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'none';
+    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-crypto')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
     try {
       const sel = document.getElementById('crypto-currency');
@@ -367,14 +385,27 @@ function initCheckout() {
   document.getElementById('tab-balance')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
     document.getElementById('paypal-container').style.display = 'none';
+    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'block';
     document.getElementById('tab-balance')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     try { await loadBalanceInfo(); } catch (e){ console.error('Failed to load balance:', e); }
   });
+  
+  // PayPal F&F button
+  document.getElementById('btn-pay-paypal-ff')?.addEventListener('click', () => {
+    const cart = getCart();
+    const cartParam = encodeURIComponent(JSON.stringify(cart));
+    window.location.href = `paypal-ff.html?cart=${cartParam}`;
+  });
+  document.getElementById('btn-cancel-paypal-ff')?.addEventListener('click', () => {
+    showCheckout(false);
+  });
+  
   document.getElementById('btn-create-crypto')?.addEventListener('click', async () => {
     try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
   });
