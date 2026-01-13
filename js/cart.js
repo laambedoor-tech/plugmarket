@@ -749,33 +749,44 @@ function getTotalAmount() {
 }
 
 function showPayPalFFWarning() {
-  // Create modal overlay
+  // Check if user has email
+  const userEmail = localStorage.getItem('userEmail');
+  
+  if (!userEmail || !userEmail.includes('@')) {
+    showEmailModal();
+    return;
+  }
+
+  showPayPalWarningModal();
+}
+
+function showEmailModal() {
   const modal = document.createElement('div');
-  modal.id = 'paypal-ff-modal';
+  modal.id = 'email-modal';
   modal.style.cssText = `
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
-    backdrop-filter: blur(8px);
+    z-index: 10001;
+    backdrop-filter: blur(10px);
     animation: fadeIn 0.3s ease;
   `;
 
   const modalContent = document.createElement('div');
   modalContent.style.cssText = `
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(145deg, #1a1a3e 0%, #16213e 100%);
     border-radius: 24px;
-    padding: 40px;
-    max-width: 500px;
+    padding: 44px;
+    max-width: 480px;
     width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(100, 100, 255, 0.2);
     animation: slideUp 0.4s ease;
   `;
 
@@ -789,38 +800,44 @@ function showPayPalFFWarning() {
         from { transform: translateY(30px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
       }
+      .email-input {
+        width: 100%;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(100, 100, 255, 0.2);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.3s;
+      }
+      .email-input:focus {
+        border-color: #0088ff;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .email-input::placeholder {
+        color: #7788aa;
+      }
     </style>
     <div style="text-align: center;">
-      <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #0070ba, #003087); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(0, 112, 186, 0.4);">
-        <span style="font-size: 32px;">⚠️</span>
+      <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #ff0080, #ff0055); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(255, 0, 128, 0.5);">
+        <svg width="32" height="32" fill="none" stroke="white" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
       </div>
-      <h2 style="color: #fff; font-size: 24px; margin-bottom: 16px; font-weight: 700;">Importante - Friends & Family</h2>
-      <p style="color: #aaa; font-size: 15px; line-height: 1.6; margin-bottom: 28px;">
-        Asegúrate de enviar el pago como <strong style="color: #00ff88;">Friends & Family</strong> 
-        y de agregar la <strong style="color: #00ff88;">nota</strong> al pago, de lo contrario tu orden 
-        <strong style="color: #ff5555;">no será procesada automáticamente</strong>.
+      <h2 style="color: #fff; font-size: 24px; margin-bottom: 12px; font-weight: 700;">Email Required</h2>
+      <p style="color: #8899ff; font-size: 15px; line-height: 1.6; margin-bottom: 32px;">
+        Please enter your email address to receive order updates and confirmation.
       </p>
       
-      <div style="background: rgba(0, 112, 186, 0.1); border: 1px solid rgba(0, 112, 186, 0.3); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-          <div style="width: 36px; height: 36px; background: rgba(0, 112, 186, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-            <svg width="20" height="20" fill="none" stroke="#0070ba" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-          </div>
-          <div style="text-align: left;">
-            <div style="color: #0070ba; font-size: 13px; font-weight: 600;">Para amigos y familia</div>
-            <div style="color: #666; font-size: 12px;">La protección del comprador no se aplica a este pago</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 12px;">
-        <button id="cancel-paypal-ff" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-          Cancelar
+      <input type="email" id="userEmailInput" class="email-input" placeholder="your.email@example.com" autofocus>
+      
+      <div style="display: flex; gap: 12px; margin-top: 28px;">
+        <button id="cancel-email" style="flex: 1; padding: 16px; background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          Cancel
         </button>
-        <button id="continue-paypal-ff" style="flex: 1; padding: 14px; background: linear-gradient(135deg, #db2777, #be185d); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);">
-          Continuar →
+        <button id="save-email" style="flex: 1; padding: 16px; background: linear-gradient(135deg, #ff0080, #ff0055); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(255, 0, 128, 0.4);">
+          Continue →
         </button>
       </div>
     </div>
@@ -829,27 +846,147 @@ function showPayPalFFWarning() {
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
 
-  // Add hover effects
+  const input = modal.querySelector('#userEmailInput');
+  const cancelBtn = modal.querySelector('#cancel-email');
+  const saveBtn = modal.querySelector('#save-email');
+
+  // Hover effects
+  cancelBtn.addEventListener('mouseenter', () => {
+    cancelBtn.style.background = 'rgba(255, 255, 255, 0.12)';
+  });
+  cancelBtn.addEventListener('mouseleave', () => {
+    cancelBtn.style.background = 'rgba(255, 255, 255, 0.08)';
+  });
+
+  saveBtn.addEventListener('mouseenter', () => {
+    saveBtn.style.transform = 'translateY(-2px)';
+    saveBtn.style.boxShadow = '0 6px 24px rgba(255, 0, 128, 0.6)';
+  });
+  saveBtn.addEventListener('mouseleave', () => {
+    saveBtn.style.transform = 'translateY(0)';
+    saveBtn.style.boxShadow = '0 4px 16px rgba(255, 0, 128, 0.4)';
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+
+  saveBtn.addEventListener('click', () => {
+    const email = input.value.trim();
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      input.style.borderColor = '#ff0055';
+      input.focus();
+      return;
+    }
+    localStorage.setItem('userEmail', email);
+    document.body.removeChild(modal);
+    showPayPalWarningModal();
+  });
+
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      saveBtn.click();
+    }
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+}
+
+function showPayPalWarningModal() {
+  const modal = document.createElement('div');
+  modal.id = 'paypal-ff-modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const modalContent = document.createElement('div');
+  modalContent.style.cssText = `
+    background: linear-gradient(145deg, #1a1a3e 0%, #16213e 100%);
+    border-radius: 24px;
+    padding: 44px;
+    max-width: 520px;
+    width: 90%;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(100, 100, 255, 0.2);
+    animation: slideUp 0.4s ease;
+  `;
+
+  modalContent.innerHTML = `
+    <div style="text-align: center;">
+      <div style="width: 68px; height: 68px; background: linear-gradient(135deg, #0088ff, #0066cc); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(0, 136, 255, 0.5);">
+        <svg width="36" height="36" fill="white" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+      </div>
+      <h2 style="color: #fff; font-size: 26px; margin-bottom: 16px; font-weight: 700; letter-spacing: -0.5px;">Important - Friends & Family Payment</h2>
+      <p style="color: #8899ff; font-size: 15px; line-height: 1.7; margin-bottom: 32px;">
+        Make sure to send the payment as <strong style="color: #00ff88;">Friends & Family</strong> 
+        and include the <strong style="color: #00ff88;">payment note</strong>, otherwise your order 
+        <strong style="color: #ff5555;">will not be processed automatically</strong>.
+      </p>
+      
+      <div style="background: rgba(0, 136, 255, 0.08); border: 1px solid rgba(0, 136, 255, 0.25); border-radius: 14px; padding: 20px; margin-bottom: 32px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 42px; height: 42px; background: rgba(0, 136, 255, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="22" height="22" fill="none" stroke="#0088ff" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div style="text-align: left; flex: 1;">
+            <div style="color: #0088ff; font-size: 14px; font-weight: 700; margin-bottom: 4px;">For Friends and Family</div>
+            <div style="color: #7788aa; font-size: 13px; line-height: 1.4;">Buyer Protection doesn't apply to this payment</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 14px;">
+        <button id="cancel-paypal-ff" style="flex: 1; padding: 16px; background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          Cancel
+        </button>
+        <button id="continue-paypal-ff" style="flex: 2; padding: 16px; background: linear-gradient(135deg, #ff0080, #ff0055); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(255, 0, 128, 0.4);">
+          I Understand, Continue →
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
+
   const cancelBtn = modal.querySelector('#cancel-paypal-ff');
   const continueBtn = modal.querySelector('#continue-paypal-ff');
 
   cancelBtn.addEventListener('mouseenter', () => {
-    cancelBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+    cancelBtn.style.background = 'rgba(255, 255, 255, 0.12)';
   });
   cancelBtn.addEventListener('mouseleave', () => {
-    cancelBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+    cancelBtn.style.background = 'rgba(255, 255, 255, 0.08)';
   });
 
   continueBtn.addEventListener('mouseenter', () => {
     continueBtn.style.transform = 'translateY(-2px)';
-    continueBtn.style.boxShadow = '0 6px 24px rgba(219, 39, 119, 0.6)';
+    continueBtn.style.boxShadow = '0 6px 28px rgba(255, 0, 128, 0.6)';
   });
   continueBtn.addEventListener('mouseleave', () => {
     continueBtn.style.transform = 'translateY(0)';
-    continueBtn.style.boxShadow = '0 4px 16px rgba(219, 39, 119, 0.4)';
+    continueBtn.style.boxShadow = '0 4px 20px rgba(255, 0, 128, 0.4)';
   });
 
-  // Event listeners
   cancelBtn.addEventListener('click', () => {
     document.body.removeChild(modal);
   });
@@ -861,7 +998,6 @@ function showPayPalFFWarning() {
     window.location.href = `paypal-ff.html?cart=${cartParam}`;
   });
 
-  // Close on overlay click
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       document.body.removeChild(modal);
