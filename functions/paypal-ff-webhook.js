@@ -115,13 +115,13 @@ export default {
         return new Response('OK', { status: 200 });
       }
 
-      // Update order as completed
-      const { error: updateError } = await supabase
-        .from('orders') (set customer_email to payer's email)
+      // Update order as completed - set customer_email to payer's email
       const { error: updateError } = await supabase
         .from('orders')
         .update({
           customer_email: payer_email
+        })
+        .eq('payment_intent_id', orderId);
 
       if (updateError) {
         console.error('Failed to update order:', updateError);
