@@ -4,6 +4,8 @@
  * Verifies the payment and updates order status
  */
 
+import { createClient } from '@supabase/supabase-js';
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') {
@@ -73,8 +75,14 @@ export default {
         return new Response('OK', { status: 200 });
       }
 
+      // Create Supabase client
+      const supabase = createClient(
+        env.SUPABASE_URL,
+        env.SUPABASE_ANON_KEY
+      );
+
       // Find the order
-      const { data: order, error: findError } = await env.SUPABASE
+      const { data: order, error: findError } = await supabase
         .from('orders')
         .select('*')
         .eq('order_id', orderId)
@@ -98,7 +106,7 @@ export default {
         console.error(`Amount mismatch: received ${mc_gross}, expected ${expectedAmount}`);
         
         // Update order with error
-        await env.SUPABASE
+        await supabase
           .from('orders')
           .update({
             payment_status: 'failed',
@@ -111,7 +119,7 @@ export default {
       }
 
       // Update order as completed
-      const { error: updateError } = await env.SUPABASE
+      const { error: updateError } = await supabase
         .from('orders')
         .update({
           payment_status: 'completed',

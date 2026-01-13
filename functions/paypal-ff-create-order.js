@@ -112,24 +112,52 @@ export default {
       const amountUSD = (totalCents / 100).toFixed(2);
       const paypalEmail = env.PAYPAL_MANUAL_EMAIL || 'soyalexesp123@gmail.com';
 
-      // Store order in database
-      const { data: orderData, error: dbError } = await env.SUPABASE
-        .from('orders')
-        .insert({
-          order_id: orderId,
-          items: items,
-          amount_cents: totalCents,
-          currency: 'USD',
-          payment_method: 'paypal_ff',
-          payment_status: 'pending',
-          created_at: new Date().toISOString()
-        })
-        .select()
-        .single();
+      // Store order in database using Supabase REST API
+      const supabaseUrl = env.SUPABASE_URL;
+      const supabaseKey = env.SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey) {
+        console.error('Supabase credentials not configured');
+        return new Response(JSON.stringify({ error: 'Database not configured' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
 
-      if (dbError) {
-        console.error('Database error:', dbError);
+      const orderData = {
+        order_id: orderId,
+        items: items,
+        amount_cents: totalCents,
+        currency: 'USD',
+        payment_method: 'paypal_ff',
+        payment_status: 'pending',
+        created_at: new Date().toISOString()
+      };
+
+      const dbResponse = await fetch(`${supabaseUrl}/rest/v1/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!dbResponse.ok) {
+        const errorText = await dbResponse.text();
+        console.error('Database error:', errorText);
         return new Response(JSON.stringify({ error: 'Failed to create order' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+
+      const savedOrder = await dbResponse.json();
+      if (!savedOrder || savedOrder.length === 0) {
+        console.error('Order not saved properly');
+        return new Response(JSON.stringify({ error: 'Failed to save order' }), {
           status: 500,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
