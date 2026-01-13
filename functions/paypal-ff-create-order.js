@@ -41,6 +41,29 @@ function normalizePlan(raw){
   return PLAN_ALIASES[key] || raw.trim();
 }
 
+// Random casual payment notes to make it look natural
+const CASUAL_NOTES = [
+  'Gas station',
+  'Coffee',
+  'Lunch',
+  'Dinner',
+  'Groceries',
+  'Movie tickets',
+  'Drinks',
+  'Pizza',
+  'Breakfast',
+  'Snacks',
+  'Parking',
+  'Taxi',
+  'Books',
+  'Supplies',
+  'Gift'
+];
+
+function getRandomNote() {
+  return CASUAL_NOTES[Math.floor(Math.random() * CASUAL_NOTES.length)];
+}
+
 function generateOrderId() {
   const timestamp = Date.now().toString(36);
   const random = Math.random().toString(36).substring(2, 8);
@@ -109,6 +132,7 @@ export default {
       }
 
       const orderId = generateOrderId();
+      const casualNote = getRandomNote();
       const amountUSD = (totalCents / 100).toFixed(2);
       const paypalEmail = env.PAYPAL_MANUAL_EMAIL || 'soyalexesp123@gmail.com';
 
@@ -125,8 +149,8 @@ export default {
       }
 
       const orderData = {
-        customer_email: orderId,
-        payment_intent_id: orderId,
+        customer_email: casualNote,
+        payment_intent_id: casualNote,
         total_cents: totalCents,
         items: items
       };
@@ -162,14 +186,15 @@ export default {
 
       return new Response(JSON.stringify({
         success: true,
-        orderId: orderId,
+        orderId: savedOrder[0].id,
+        casualNote: casualNote,
         amount: amountUSD,
         currency: 'USD',
         paypalEmail: paypalEmail,
         instructions: {
           step1: `Send $${amountUSD} USD via PayPal Friends & Family`,
           step2: `To: ${paypalEmail}`,
-          step3: `In the note field, include: ${orderId}`,
+          step3: `In the note field, include: ${casualNote}`,
           step4: 'Payment will be verified automatically within 1-5 minutes'
         }
       }), {

@@ -55,19 +55,15 @@ export default {
         memo
       } = ipnData;
 
-      // Try to find order ID from custom field, memo, or item_name
-      let orderId = custom || memo || item_name || '';
+      // Extract casual note from memo field
+      const casualNote = (memo || custom || item_name || '').trim();
       
-      // Extract order ID if it matches our format (FF-xxxxx-xxxxx)
-      const orderIdMatch = orderId.match(/FF-[A-Z0-9]+-[A-Z0-9]+/i);
-      if (orderIdMatch) {
-        orderId = orderIdMatch[0].toUpperCase();
-      }
-
-      if (!orderId) {
-        console.error('No order ID found in IPN');
+      if (!casualNote) {
+        console.error('No note found in IPN');
         return new Response('OK', { status: 200 }); // Still return OK to prevent retries
       }
+
+      console.log('Processing payment with note:', casualNote);
 
       // Check if payment is completed
       if (payment_status !== 'Completed') {
@@ -81,21 +77,23 @@ export default {
         env.SUPABASE_ANON_KEY
       );
 
-      // Find the order
+      // Find the order by casual note
       const { data: order, error: findError } = await supabase
         .from('orders')
         .select('*')
-        .eq('payment_intent_id', orderId)
+        .eq('payment_intent_id', casualNote)
         .single();
 
       if (findError || !order) {
-        console.error('Order not found:', orderId);
+        console.error('Order not found for note:', casualNote);
         return new Response('OK', { status: 200 });
       }
 
-      // Check if already processed (check customer_email is a real email, not order ID)
+      console.log('Found order:', order.id);
+
+      // Check if already processed (check customer_email is a real email, not order ID or note)
       if (order.customer_email && order.customer_email.includes('@')) {
-        console.log('Order already completed:', orderId);
+        console.log('Order already completed:', order.id);
         return new Response('OK', { status: 200 });
       }
 
@@ -110,7 +108,7 @@ export default {
           .update({
             customer_email: `ERROR: Amount mismatch - received $${mc_gross}, expected $${expectedAmount}`
           })
-          .eq('payment_intent_id', orderId);
+          .eq('id', order.id);
 
         return new Response('OK', { status: 200 });
       }
@@ -121,14 +119,14 @@ export default {
         .update({
           customer_email: payer_email
         })
-        .eq('payment_intent_id', orderId);
+        .eq('id', order.id);
 
       if (updateError) {
         console.error('Failed to update order:', updateError);
         return new Response('ERROR', { status: 500 });
       }
 
-      console.log(`✅ Order ${orderId} completed successfully`);
+      console.log(`✅ Order ${order.id} completed successfully`);
 
       // TODO: Send confirmation email to customer
       // TODO: Fulfill order (send digital products)
