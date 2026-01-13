@@ -125,13 +125,12 @@ export default {
       }
 
       const orderData = {
-        order_id: orderId,
-        customer_email: 'paypal-ff-pending',
+        customer_email: 'pending-paypal-ff',
+        payment_intent_id: orderId,
         payment_method: 'paypal_ff',
         payment_status: 'pending',
         total_cents: totalCents,
-        items: items,
-        created_at: new Date().toISOString()
+        items: items
       };
 
       const dbResponse = await fetch(`${supabaseUrl}/rest/v1/orders`, {

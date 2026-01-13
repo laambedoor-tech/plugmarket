@@ -85,7 +85,7 @@ export default {
       const { data: order, error: findError } = await supabase
         .from('orders')
         .select('*')
-        .eq('order_id', orderId)
+        .eq('payment_intent_id', orderId)
         .eq('payment_method', 'paypal_ff')
         .single();
 
@@ -113,7 +113,7 @@ export default {
             payment_error: `Amount mismatch: received $${mc_gross}, expected $${expectedAmount}`,
             updated_at: new Date().toISOString()
           })
-          .eq('order_id', orderId);
+          .eq('payment_intent_id', orderId);
 
         return new Response('OK', { status: 200 });
       }
@@ -129,7 +129,7 @@ export default {
           completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
-        .eq('order_id', orderId);
+        .eq('payment_intent_id', orderId);
 
       if (updateError) {
         console.error('Failed to update order:', updateError);
