@@ -364,6 +364,13 @@ function initCheckout() {
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
+    
+    // Pre-fill email if exists
+    const savedEmail = localStorage.getItem('userEmail');
+    const emailInput = document.getElementById('paypal-ff-email');
+    if (savedEmail && emailInput && !emailInput.value) {
+      emailInput.value = savedEmail;
+    }
   });
   document.getElementById('tab-crypto')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
@@ -396,9 +403,42 @@ function initCheckout() {
     try { await loadBalanceInfo(); } catch (e){ console.error('Failed to load balance:', e); }
   });
   
-  // PayPal F&F button - Show warning modal first
+  // PayPal F&F button - Validate email first, then show warning modal
   document.getElementById('btn-pay-paypal-ff')?.addEventListener('click', () => {
-    showPayPalFFWarning();
+    // Get email from the input field in the panel
+    const emailInput = document.getElementById('paypal-ff-email');
+    const email = emailInput?.value.trim();
+    
+    // Validate email
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      emailInput.style.borderColor = '#ff0055';
+      emailInput.style.background = 'rgba(255, 0, 85, 0.1)';
+      emailInput.focus();
+      
+      // Show error message
+      const existingError = document.getElementById('email-error-msg');
+      if (existingError) existingError.remove();
+      
+      const errorMsg = document.createElement('p');
+      errorMsg.id = 'email-error-msg';
+      errorMsg.style.cssText = 'color: #ff5555; font-size: 13px; margin: 8px 0 0 0; font-weight: 600;';
+      errorMsg.textContent = '⚠️ Please enter a valid email address';
+      emailInput.parentElement.appendChild(errorMsg);
+      
+      setTimeout(() => {
+        emailInput.style.borderColor = 'rgba(100, 100, 255, 0.2)';
+        emailInput.style.background = 'rgba(255, 255, 255, 0.05)';
+        if (errorMsg.parentElement) errorMsg.remove();
+      }, 3000);
+      
+      return;
+    }
+    
+    // Save email to localStorage
+    localStorage.setItem('userEmail', email);
+    
+    // Show PayPal warning modal
+    showPayPalWarningModal();
   });
   document.getElementById('btn-cancel-paypal-ff')?.addEventListener('click', () => {
     showCheckout(false);
@@ -749,14 +789,7 @@ function getTotalAmount() {
 }
 
 function showPayPalFFWarning() {
-  // Check if user has email
-  const userEmail = localStorage.getItem('userEmail');
-  
-  if (!userEmail || !userEmail.includes('@')) {
-    showEmailModal();
-    return;
-  }
-
+  // Email is now handled in the panel, just show the warning modal
   showPayPalWarningModal();
 }
 
