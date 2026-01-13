@@ -91,8 +91,8 @@ export default {
 
       console.log('Found order:', order.id);
 
-      // Check if already processed (check customer_email is a real email, not order ID or note)
-      if (order.customer_email && order.customer_email.includes('@')) {
+      // Check if already processed - if payment_intent_id changed from casual note to txn_id
+      if (order.payment_intent_id && order.payment_intent_id.length > 20) {
         console.log('Order already completed:', order.id);
         return new Response('OK', { status: 200 });
       }
@@ -101,23 +101,14 @@ export default {
       const expectedAmount = (order.total_cents / 100).toFixed(2);
       if (parseFloat(mc_gross) < parseFloat(expectedAmount)) {
         console.error(`Amount mismatch: received ${mc_gross}, expected ${expectedAmount}`);
-        
-        // Update order with error (store in customer_email for now)
-        await supabase
-          .from('orders')
-          .update({
-            customer_email: `ERROR: Amount mismatch - received $${mc_gross}, expected $${expectedAmount}`
-          })
-          .eq('id', order.id);
-
         return new Response('OK', { status: 200 });
       }
 
-      // Update order as completed - set customer_email to payer's email
+      // Mark order as completed by updating payment_intent_id to the transaction ID
       const { error: updateError } = await supabase
         .from('orders')
         .update({
-          customer_email: payer_email
+          payment_intent_id: txn_id
         })
         .eq('id', order.id);
 
@@ -126,7 +117,7 @@ export default {
         return new Response('ERROR', { status: 500 });
       }
 
-      console.log(`✅ Order ${order.id} completed successfully`);
+      console.log(`✅ Order ${order.id} completed successfully with txn ${txn_id}`);
 
       // TODO: Send confirmation email to customer
       // TODO: Fulfill order (send digital products)

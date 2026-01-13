@@ -87,10 +87,19 @@ export default {
 
     try {
       const body = await request.json();
-      const { cart } = body;
+      const { cart, email } = body;
 
       if (!Array.isArray(cart) || cart.length === 0) {
         return new Response(JSON.stringify({ error: 'Invalid cart' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+
+      // Validate email
+      const customerEmail = email || 'no-email@provided.com';
+      if (!customerEmail.includes('@')) {
+        return new Response(JSON.stringify({ error: 'Valid email is required' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
@@ -151,7 +160,7 @@ export default {
       }
 
       const orderData = {
-        customer_email: casualNote,
+        customer_email: customerEmail,
         payment_intent_id: casualNote,
         total_cents: totalCents,
         items: items

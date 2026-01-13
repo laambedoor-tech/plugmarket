@@ -455,10 +455,15 @@
       }
 
       try {
+        const userEmail = localStorage.getItem('userEmail') || 'no-email@provided.com';
+        
         const response = await fetch(`${API_URL}/api/paypal-ff/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cart: cart.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
+          body: JSON.stringify({ 
+            cart: cart.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
+            email: userEmail
+          })
         });
 
         const data = await response.json();
@@ -544,7 +549,8 @@
         
         if (data.orders && data.orders.length > 0) {
           const order = data.orders[0];
-          if (order.customer_email && order.customer_email.includes('@')) {
+          // Check if payment was received by seeing if payment_intent_id changed from casual note to transaction ID
+          if (order.payment_intent_id && order.payment_intent_id.length > 20) {
             // Payment received!
             clearInterval(checkInterval);
             statusBox.classList.remove('checking');
