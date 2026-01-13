@@ -32,7 +32,7 @@ export default {
         ipnData = await request.json();
       }
 
-      console.log('Received IPN:', ipnData);
+      console.log('Received IPN:', JSON.stringify(ipnData, null, 2));
 
       // Verify with PayPal (IMPORTANT: This validates the IPN is genuine)
       const verificationResponse = await verifyIPN(ipnData, env);
@@ -41,6 +41,8 @@ export default {
         console.error('IPN verification failed');
         return new Response('INVALID', { status: 400 });
       }
+
+      console.log('✓ IPN verified successfully');
 
       // Extract payment info
       const {
@@ -52,14 +54,26 @@ export default {
         payer_email,
         custom,
         item_name,
-        memo
+        memo,
+        item_number
       } = ipnData;
 
-      // Extract casual note from memo field
-      const casualNote = (memo || custom || item_name || '').trim();
+      console.log('Payment details:', {
+        status: payment_status,
+        amount: mc_gross,
+        currency: mc_currency,
+        txn_id,
+        memo,
+        custom,
+        item_name,
+        item_number
+      });
+
+      // Extract casual note from various possible fields
+      const casualNote = (memo || custom || item_name || item_number || '').trim();
       
       if (!casualNote) {
-        console.error('No note found in IPN');
+        console.error('No note found in IPN. Available fields:', Object.keys(ipnData));
         return new Response('OK', { status: 200 }); // Still return OK to prevent retries
       }
 
@@ -86,10 +100,20 @@ export default {
 
       if (findError || !order) {
         console.error('Order not found for note:', casualNote);
+        console.error('Find error:', findError);
+        
+        // Try to find ALL orders to see what's in the database
+        const { data: allOrders } = await supabase
+          .from('orders')
+          .select('id, payment_intent_id, customer_email, total_cents')
+          .order('created_at', { ascending: false })
+          .limit(10);
+        
+        console.log('Recent orders in database:', allOrders);
         return new Response('OK', { status: 200 });
       }
 
-      console.log('Found order:', order.id);
+      console.log('Found order:', order.id, 'Email:', order.customer_email);
 
       // Check if already processed - if payment_intent_id changed from casual note to txn_id
       if (order.payment_intent_id && order.payment_intent_id.length > 20) {
@@ -99,12 +123,18 @@ export default {
 
       // Verify amount matches
       const expectedAmount = (order.total_cents / 100).toFixed(2);
+      console.log('Amount check:', { received: mc_gross, expected: expectedAmount });
+      
       if (parseFloat(mc_gross) < parseFloat(expectedAmount)) {
         console.error(`Amount mismatch: received ${mc_gross}, expected ${expectedAmount}`);
         return new Response('OK', { status: 200 });
       }
 
+      console.log('✓ Amount verified');
+
       // Mark order as completed by updating payment_intent_id to the transaction ID
+      console.log('Updating order with transaction ID:', txn_id);
+      
       const { error: updateError } = await supabase
         .from('orders')
         .update({
