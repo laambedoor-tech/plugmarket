@@ -125,10 +125,8 @@ export default {
       }
 
       const orderData = {
-        customer_email: 'pending-paypal-ff',
+        customer_email: orderId,
         payment_intent_id: orderId,
-        payment_method: 'paypal_ff',
-        payment_status: 'pending',
         total_cents: totalCents,
         items: items
       };

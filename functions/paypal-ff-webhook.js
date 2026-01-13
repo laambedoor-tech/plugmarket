@@ -86,7 +86,6 @@ export default {
         .from('orders')
         .select('*')
         .eq('payment_intent_id', orderId)
-        .eq('payment_method', 'paypal_ff')
         .single();
 
       if (findError || !order) {
@@ -94,8 +93,8 @@ export default {
         return new Response('OK', { status: 200 });
       }
 
-      // Check if already processed
-      if (order.payment_status === 'completed') {
+      // Check if already processed (check customer_email is a real email, not order ID)
+      if (order.customer_email && order.customer_email.includes('@')) {
         console.log('Order already completed:', orderId);
         return new Response('OK', { status: 200 });
       }
@@ -105,13 +104,11 @@ export default {
       if (parseFloat(mc_gross) < parseFloat(expectedAmount)) {
         console.error(`Amount mismatch: received ${mc_gross}, expected ${expectedAmount}`);
         
-        // Update order with error
+        // Update order with error (store in customer_email for now)
         await supabase
           .from('orders')
           .update({
-            payment_status: 'failed',
-            payment_error: `Amount mismatch: received $${mc_gross}, expected $${expectedAmount}`,
-            updated_at: new Date().toISOString()
+            customer_email: `ERROR: Amount mismatch - received $${mc_gross}, expected $${expectedAmount}`
           })
           .eq('payment_intent_id', orderId);
 
@@ -120,16 +117,11 @@ export default {
 
       // Update order as completed
       const { error: updateError } = await supabase
+        .from('orders') (set customer_email to payer's email)
+      const { error: updateError } = await supabase
         .from('orders')
         .update({
-          payment_status: 'completed',
-          txn_id: txn_id,
-          payer_email: payer_email,
-          payment_data: ipnData,
-          completed_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('payment_intent_id', orderId);
+          customer_email: payer_email
 
       if (updateError) {
         console.error('Failed to update order:', updateError);
