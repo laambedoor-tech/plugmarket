@@ -557,7 +557,7 @@
       console.log('Rendering variants. StockData:', stockData);
       
       container.innerHTML = variants.map((variant, index) => {
-        const stockKey = `${productId}:${variant.id}`;
+        const stockKey = `crunchy:${variant.id}`;
         const stock = stockData[stockKey] || variant.stock;
         const isSelected = selectedVariant.id === variant.id;
         
@@ -596,7 +596,7 @@
 
     // Update stock badge
     function updateStockBadge() {
-      const stockKey = `${productId}:${selectedVariant.id}`;
+      const stockKey = `crunchy:${selectedVariant.id}`;
       const stock = stockData[stockKey] || selectedVariant.stock;
       const badge = document.getElementById('stock-badge');
       
