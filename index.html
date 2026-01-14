@@ -169,7 +169,7 @@
           <div class="stat__label">Average rating</div>
         </div>
         <div class="stat card">
-          <div class="stat__value" data-count="412" data-integer="true">412</div>
+          <div class="stat__value" data-count="412" data-integer="true" id="total-reviews-count">412</div>
           <div class="stat__label">Verified reviews</div>
         </div>
         <div class="stat card">
@@ -180,32 +180,64 @@
     </section>
 
     <section class="reviews" style="max-width:1240px;margin:0 auto 32px;">
-      <div class="features__grid" style="margin-bottom:18px;">
-        <article class="card feature">
+      <div class="features__grid" style="margin-bottom:18px;" id="home-reviews-grid">
+        <!-- Reviews will be loaded dynamically -->
+        <article class="card feature" style="opacity:0.5;">
           <div class="review-stars" style="color:#ff2743;font-size:20px;margin-bottom:8px;">★★★★★</div>
-          <div class="review-message" style="font-size:15px;">Delivered in under 2 minutes, works perfect.</div>
-          <div class="review-date" style="color:#9aa0ad;font-size:14px;">Verified purchase · Dec 24, 2025</div>
-        </article>
-        <article class="card feature">
-          <div class="review-stars" style="color:#ff2743;font-size:20px;margin-bottom:8px;">★★★★★</div>
-          <div class="review-message" style="font-size:15px;">Support answered in Spanish and fixed a login hiccup.</div>
-          <div class="review-date" style="color:#9aa0ad;font-size:14px;">Verified purchase · Dec 23, 2025</div>
-        </article>
-        <article class="card feature">
-          <div class="review-stars" style="color:#ff2743;font-size:20px;margin-bottom:8px;">★★★★★</div>
-          <div class="review-message" style="font-size:15px;">A week later it still works great, good value.</div>
-          <div class="review-date" style="color:#9aa0ad;font-size:14px;">Verified purchase · Dec 22, 2025</div>
-        </article>
-        <article class="card feature">
-          <div class="review-stars" style="color:#ff2743;font-size:20px;margin-bottom:8px;">★★★★★</div>
-          <div class="review-message" style="font-size:15px;">Gifted to a friend, activation was smooth.</div>
-          <div class="review-date" style="color:#9aa0ad;font-size:14px;">Verified purchase · Dec 21, 2025</div>
+          <div class="review-message" style="font-size:15px;">Loading reviews...</div>
+          <div class="review-date" style="color:#9aa0ad;font-size:14px;">Please wait</div>
         </article>
       </div>
       <div style="text-align:center;margin-top:8px;">
         <a href="./reviews.html" class="btn btn--primary">See all reviews</a>
       </div>
     </section>
+
+    <script>
+      // Load latest reviews dynamically
+      async function loadHomeReviews() {
+        try {
+          const response = await fetch('/api/get-reviews');
+          if (!response.ok) throw new Error('Failed to load reviews');
+          
+          const reviews = await response.json();
+          const grid = document.getElementById('home-reviews-grid');
+          if (!grid || !reviews || reviews.length === 0) return;
+          
+          // Update total reviews count
+          const totalCount = document.getElementById('total-reviews-count');
+          if (totalCount) {
+            totalCount.textContent = reviews.length;
+            totalCount.setAttribute('data-count', reviews.length);
+          }
+          
+          // Get the 4 most recent reviews
+          const latestReviews = reviews.slice(0, 4);
+          
+          grid.innerHTML = latestReviews.map(review => {
+            const stars = '★'.repeat(review.stars) + (review.stars === 4 ? '☆' : '');
+            const label = review.userGenerated ? 'User submitted' : 'Verified purchase';
+            
+            return `
+              <article class="card feature">
+                <div class="review-stars" style="color:#ff2743;font-size:20px;margin-bottom:8px;">${stars}</div>
+                <div class="review-message" style="font-size:15px;">${review.message}</div>
+                <div class="review-date" style="color:#9aa0ad;font-size:14px;">${label} · ${review.date}</div>
+              </article>
+            `;
+          }).join('');
+        } catch (error) {
+          console.error('Failed to load reviews:', error);
+          // Keep default reviews on error
+        }
+      }
+      
+      // Load reviews on page load
+      loadHomeReviews();
+      
+      // Refresh reviews every 30 seconds
+      setInterval(loadHomeReviews, 30000);
+    </script>
 
     <section id="faq" class="faq anchor-offset" aria-labelledby="faq-title">
       <h2 id="faq-title" class="section-title">Frequently Asked Questions</h2>
