@@ -1,8 +1,24 @@
 export default {
   async fetch(request, env, ctx) {
+    // CORS headers
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Content-Type': 'application/json'
+    };
+
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
     // Only allow POST requests
     if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405 });
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), { 
+        status: 405,
+        headers: corsHeaders
+      });
     }
 
     try {
@@ -12,7 +28,7 @@ export default {
       if (!data.message || !data.product || !data.stars) {
         return new Response(JSON.stringify({ error: 'Missing required fields' }), { 
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: corsHeaders
         });
       }
 
@@ -21,7 +37,7 @@ export default {
       if (isNaN(stars) || stars < 1 || stars > 5) {
         return new Response(JSON.stringify({ error: 'Invalid rating' }), { 
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: corsHeaders
         });
       }
 
@@ -53,7 +69,8 @@ export default {
         headers: {
           'Content-Type': 'application/json',
           'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Prefer': 'return=representation'
         },
         body: JSON.stringify(review)
       });
@@ -61,9 +78,16 @@ export default {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Supabase error:', response.status, errorText);
-        return new Response(JSON.stringify({ error: 'Failed to save review' }), { 
+        return new Response(JSON.stringify({ 
+          error: 'Failed to save review',
+          details: errorText,
+          status: response.status 
+        }), { 
           status: 500,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
         });
       }
 
@@ -73,14 +97,17 @@ export default {
         review: review
       }), {
         status: 201,
-        headers: { 'Content-Type': 'application/json' }
+        headers: corsHeaders
       });
 
     } catch (error) {
       console.error('Error:', error);
-      return new Response(JSON.stringify({ error: 'Internal server error' }), { 
+      return new Response(JSON.stringify({ 
+        error: 'Internal server error',
+        details: error.message 
+      }), { 
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: corsHeaders
       });
     }
   }
