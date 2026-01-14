@@ -134,7 +134,9 @@
 })();
 
 // 2) Productos demo
-const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168') || window.location.hostname.includes('.local')
+  ? 'http://localhost:8788'
+  : 'https://plugmarket.es';
 
 const products = [
   { id: 'netflix', title: 'Netflix', price: '€', tone: 'red' },
@@ -209,13 +211,25 @@ const toneToGradient = (tone) => {
 
   // Fetch stock data
   try {
+    console.log('[STOCK] Fetching from:', `${API_BASE}/api/get-stock`);
+    console.log('[STOCK] Full URL:', window.location.origin + `${API_BASE}/api/get-stock`);
     const res = await fetch(`${API_BASE}/api/get-stock`);
+    console.log('[STOCK] Response status:', res.status);
+    console.log('[STOCK] Response headers:', Object.fromEntries(res.headers.entries()));
+    
     if (res.ok) {
       const data = await res.json();
+      console.log('[STOCK] Raw data received:', data);
       stockData = data.stock || {};
+      console.log('[STOCK] Total stock items:', Object.keys(stockData).length);
+      console.log('[STOCK] All stock keys:', Object.keys(stockData));
+      console.log('[STOCK] Netflix stock:', Object.keys(stockData).filter(k => k.startsWith('netflix:')).map(k => ({ key: k, stock: stockData[k] })));
+    } else {
+      const errorText = await res.text();
+      console.error('[STOCK] API failed with status:', res.status, 'Error:', errorText);
     }
   } catch (err) {
-    console.error('Failed to fetch stock:', err);
+    console.error('[STOCK] Failed to fetch:', err);
   }
 
   const getMinPrice = (pid) => {
@@ -308,9 +322,38 @@ const toneToGradient = (tone) => {
       const pid = card.dataset.pid;
       const product = products.find(p => p.id === pid);
       
-      // Si el producto tiene una página dedicada, redirigir a ella
-      if (product && product.dedicatedPage) {
-        window.location.href = `./${pid}.html`;
+      // Close any open modals/panels immediately
+      const modal = document.querySelector('[role="dialog"]');
+      if (modal) modal.remove();
+      const panels = document.querySelectorAll('.product-panel, .product-details');
+      panels.forEach(p => p.remove());
+      
+      // All products redirect to their dedicated pages
+      const pageMap = {
+        'netflix': 'product-netflix.html',
+        'spotify': 'product-spotify.html',
+        'youtube-premium': 'product-youtube-premium.html',
+        'disney': 'product-disney.html',
+        'prime': 'product-prime.html',
+        'hbomax': 'product-hbomax.html',
+        'nordvpn': 'product-nordvpn.html',
+        'crunchyroll': 'product-crunchyroll.html',
+        'nitro': 'product-nitro.html',
+        'discordpromocode': 'product-discordpromocode.html',
+        'chatgpt': 'product-chatgpt.html',
+        'chatgpt-pro': 'product-chatgpt-pro.html',
+        'capcut': 'product-capcut.html',
+        'geoguessr': 'product-geoguessr.html',
+        'filmora': 'product-filmora.html',
+        'duolingo': 'product-duolingo.html',
+        'movistar': 'product-movistar.html',
+        'dazn': 'product-dazn.html',
+        'steamaccount': 'product-steamaccount.html',
+        'realmembers': 'product-realmembers.html'
+      };
+      
+      if (pageMap[pid]) {
+        window.location.href = './' + pageMap[pid];
       }
     });
   });
@@ -437,6 +480,9 @@ const toneToGradient = (tone) => {
         const stockKey = `${pid}:${label}`;
         const stockCount = stockData[stockKey] || 0;
         const available = stockCount > 0;
+        
+        console.log(`Product: ${pid}, Plan: ${label}, Key: ${stockKey}, Stock: ${stockCount}, Available: ${available}`);
+        
         const stockBadge = available
           ? '<span class="stock-badge stock-badge--in">In Stock</span>'
           : '<span class="stock-badge stock-badge--out">Out of Stock</span>';
@@ -495,7 +541,14 @@ const toneToGradient = (tone) => {
   document.addEventListener('click', (e) => {
     const card = e.target.closest('.product-card');
     if (card && card.dataset.pid) {
-      open(card.dataset.pid);
+      const pid = card.dataset.pid;
+      // Redirigir a página dedicada si es Netflix
+      if (pid === 'netflix') {
+        window.location.href = './product-netflix.html';
+        return;
+      }
+      // Para otros productos, abrir modal
+      open(pid);
     }
     if (e.target.matches('[data-close]')) {
       close();
