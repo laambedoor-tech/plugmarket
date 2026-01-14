@@ -318,7 +318,11 @@ const toneToGradient = (tone) => {
   
   // Agregar event listeners para los productos
   document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      // Prevent any default/other handlers from flashing old panels
+      e.preventDefault();
+      e.stopPropagation();
+
       const pid = card.dataset.pid;
       const product = products.find(p => p.id === pid);
       
