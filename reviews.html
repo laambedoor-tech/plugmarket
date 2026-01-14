@@ -13,10 +13,13 @@
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Plug Market — Reviews</title>
   <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
   <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/style.css?v=2.0" />
   <style>
     body {
       background: #0b0b0c;
@@ -190,6 +193,113 @@
     .form-control:focus {
       border-color: rgba(255, 39, 67, .5);
       box-shadow: 0 0 0 3px rgba(255, 39, 67, .2);
+    }
+
+    .custom-select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select {
+      position: relative;
+      width: 100%;
+      user-select: none;
+    }
+
+    .custom-select__trigger {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border .2s;
+    }
+
+    .custom-select__trigger:hover {
+      border-color: rgba(255, 255, 255, .15);
+    }
+
+    .custom-select.open .custom-select__trigger {
+      border-color: rgba(255, 39, 67, .5);
+      box-shadow: 0 0 0 3px rgba(255, 39, 67, .2);
+    }
+
+    .custom-select__trigger span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-select__trigger svg {
+      flex-shrink: 0;
+      margin-left: 8px;
+      transition: transform .2s;
+    }
+
+    .custom-select.open .custom-select__trigger svg {
+      transform: rotate(180deg);
+    }
+
+    .custom-select__options {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #0b0b0c;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 10px;
+      padding: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all .2s;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .6);
+    }
+
+    .custom-select.open .custom-select__options {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .custom-select__options::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-select__options::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, .2);
+      border-radius: 10px;
+    }
+
+    .custom-select__options::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .2);
+      border-radius: 10px;
+    }
+
+    .custom-select__option {
+      padding: 10px 12px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background .15s;
+      font-size: 14px;
+    }
+
+    .custom-select__option:hover {
+      background: rgba(255, 39, 67, .1);
+    }
+
+    .custom-select__option.selected {
+      background: rgba(255, 39, 67, .2);
+      color: #ff2743;
     }
 
     .form-note {
@@ -454,7 +564,18 @@
             </div>
             <div class="form-field">
               <label for="review-product">Product</label>
-              <select class="form-control" id="review-product" name="product" required></select>
+              <div class="custom-select-wrapper">
+                <div class="custom-select" id="custom-product-select">
+                  <div class="custom-select__trigger">
+                    <span>Select a product</span>
+                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                      <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="custom-select__options"></div>
+                </div>
+                <input type="hidden" id="review-product" name="product" required />
+              </div>
             </div>
           </div>
           <div class="form-row">
@@ -498,8 +619,10 @@
     const autoMessage = 'Automatic feedback after 7 days';
     const products = [
       'Spotify',
+      'Spotify Premium (iPhone)',
       'Netflix',
       'YouTube Premium',
+      'YouTube Premium (iPhone)',
       'Disney+',
       'Amazon Prime Video',
       'HBO Max',
@@ -507,9 +630,11 @@
       'Discord Nitro',
       'NordVPN',
       'ChatGPT Plus',
+      'ChatGPT Pro',
       'CapCut Pro',
       'GeoGuessr',
-      'Wondershare Filmora'
+      'Wondershare Filmora',
+      'PayPal F&F'
     ];
 
     const manualMessages = [
@@ -612,8 +737,14 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(review)
         });
-        if (!response.ok) throw new Error('Failed to save review');
-        return await response.json();
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || data.details || 'Failed to save review');
+        }
+        
+        return data;
       } catch (err) {
         console.error('Failed to save review', err);
         throw err;
@@ -689,9 +820,50 @@
     }
 
     function populateProductOptions() {
-      const select = document.getElementById('review-product');
-      if (!select) return;
-      select.innerHTML = products.map(p => `<option value="${p}">${p}</option>`).join('');
+      const customSelect = document.getElementById('custom-product-select');
+      const optionsContainer = customSelect?.querySelector('.custom-select__options');
+      const trigger = customSelect?.querySelector('.custom-select__trigger span');
+      const hiddenInput = document.getElementById('review-product');
+      
+      if (!customSelect || !optionsContainer) return;
+
+      // Populate options
+      products.forEach(product => {
+        const option = document.createElement('div');
+        option.className = 'custom-select__option';
+        option.textContent = product;
+        option.dataset.value = product;
+        
+        option.addEventListener('click', () => {
+          // Remove selected from all options
+          optionsContainer.querySelectorAll('.custom-select__option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          
+          // Mark this as selected
+          option.classList.add('selected');
+          trigger.textContent = product;
+          hiddenInput.value = product;
+          
+          // Close dropdown
+          customSelect.classList.remove('open');
+        });
+        
+        optionsContainer.appendChild(option);
+      });
+
+      // Toggle dropdown
+      customSelect.querySelector('.custom-select__trigger').addEventListener('click', (e) => {
+        e.stopPropagation();
+        customSelect.classList.toggle('open');
+      });
+
+      // Close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!customSelect.contains(e.target)) {
+          customSelect.classList.remove('open');
+        }
+      });
     }
 
     function attachFormHandler() {
@@ -727,7 +899,8 @@
           setTimeout(() => successEl && successEl.classList.remove('visible'), 2200);
         } catch (error) {
           console.error('Failed to submit review:', error);
-          alert('Failed to submit review. Please try again.');
+          const errorMsg = error.message || 'Failed to submit review. Please try again.';
+          alert(errorMsg);
         }
       });
     }
@@ -755,6 +928,10 @@
         }
       }
     })();
+    
+    // Debug: Verify custom select is loaded
+    console.log('Custom select element:', document.getElementById('custom-product-select'));
+    console.log('Products array:', products);
   </script>
 </body>
 </html>
