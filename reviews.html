@@ -793,12 +793,10 @@
       const start = (page - 1) * perPage;
       const end = start + perPage;
       combined.slice(start, end).forEach(r => {
-        const isUser = r.userGenerated;
-        const chipText = isUser ? 'User submitted' : 'Verified buyer';
         grid.innerHTML += `<div class="review-card">
       <div class="review-card__header">
         <div class="review-stars">${'★'.repeat(r.stars)}${r.stars === 4 ? '☆' : ''}</div>
-        <span class="chip chip--outline">${chipText}</span>
+        <span class="chip chip--outline">Verified buyer</span>
       </div>
       <div class="review-date">${r.date}</div>
       <div class="review-message">${r.message}</div>
