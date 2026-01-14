@@ -216,13 +216,12 @@
           
           grid.innerHTML = latestReviews.map(review => {
             const stars = '★'.repeat(review.stars) + (review.stars === 4 ? '☆' : '');
-            const label = review.userGenerated ? 'User submitted' : 'Verified purchase';
             
             return `
               <article class="card feature">
                 <div class="review-stars" style="color:#ff2743;font-size:20px;margin-bottom:8px;">${stars}</div>
                 <div class="review-message" style="font-size:15px;">${review.message}</div>
-                <div class="review-date" style="color:#9aa0ad;font-size:14px;">${label} · ${review.date}</div>
+                <div class="review-date" style="color:#9aa0ad;font-size:14px;">Verified buyer · ${review.date}</div>
               </article>
             `;
           }).join('');
