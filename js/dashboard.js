@@ -59,7 +59,7 @@ async function loadDashboardData(auth) {
   
   try {
     // Fetch user orders
-    const response = await fetch(`${API_BASE}/get-user-orders`, {
+    const response = await fetch(`${API_BASE}/api/get-user-orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -407,7 +407,7 @@ async function deleteAccount() {
   }
   
   try {
-    const response = await fetch(`${API_BASE}/delete-account`, {
+    const response = await fetch(`${API_BASE}/api/delete-account`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -458,7 +458,7 @@ async function initializeBalance() {
 async function loadBalance() {
   console.log('Loading balance...');
   try {
-    const response = await fetch(`${API_BASE}/get-balance`, {
+    const response = await fetch(`${API_BASE}/api/get-balance`, {
       headers: {
         'Authorization': `Bearer ${auth.token}`
       }
@@ -489,7 +489,7 @@ async function loadBalance() {
 
 async function loadTransactions() {
   try {
-    const response = await fetch(`${API_BASE}/get-balance-transactions`, {
+    const response = await fetch(`${API_BASE}/api/get-balance-transactions`, {
       headers: {
         'Authorization': `Bearer ${auth.token}`
       }
@@ -722,7 +722,7 @@ async function handleTopupSubmitCard() {
   
   try {
     // Create payment intent
-    const response = await fetch(`${API_BASE}/create-topup-intent`, {
+    const response = await fetch(`${API_BASE}/api/create-topup-intent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -779,7 +779,7 @@ async function handleTopupSubmitCrypto() {
   submitBtn.textContent = 'Creating payment...';
   
   try {
-    const response = await fetch(`${API_BASE}/crypto-create-intent`, {
+    const response = await fetch(`${API_BASE}/api/crypto-create-intent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -889,7 +889,7 @@ window.closeCryptoPaymentModal = function() {
 
 window.checkCryptoPaymentStatus = async function(paymentId) {
   try {
-    const response = await fetch(`${API_BASE}/crypto-now-status`, {
+    const response = await fetch(`${API_BASE}/api/crypto-now-status`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

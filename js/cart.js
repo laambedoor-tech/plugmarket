@@ -676,7 +676,7 @@ async function loadBalanceInfo() {
   
   try {
     // Get current balance
-    const response = await fetch(`${API_BASE}/get-balance`, {
+    const response = await fetch(`${API_BASE}/api/get-balance`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -745,7 +745,7 @@ async function processBalancePayment() {
   console.log('Sending payload:', JSON.stringify(payload, null, 2));
   
   try {
-    const response = await fetch(`${API_BASE}/pay-with-balance`, {
+    const response = await fetch(`${API_BASE}/api/pay-with-balance`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -92,16 +92,16 @@ export default {
     if (path === '/api/get-reviews') return getReviews.fetch(request, env, ctx);
 
     // Auth routes
-    if (path === '/send-verification-code') return sendVerificationCode.fetch(request, env, ctx);
-    if (path === '/verify-code') return verifyCode.fetch(request, env, ctx);
-    if (path === '/get-user-orders') return getUserOrders.fetch(request, env, ctx);
-    if (path === '/delete-account') return deleteAccount.fetch(request, env, ctx);
+    if (path === '/api/send-verification-code') return sendVerificationCode.fetch(request, env, ctx);
+    if (path === '/api/verify-code') return verifyCode.fetch(request, env, ctx);
+    if (path === '/api/get-user-orders') return getUserOrders.fetch(request, env, ctx);
+    if (path === '/api/delete-account') return deleteAccount.fetch(request, env, ctx);
     
     // Balance routes
-    if (path === '/get-balance') return getBalance(request, env);
-    if (path === '/create-topup-intent') return createTopupIntent(request, env);
-    if (path === '/get-balance-transactions') return getBalanceTransactions(request, env);
-    if (path === '/pay-with-balance') return payWithBalance(request, env);
+    if (path === '/api/get-balance') return getBalance(request, env);
+    if (path === '/api/create-topup-intent') return createTopupIntent(request, env);
+    if (path === '/api/get-balance-transactions') return getBalanceTransactions(request, env);
+    if (path === '/api/pay-with-balance') return payWithBalance(request, env);
 
     // 404 for unknown routes
     return new Response('Not Found', { status: 404 });

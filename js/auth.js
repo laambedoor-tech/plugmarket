@@ -28,7 +28,7 @@ async function sendCode(event) {
   btnEl.innerHTML = '<span>Sending...</span>';
   
   try {
-    const response = await fetch(`${API_BASE}/send-verification-code`, {
+    const response = await fetch(`${API_BASE}/api/send-verification-code`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ async function verifyCode(event) {
   btnEl.innerHTML = '<span>Verifying...</span>';
   
   try {
-    const response = await fetch(`${API_BASE}/verify-code`, {
+    const response = await fetch(`${API_BASE}/api/verify-code`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
