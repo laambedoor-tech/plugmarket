@@ -278,7 +278,103 @@
       text-align: center;
       font-size: 18px;
       font-weight: 600;
-      color: #fff;
+      color: #333;
+      background: white;
+      border: 2px solid #1e88e5;
+      border-radius: 8px;
+      padding: 8px;
+      outline: none;
+    }
+
+    .quantity-display:focus {
+      border-color: #0d47a1;
+      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+    }
+
+    .bulk-discounts {
+      margin-top: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+      border-radius: 12px;
+      border: 1px solid #e1e8f0;
+    }
+
+    .discount-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .discount-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .current-discount {
+      font-size: 12px;
+      font-weight: 600;
+      color: #27ae60;
+      background: rgba(39, 174, 96, 0.1);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .discount-progress {
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: #6c757d;
+      text-align: center;
+    }
+
+    .discount-tiers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .tier {
+      font-size: 11px;
+      color: #5a6c7d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tier.active {
+      background: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      font-weight: 600;
+    }
+
+    .tier span {
+      font-weight: 600;
+      color: #27ae60;
     }
 
     .action-buttons {
@@ -481,8 +577,30 @@
             <label>Quantity</label>
             <div class="quantity-controls">
               <button class="quantity-btn" id="qty-decrease">−</button>
-              <span class="quantity-display" id="quantity-display">1</span>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
+            </div>
+            
+            <!-- Dynamic Bulk Discounts -->
+            <div class="bulk-discounts">
+              <div class="discount-header">
+                <div class="discount-title">💰 Volume Discounts</div>
+                <div class="current-discount" id="current-discount">No discount</div>
+              </div>
+              
+              <div class="discount-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
+              </div>
+              
+              <div class="discount-tiers">
+                <div class="tier" data-qty="10" data-discount="3">10+ units: <span>3% OFF</span></div>
+                <div class="tier" data-qty="25" data-discount="5">25+ units: <span>5% OFF</span></div>
+                <div class="tier" data-qty="50" data-discount="8">50+ units: <span>8% OFF</span></div>
+                <div class="tier" data-qty="100" data-discount="12">100+ units: <span>12% OFF</span></div>
+              </div>
             </div>
           </div>
 
@@ -521,7 +639,7 @@
       { id: '3 Months', name: 'Netflix — 3 Months', stock: 0, price: 3.15, oldPrice: null, minQty: 1 },
       { id: '6 Months', name: 'Netflix — 6 Months', stock: 0, price: 5.4, oldPrice: null, minQty: 1 },
       { id: '12 Months', name: 'Netflix — 12 Months', stock: 0, price: 9.9, oldPrice: null, minQty: 1 },
-      { id: 'Bulk', name: 'Netflix Bulk (For Resellers)', stock: 0, price: 0.60, oldPrice: null, minQty: 50 }
+      { id: 'Bulk', name: 'Netflix Bulk (For Resellers)', stock: 0, price: 0.50, oldPrice: null, minQty: 50 }
     ];
 
     let selectedVariant = variants[0];
@@ -586,10 +704,16 @@
       selectedVariant = variants[index];
       // Set minimum quantity for Bulk plan
       quantity = selectedVariant.minQty || 1;
-      document.getElementById('quantity-display').textContent = quantity;
+      
+      const quantityInput = document.getElementById('quantity-display');
+      if (quantityInput) {
+        quantityInput.value = quantity;
+      }
+      
       renderVariants();
       updatePrice();
       updateStockBadge();
+      updateDiscountSystem(quantity);
     }
 
     // Update price display
@@ -613,20 +737,141 @@
       }
     }
 
-    // Quantity controls
+    // Discount tier configuration
+    const DISCOUNT_TIERS = [
+      { quantity: 10, discount: 3 },
+      { quantity: 25, discount: 5 },
+      { quantity: 50, discount: 8 },
+      { quantity: 100, discount: 12 }
+    ];
+    
+    // Update discount system
+    function updateDiscountSystem(qty) {
+      let currentDiscount = 0;
+      let currentTier = null;
+      let nextTier = null;
+      
+      // Find current discount
+      for (let tier of DISCOUNT_TIERS) {
+        if (qty >= tier.quantity) {
+          currentDiscount = tier.discount;
+          currentTier = tier;
+        } else {
+          if (!nextTier) {
+            nextTier = tier;
+          }
+          break;
+        }
+      }
+      
+      // Update current discount display
+      const currentDiscountElement = document.querySelector('.current-discount');
+      if (currentDiscountElement) {
+        if (currentDiscount > 0) {
+          currentDiscountElement.textContent = `${currentDiscount}% OFF`;
+          currentDiscountElement.style.display = 'block';
+        } else {
+          currentDiscountElement.textContent = 'No discount';
+          currentDiscountElement.style.display = 'block';
+        }
+      }
+      
+      // Update progress bar
+      const progressFill = document.querySelector('.progress-fill');
+      const progressText = document.querySelector('.progress-text');
+      
+      if (progressFill && progressText) {
+        if (nextTier) {
+          const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
+                           (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
+          progressFill.style.width = `${Math.min(progress, 100)}%`;
+          
+          const remaining = nextTier.quantity - qty;
+          progressText.textContent = `Add ${remaining} more for ${nextTier.discount}% OFF`;
+        } else {
+          // Maximum tier reached
+          progressFill.style.width = '100%';
+          progressText.textContent = 'Maximum discount achieved!';
+        }
+      }
+      
+      // Update tier highlights
+      const discountTiers = document.querySelectorAll('.tier');
+      discountTiers.forEach(tierElement => {
+        const tierQuantity = parseInt(tierElement.dataset.quantity);
+        if (qty >= tierQuantity) {
+          tierElement.classList.add('active');
+        } else {
+          tierElement.classList.remove('active');
+        }
+      });
+    }
+    
+    // Enhanced update price with discount calculation
+    function updatePrice() {
+      let baseTotal = selectedVariant.price * quantity;
+      let discountTotal = baseTotal;
+      
+      // Apply bulk discount if applicable
+      for (let tier of [...DISCOUNT_TIERS].reverse()) {
+        if (quantity >= tier.quantity) {
+          discountTotal = baseTotal * (1 - tier.discount / 100);
+          break;
+        }
+      }
+      
+      document.getElementById('display-price').textContent = `€${discountTotal.toFixed(2)}`;
+    }
+
+    // Quantity controls with dynamic discount updates
+    const quantityInput = document.getElementById('quantity-display');
+    
+    // Handle manual input changes
+    if (quantityInput) {
+      quantityInput.addEventListener('input', function() {
+        let inputValue = parseInt(this.value);
+        if (isNaN(inputValue) || inputValue < 1) {
+          inputValue = 1;
+        }
+        
+        // Check minimum for Bulk variant
+        if (selectedVariant && selectedVariant.minQty && inputValue < selectedVariant.minQty) {
+          inputValue = selectedVariant.minQty;
+        }
+        
+        quantity = inputValue;
+        this.value = quantity;
+        updatePrice();
+        updateDiscountSystem(quantity);
+      });
+      
+      // Handle focus out to ensure valid value
+      quantityInput.addEventListener('blur', function() {
+        if (this.value === '' || parseInt(this.value) < 1) {
+          const minQty = selectedVariant?.minQty || 1;
+          quantity = minQty;
+          this.value = quantity;
+          updatePrice();
+          updateDiscountSystem(quantity);
+        }
+      });
+    }
+    
     document.getElementById('qty-decrease').addEventListener('click', () => {
-      const minQty = selectedVariant.minQty || 1;
+      const minQty = selectedVariant?.minQty || 1;
       if (quantity > minQty) {
         quantity--;
-        document.getElementById('quantity-display').textContent = quantity;
+        if (quantityInput) quantityInput.value = quantity;
         updatePrice();
+        updateDiscountSystem(quantity);
       }
     });
 
     document.getElementById('qty-increase').addEventListener('click', () => {
       quantity++;
-      document.getElementById('quantity-display').textContent = quantity;
+      if (quantityInput) quantityInput.value = quantity;
       updatePrice();
+      updateDiscountSystem(quantity);
     });
 
     // Cart functions
@@ -697,6 +942,13 @@
     // Initialize
     renderCartCount();
     fetchStock();
+    
+    // Initialize discount system after page load
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        updateDiscountSystem(quantity);
+      }, 500);
+    });
   </script>
 
   <!-- Particles script -->
