@@ -290,11 +290,34 @@
       border-radius: 8px;
       padding: 8px;
       outline: none;
+      transition: border-color 0.2s ease;
     }
 
     .quantity-display:focus {
       border-color: rgba(255, 255, 255, 0.2);
       background: rgba(26, 27, 36, 1);
+    }
+
+    .quantity-display.error {
+      border-color: #ef4444;
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .quantity-error {
+      font-size: 11px;
+      color: #ef4444;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .quantity-error.show {
+      display: block;
     }
 
     .bulk-discounts {
@@ -576,6 +599,7 @@
                 <button class="quantity-btn" id="qty-increase">+</button>
               </div>
             </div>
+            <div class="quantity-error" id="quantity-error"></div>
             <!-- Integrated Bulk Discounts -->
             <div class="bulk-discounts">
               <div class="discount-icon" id="discount-icon">
@@ -583,13 +607,13 @@
               </div>
               <div class="discount-content">
                 <div class="discount-header">
-                  <span class="discount-title" id="discount-title">Add 9 more items to unlock 3% off</span>
+                  <span class="discount-title" id="discount-title">Add 4 more items to unlock 3% off</span>
                   <span class="current-discount no-discount" id="current-discount">No discount</span>
                 </div>
                 <div class="progress-bar">
                   <div class="progress-fill" id="progress-fill"></div>
                 </div>
-                <div class="progress-text" id="progress-text">at 10 pcs.</div>
+                <div class="progress-text" id="progress-text">at 5 pcs.</div>
               </div>
             </div>
           </div>
@@ -729,10 +753,10 @@
 
     // Discount tier configuration
     const DISCOUNT_TIERS = [
-      { quantity: 10, discount: 3 },
-      { quantity: 25, discount: 5 },
-      { quantity: 50, discount: 8 },
-      { quantity: 100, discount: 12 }
+      { quantity: 5, discount: 3 },
+      { quantity: 10, discount: 5 },
+      { quantity: 25, discount: 8 },
+      { quantity: 50, discount: 12 }
     ];
     
     // Update discount system
@@ -807,6 +831,37 @@
 
     // Quantity controls with dynamic discount updates
     const quantityInput = document.getElementById('quantity-display');
+    const quantityError = document.getElementById('quantity-error');
+    
+    function validateQuantity(value) {
+      const minQty = selectedVariant?.minQty || 1;
+      const inputValue = parseInt(value);
+      
+      if (value === '' || isNaN(inputValue)) {
+        return { valid: false, message: 'Please enter a valid quantity' };
+      }
+      
+      if (inputValue < minQty) {
+        if (minQty > 1) {
+          return { valid: false, message: `Minimum quantity for ${selectedVariant.name} is ${minQty} units` };
+        } else {
+          return { valid: false, message: 'Quantity must be at least 1' };
+        }
+      }
+      
+      return { valid: true, message: '' };
+    }
+    
+    function showQuantityError(message) {
+      quantityError.textContent = message;
+      quantityError.classList.add('show');
+      quantityInput.classList.add('error');
+      
+      setTimeout(() => {
+        quantityError.classList.remove('show');
+        quantityInput.classList.remove('error');
+      }, 3000);
+    }
     
     // Handle manual input changes
     if (quantityInput) {
@@ -815,27 +870,24 @@
         
         // Allow empty input while typing
         if (this.value === '') {
+          quantity = 1;
+          updatePrice();
+          updateDiscountSystem(1);
           return;
         }
         
-        if (isNaN(inputValue) || inputValue < 1) {
-          inputValue = 1;
+        if (!isNaN(inputValue) && inputValue >= 1) {
+          quantity = inputValue;
+          updatePrice();
+          updateDiscountSystem(quantity);
         }
-        
-        // Check minimum for Bulk variant
-        if (selectedVariant && selectedVariant.minQty && inputValue < selectedVariant.minQty) {
-          inputValue = selectedVariant.minQty;
-        }
-        
-        quantity = inputValue;
-        this.value = quantity;
-        updatePrice();
-        updateDiscountSystem(quantity);
       });
       
       // Handle focus out to ensure valid value
       quantityInput.addEventListener('blur', function() {
-        if (this.value === '' || parseInt(this.value) < 1 || isNaN(parseInt(this.value))) {
+        const validation = validateQuantity(this.value);
+        
+        if (!validation.valid) {
           const minQty = selectedVariant?.minQty || 1;
           quantity = minQty;
           this.value = quantity;
@@ -900,6 +952,13 @@
 
     // Add to cart button
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      // Validate quantity before adding to cart
+      const validation = validateQuantity(quantityInput.value);
+      if (!validation.valid) {
+        showQuantityError(validation.message);
+        return;
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -917,6 +976,13 @@
 
     // Buy now button
     document.getElementById('buy-now-btn').addEventListener('click', () => {
+      // Validate quantity before buying
+      const validation = validateQuantity(quantityInput.value);
+      if (!validation.valid) {
+        showQuantityError(validation.message);
+        return;
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
