@@ -1,5 +1,5 @@
 // Auth functions for email verification system
-const API_BASE = 'https://plugmarket-api.laambedoor.workers.dev';
+const API_BASE = 'https://plugmarket.es';
 
 // Auto-redirect to dashboard if already logged in
 if (window.location.pathname.includes('my-account.html')) {
