@@ -232,13 +232,18 @@
 
     .quantity-selector {
       display: flex;
-      align-items: center;
-      gap: 15px;
+      flex-direction: column;
+      gap: 12px;
       margin-bottom: 25px;
-      position: relative;
     }
 
-    .quantity-selector label {
+    .quantity-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .quantity-controls-row label {
       font-size: 16px;
       font-weight: 600;
       color: #fff;
@@ -293,86 +298,68 @@
     }
 
     .bulk-discounts {
-      position: absolute;
-      top: 50%;
-      right: -20px;
-      transform: translateY(-50%) translateX(100%);
-      width: 240px;
-      padding: 14px 16px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(26, 27, 36, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
     }
 
-    .bulk-discounts::before {
-      content: '';
-      position: absolute;
-      left: -8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0;
-      height: 0;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-right: 8px solid white;
+    .discount-icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
     }
 
-    .quantity-selector:hover .bulk-discounts {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(-50%) translateX(calc(100% + 10px));
+    .discount-content {
+      flex: 1;
+      min-width: 0;
     }
 
     .discount-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      margin-bottom: 6px;
     }
 
     .discount-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      color: #1e293b;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      color: #fff;
+      opacity: 0.7;
     }
 
     .current-discount {
       font-size: 11px;
       font-weight: 600;
       color: #10b981;
-      background: rgba(16, 185, 129, 0.1);
-      padding: 3px 8px;
-      border-radius: 6px;
     }
 
     .current-discount.no-discount {
       color: #6b7280;
-      background: rgba(107, 114, 128, 0.1);
-    }
-
-    .discount-progress {
-      margin-top: 8px;
     }
 
     .progress-bar {
       width: 100%;
       height: 6px;
-      background: #e5e7eb;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 3px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+      background: linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%);
       border-radius: 3px;
       transition: width 0.3s ease;
       width: 0%;
@@ -380,8 +367,7 @@
 
     .progress-text {
       font-size: 11px;
-      color: #6b7280;
-      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
       font-weight: 500;
     }
 
@@ -479,24 +465,6 @@
 
       .action-buttons {
         flex-direction: column;
-      }
-
-      .bulk-discounts {
-        position: static;
-        transform: none;
-        opacity: 1;
-        pointer-events: auto;
-        margin-top: 15px;
-        width: 100%;
-      }
-
-      .bulk-discounts::before {
-        display: none;
-      }
-
-      .quantity-selector {
-        flex-direction: column;
-        align-items: flex-start;
       }
     }
   </style>
@@ -600,24 +568,28 @@
 
           <!-- Quantity Selector -->
           <div class="quantity-selector">
-            <label>Quantity</label>
-            <div class="quantity-controls">
-              <button class="quantity-btn" id="qty-decrease">−</button>
-              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
-              <button class="quantity-btn" id="qty-increase">+</button>
-            </div>
-            <!-- Dynamic Bulk Discounts Tooltip -->
-            <div class="bulk-discounts">
-              <div class="discount-header">
-                <div class="discount-title">🔥 Volume Discounts</div>
-                <div class="current-discount no-discount" id="current-discount">No discount</div>
+            <div class="quantity-controls-row">
+              <label>Quantity</label>
+              <div class="quantity-controls">
+                <button class="quantity-btn" id="qty-decrease">−</button>
+                <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
+                <button class="quantity-btn" id="qty-increase">+</button>
               </div>
-              
-              <div class="discount-progress">
+            </div>
+            <!-- Integrated Bulk Discounts -->
+            <div class="bulk-discounts">
+              <div class="discount-icon" id="discount-icon">
+                ✓
+              </div>
+              <div class="discount-content">
+                <div class="discount-header">
+                  <span class="discount-title" id="discount-title">Add 9 more items to unlock 3% off</span>
+                  <span class="current-discount no-discount" id="current-discount">No discount</span>
+                </div>
                 <div class="progress-bar">
                   <div class="progress-fill" id="progress-fill"></div>
                 </div>
-                <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
+                <div class="progress-text" id="progress-text">at 10 pcs.</div>
               </div>
             </div>
           </div>
@@ -794,22 +766,25 @@
         }
       }
       
-      // Update progress bar
+      // Update progress bar and text
       const progressFill = document.querySelector('.progress-fill');
       const progressText = document.querySelector('.progress-text');
+      const discountTitle = document.getElementById('discount-title');
       
-      if (progressFill && progressText) {
+      if (progressFill && progressText && discountTitle) {
         if (nextTier) {
           const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
                            (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
           progressFill.style.width = `${Math.min(progress, 100)}%`;
           
           const remaining = nextTier.quantity - qty;
-          progressText.textContent = `Add ${remaining} more for ${nextTier.discount}% OFF`;
+          discountTitle.textContent = `Add ${remaining} more items to unlock ${nextTier.discount}% off`;
+          progressText.textContent = `at ${nextTier.quantity} pcs.`;
         } else {
           // Maximum tier reached
           progressFill.style.width = '100%';
-          progressText.textContent = 'Maximum discount achieved! 🎉';
+          discountTitle.textContent = 'Maximum discount unlocked!';
+          progressText.textContent = `12% OFF applied`;
         }
       }
     }
