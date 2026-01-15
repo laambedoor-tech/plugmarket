@@ -29,8 +29,8 @@
 
     .product-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 190px;
       align-items: start;
       padding: 0 60px;
     }
@@ -38,13 +38,17 @@
     .product-left {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
     }
 
     .product-image-section {
-      width: 100%;
-      overflow: hidden;
+      width: 230%;
+      overflow: visible;
       position: relative;
+      margin-left: -75%;
+      z-index: 1;
     }
 
     .product-image-box {
@@ -52,6 +56,8 @@
       justify-content: center;
       align-items: center;
       perspective: 1000px;
+      transform: scale(1);
+      margin: 0;
     }
 
     .product-image-box img {
@@ -82,6 +88,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       overflow: hidden;
+      width: 230%;
+      margin-left: -75%;
+      position: relative;
+      z-index: 1;
     }
 
     .description-header {
@@ -632,6 +642,34 @@
     let quantity = 1;
     let stockData = {};
 
+    // Helper function to find stock with flexible key matching
+    function getStockForVariant(variantId) {
+      const exactKey = `${productId}:${variantId}`;
+      
+      // Try exact match first
+      if (stockData[exactKey] !== undefined) {
+        return stockData[exactKey];
+      }
+      
+      // Try variations (singular/plural)
+      const variations = [
+        variantId,
+        variantId.replace(/ Month$/, ' Months'),
+        variantId.replace(/ Months$/, ' Month'),
+        variantId.replace(/ Year$/, ' Years'),
+        variantId.replace(/ Years$/, ' Year')
+      ];
+      
+      for (const variation of variations) {
+        const key = `${productId}:${variation}`;
+        if (stockData[key] !== undefined) {
+          return stockData[key];
+        }
+      }
+      
+      return 0;
+    }
+
     // Fetch stock
     async function fetchStock() {
       try {
@@ -662,11 +700,10 @@
       console.log('Rendering variants. StockData:', stockData);
       
       container.innerHTML = variants.map(variant => {
-        const stockKey = `${productId}:${variant.id}`;
-        const stockCount = stockData[stockKey] || 0;
+        const stockCount = getStockForVariant(variant.id);
         const available = stockCount > 0;
         
-        console.log(`Variant: ${variant.id}, Key: ${stockKey}, Stock: ${stockCount}`);
+        console.log(`Variant: ${variant.id}, Stock: ${stockCount}`);
         
         return `
           <div class="variant-option ${variant.id === selectedVariant.id ? 'selected' : ''}" data-variant-id="${variant.id}">
@@ -783,8 +820,7 @@
     // Update stock badge
     function updateStockBadge() {
       const badge = document.getElementById('stock-badge');
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stockCount = stockData[stockKey] || 0;
+      const stockCount = getStockForVariant(selectedVariant.id);
       
       if (stockCount > 0) {
         badge.textContent = `${stockCount} IN STOCK`;

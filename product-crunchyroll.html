@@ -557,7 +557,7 @@
       : 'https://plugmarket.es';
 
     // Product Data
-    const productId = 'crunchyroll';
+    const productId = 'crunchly';
     const productTitle = 'Crunchyroll';
     
     const variants = [
@@ -571,6 +571,18 @@
     let quantity = 1;
     let stockData = {};
 
+    // Helper function to find stock with flexible key matching
+    function getStockForVariant(variantId) {
+      const exactKey = `${productId}:${variantId}`;
+      if (stockData[exactKey] !== undefined) return stockData[exactKey];
+      const variations = [variantId, variantId.replace(/ Month$/, ' Months'), variantId.replace(/ Months$/, ' Month'), variantId.replace(/ Year$/, ' Years'), variantId.replace(/ Years$/, ' Year')];
+      for (const variation of variations) {
+        const key = `${productId}:${variation}`;
+        if (stockData[key] !== undefined) return stockData[key];
+      }
+      return 0;
+    }
+
     // Fetch stock
     async function fetchStock() {
       try {
@@ -582,7 +594,7 @@
           const data = await res.json();
           console.log('Stock data received:', data);
           stockData = data.stock || {};
-          console.log('Netflix stock keys:', Object.keys(stockData).filter(k => k.startsWith('netflix:')));
+          console.log('CRUNCHYROLL stock keys:', Object.keys(stockData).filter(k => k.startsWith('crunchyroll:')));
           renderVariants();
           updateStockBadge();
         } else {
@@ -601,11 +613,10 @@
       console.log('Rendering variants. StockData:', stockData);
       
       container.innerHTML = variants.map((variant, index) => {
-        const stockKey = `crunchy:${variant.id}`;
-        const stock = stockData[stockKey] || variant.stock;
+        const stock = getStockForVariant(variant.id);
         const isSelected = selectedVariant.id === variant.id;
         
-        console.log(`Variant: ${variant.name}, Key: ${stockKey}, Stock: ${stock}`);
+        console.log(`Variant: ${variant.name}, Stock: ${stock}`);
         
         return `
           <div class="variant-option ${isSelected ? 'selected' : ''}" onclick="selectVariant(${index})">
@@ -640,8 +651,7 @@
 
     // Update stock badge
     function updateStockBadge() {
-      const stockKey = `crunchy:${selectedVariant.id}`;
-      const stock = stockData[stockKey] || selectedVariant.stock;
+      const stock = getStockForVariant(selectedVariant.id);
       const badge = document.getElementById('stock-badge');
       
       if (stock > 0) {

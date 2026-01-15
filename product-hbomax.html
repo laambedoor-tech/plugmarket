@@ -29,21 +29,26 @@
 
     .product-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 190px;
       align-items: start;
+      padding: 0 60px;
     }
 
     .product-left {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
     }
 
     .product-image-section {
-      width: 100%;
-      overflow: hidden;
+      width: 230%;
+      overflow: visible;
       position: relative;
+      margin-left: -75%;
+      z-index: 1;
     }
 
     .product-image-box {
@@ -51,6 +56,8 @@
       justify-content: center;
       align-items: center;
       perspective: 1000px;
+      transform: scale(1);
+      margin: 0;
     }
 
     .product-image-box img {
@@ -81,6 +88,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       overflow: hidden;
+      width: 230%;
+      margin-left: -75%;
+      position: relative;
+      z-index: 1;
     }
 
     .description-header {
@@ -149,6 +160,10 @@
 
     .variant-selector {
       margin-bottom: 30px;
+      width: 100%;
+      margin-left: 0;
+      position: relative;
+      z-index: 2;
     }
 
     .variant-selector h3 {
@@ -162,13 +177,14 @@
       background: rgba(26, 27, 36, 0.5);
       border: 2px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 15px 20px;
-      margin-bottom: 12px;
+      padding: 10px 15px;
+      margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 13px;
     }
 
     .variant-option:hover {
@@ -201,14 +217,14 @@
     }
 
     .variant-info h4 {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 600;
-      margin: 0 0 5px 0;
+      margin: 0 0 3px 0;
       color: #fff;
     }
 
     .variant-stock {
-      font-size: 13px;
+      font-size: 11px;
       color: #898b96;
     }
 
@@ -218,10 +234,10 @@
     }
 
     .variant-price {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .variant-price-old {
@@ -278,42 +294,104 @@
       text-align: center;
       font-size: 18px;
       font-weight: 600;
-      color: #fff;
+      color: #333;
+      background: white;
+      border: 2px solid #1e88e5;
+      border-radius: 8px;
+      padding: 8px;
+      outline: none;
+    }
+
+    .quantity-display:focus {
+      border-color: #0d47a1;
+      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
     }
 
     .bulk-discounts {
-      margin-top: 12px;
-      padding: 12px;
-      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
-      border-radius: 8px;
-      border: 1px solid #e1e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      margin-top: 8px;
+    }
+
+    .discount-icon {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .discount-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .discount-header {
+      display: none;
     }
 
     .discount-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 8px;
-      text-align: center;
+      display: none;
     }
 
-    .discount-item {
+    .current-discount {
+      display: none;
+    }
+
+    .current-discount.no-discount {
+      display: none;
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .discount-progress {
+      margin: 0;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 4px 0;
-      font-size: 12px;
-      color: #5a6c7d;
+      gap: 8px;
     }
 
-    .discount-percent {
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    .discount-tiers {
+      display: none;
+    }
+
+    .tier {
+      display: none;
     }
 
     .action-buttons {
@@ -516,17 +594,21 @@
             <label>Quantity</label>
             <div class="quantity-controls">
               <button class="quantity-btn" id="qty-decrease">−</button>
-              <span class="quantity-display" id="quantity-display">1</span>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
             </div>
             
-            <!-- Bulk Discounts -->
+            <!-- Dynamic Bulk Discounts -->
             <div class="bulk-discounts">
-              <div class="discount-title">💰 Bulk Discounts</div>
-              <div class="discount-item">10+ units: <span class="discount-percent">3% OFF</span></div>
-              <div class="discount-item">25+ units: <span class="discount-percent">5% OFF</span></div>
-              <div class="discount-item">50+ units: <span class="discount-percent">8% OFF</span></div>
-              <div class="discount-item">100+ units: <span class="discount-percent">12% OFF</span></div>
+              <div class="discount-icon" id="discount-icon">✓</div>
+              <div class="discount-content">
+                <div class="discount-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                  </div>
+                  <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -571,6 +653,34 @@
     let quantity = 1;
     let stockData = {};
 
+    // Helper function to find stock with flexible key matching
+    function getStockForVariant(variantId) {
+      const exactKey = `${productId}:${variantId}`;
+      
+      // Try exact match first
+      if (stockData[exactKey] !== undefined) {
+        return stockData[exactKey];
+      }
+      
+      // Try variations (singular/plural)
+      const variations = [
+        variantId,
+        variantId.replace(/ Month$/, ' Months'),
+        variantId.replace(/ Months$/, ' Month'),
+        variantId.replace(/ Year$/, ' Years'),
+        variantId.replace(/ Years$/, ' Year')
+      ];
+      
+      for (const variation of variations) {
+        const key = `${productId}:${variation}`;
+        if (stockData[key] !== undefined) {
+          return stockData[key];
+        }
+      }
+      
+      return 0;
+    }
+
     // Fetch stock
     async function fetchStock() {
       try {
@@ -582,7 +692,7 @@
           const data = await res.json();
           console.log('Stock data received:', data);
           stockData = data.stock || {};
-          console.log('Netflix stock keys:', Object.keys(stockData).filter(k => k.startsWith('netflix:')));
+          console.log('HBOMAX stock keys:', Object.keys(stockData).filter(k => k.startsWith('hbomax:')));
           renderVariants();
           updateStockBadge();
         } else {
@@ -601,11 +711,10 @@
       console.log('Rendering variants. StockData:', stockData);
       
       container.innerHTML = variants.map((variant, index) => {
-        const stockKey = `${productId}:${variant.id}`;
-        const stock = stockData[stockKey] || variant.stock;
+        const stock = getStockForVariant(variant.id);
         const isSelected = selectedVariant.id === variant.id;
         
-        console.log(`Variant: ${variant.name}, Key: ${stockKey}, Stock: ${stock}`);
+        console.log(`Variant: ${variant.name}, Stock: ${stock}`);
         
         return `
           <div class="variant-option ${isSelected ? 'selected' : ''}" onclick="selectVariant(${index})">
@@ -640,8 +749,7 @@
 
     // Update stock badge
     function updateStockBadge() {
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stock = stockData[stockKey] || selectedVariant.stock;
+      const stock = getStockForVariant(selectedVariant.id);
       const badge = document.getElementById('stock-badge');
       
       if (stock > 0) {
@@ -653,19 +761,79 @@
       }
     }
 
+    // Discount tier configuration
+    const DISCOUNT_TIERS = [
+      { quantity: 10, discount: 3 },
+      { quantity: 25, discount: 5 },
+      { quantity: 50, discount: 8 },
+      { quantity: 100, discount: 12 }
+    ];
+    
+    // Update discount system
+    function updateDiscountSystem(qty) {
+      let currentDiscount = 0;
+      let currentTier = null;
+      let nextTier = null;
+      
+      // Find current discount
+      for (let tier of DISCOUNT_TIERS) {
+        if (qty >= tier.quantity) {
+          currentDiscount = tier.discount;
+          currentTier = tier;
+        } else {
+          if (!nextTier) {
+            nextTier = tier;
+          }
+          break;
+        }
+      }
+      
+      // Update progress bar
+      const progressFill = document.querySelector('.progress-fill');
+      const progressText = document.querySelector('.progress-text');
+      
+      if (progressFill && progressText) {
+        if (nextTier) {
+          const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
+                           (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
+          progressFill.style.width = `${Math.min(progress, 100)}%`;
+          
+          const remaining = nextTier.quantity - qty;
+          progressText.textContent = `Add ${remaining} more for ${nextTier.discount}% OFF`;
+        } else {
+          progressFill.style.width = '100%';
+          progressText.textContent = `Maximum discount: ${currentDiscount}% OFF`;
+        }
+      }
+    }
+
     // Quantity controls
+    const quantityInput = document.getElementById('quantity-display');
+    
+    quantityInput.addEventListener('input', () => {
+      let val = parseInt(quantityInput.value) || 1;
+      if (val < 1) val = 1;
+      quantity = val;
+      quantityInput.value = quantity;
+      updatePrice();
+      updateDiscountSystem(quantity);
+    });
+
     document.getElementById('qty-decrease').addEventListener('click', () => {
       if (quantity > 1) {
         quantity--;
-        document.getElementById('quantity-display').textContent = quantity;
+        quantityInput.value = quantity;
         updatePrice();
+        updateDiscountSystem(quantity);
       }
     });
 
     document.getElementById('qty-increase').addEventListener('click', () => {
       quantity++;
-      document.getElementById('quantity-display').textContent = quantity;
+      quantityInput.value = quantity;
       updatePrice();
+      updateDiscountSystem(quantity);
+    });
     });
 
     // Cart functions
@@ -736,6 +904,7 @@
     // Initialize
     renderCartCount();
     fetchStock();
+    updateDiscountSystem(quantity);
   </script>
 
   <!-- Particles script -->

@@ -655,6 +655,34 @@
     let quantity = 1;
     let stockData = {};
 
+    // Helper function to find stock with flexible key matching
+    function getStockForVariant(variantId) {
+      const exactKey = `${productId}:${variantId}`;
+      
+      // Try exact match first
+      if (stockData[exactKey] !== undefined) {
+        return stockData[exactKey];
+      }
+      
+      // Try variations (singular/plural)
+      const variations = [
+        variantId,
+        variantId.replace(/ Month$/, ' Months'),
+        variantId.replace(/ Months$/, ' Month'),
+        variantId.replace(/ Year$/, ' Years'),
+        variantId.replace(/ Years$/, ' Year')
+      ];
+      
+      for (const variation of variations) {
+        const key = `${productId}:${variation}`;
+        if (stockData[key] !== undefined) {
+          return stockData[key];
+        }
+      }
+      
+      return 0;
+    }
+
     // Fetch stock
     async function fetchStock() {
       try {
@@ -685,11 +713,10 @@
       console.log('Rendering variants. StockData:', stockData);
       
       container.innerHTML = variants.map((variant, index) => {
-        const stockKey = `${productId}:${variant.id}`;
-        const stock = stockData[stockKey] || variant.stock;
+        const stock = getStockForVariant(variant.id);
         const isSelected = selectedVariant.id === variant.id;
         
-        console.log(`Variant: ${variant.name}, Key: ${stockKey}, Stock: ${stock}`);
+        console.log(`Variant: ${variant.name}, Stock: ${stock}`);
         
         return `
           <div class="variant-option ${isSelected ? 'selected' : ''}" onclick="selectVariant(${index})">
@@ -733,8 +760,7 @@
 
     // Update stock badge
     function updateStockBadge() {
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stock = stockData[stockKey] || selectedVariant.stock;
+      const stock = getStockForVariant(selectedVariant.id);
       const badge = document.getElementById('stock-badge');
       
       if (stock > 0) {

@@ -13,72 +13,125 @@
   <style>
     .product-page { min-height: 100vh; padding-top: 60px; padding-bottom: 60px; }
     .product-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-    .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-    .product-left { display: flex; flex-direction: column; gap: 30px; }
-    .product-image-section { width: 100%; overflow: hidden; position: relative; }
-    .product-image-box { display: flex; justify-content: center; align-items: center; perspective: 1000px; }
+    .product-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 190px; align-items: start; padding: 0 60px; }
+    .product-left { display: flex; flex-direction: column; gap: 40px; position: relative; z-index: 1; }
+    .product-image-section { width: 230%; overflow: visible; position: relative; margin-left: -75%; z-index: 1; }
+    .product-image-box { display: flex; justify-content: center; align-items: center; perspective: 1000px; transform: scale(1); margin: 0; }
     .product-image-box img { max-width: 100%; width: 100%; height: auto; border-radius: 0; transition: transform 0.3s ease; transform-style: preserve-3d; }
     .product-info-section h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; color: #fff; }
     .product-price { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 0; }
-    .product-description { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden; }
+    .product-description { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden; width: 230%; margin-left: -75%; position: relative; z-index: 1; }
     .description-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(26, 27, 36, 0.5); }
     .description-header h2 { font-size: 16px; margin: 0; color: #fff; display: flex; align-items: center; gap: 10px; font-weight: 600; }
     .description-toggle { display: none; }
     .description-content { max-height: none; overflow: visible; background: rgba(26, 27, 36, 0.3); }
     .description-list { list-style: none; padding: 20px; margin: 0; }
     .description-list li { padding: 8px 0; display: flex; align-items: flex-start; gap: 12px; color: #d7d9e0; font-size: 14px; }
-    .description-list li::before { content: '?'; color: #2ed573; font-weight: bold; font-size: 16px; flex-shrink: 0; }
+    .description-list li::before { content: 'â˜‘'; color: #2ed573; font-weight: bold; font-size: 16px; flex-shrink: 0; }
     .description-note { padding: 15px 20px; background: rgba(0, 0, 0, 0.3); border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; color: #898b96; line-height: 1.6; }
     .description-note strong { color: #fff; }
-    .variant-selector { margin-bottom: 30px; }
+    .variant-selector { margin-bottom: 30px; width: 100%; margin-left: 0; position: relative; z-index: 2; }
     .variant-selector h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 15px; }
-    .variant-option { background: rgba(26, 27, 36, 0.5); border: 2px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 15px 20px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: space-between; align-items: center; }
+    .variant-option { background: rgba(26, 27, 36, 0.5); border: 2px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 15px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
     .variant-option:hover { border-color: rgba(0, 191, 255, 0.5); background: rgba(0, 191, 255, 0.1); }
     .variant-option.selected { border-color: #4da3ff; background: rgba(0, 191, 255, 0.15); position: relative; }
-    .variant-option.selected::after { content: '?'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: #4da3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 14px; }
-    .variant-info h4 { font-size: 15px; font-weight: 600; margin: 0 0 5px 0; color: #fff; }
-    .variant-stock { font-size: 13px; color: #898b96; }
+    .variant-option.selected::after { content: 'âœ“'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: #4da3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 14px; }
+    .variant-info h4 { font-size: 13px; font-weight: 600; margin: 0 0 3px 0; color: #fff; }
+    .variant-stock { font-size: 11px; color: #898b96; }
     .variant-prices { text-align: right; padding-right: 30px; }
-    .variant-price { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .variant-price { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 2px; }
     .variant-price-old { font-size: 14px; color: #898b96; text-decoration: line-through; }
     .quantity-selector { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
     .quantity-selector label { font-size: 16px; font-weight: 600; color: #fff; }
     .quantity-controls { display: flex; align-items: center; gap: 10px; background: rgba(26, 27, 36, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 5px; }
     .quantity-btn { width: 40px; height: 40px; border: none; background: rgba(255, 255, 255, 0.05); color: #fff; border-radius: 8px; cursor: pointer; font-size: 20px; font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
     .quantity-btn:hover { background: rgba(0, 191, 255, 0.3); }
-    .quantity-display { min-width: 60px; text-align: center; font-size: 18px; font-weight: 600; color: #fff; }
-    .bulk-discounts {
-      margin-top: 12px;
-      padding: 12px;
-      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
-      border-radius: 8px;
-      border: 1px solid #e1e8f0;
+    .quantity-display { min-width: 60px; text-align: center; font-size: 18px; font-weight: 600; color: #333; background: white; border: 2px solid #1e88e5; border-radius: 8px; padding: 8px; outline: none; }
+    .quantity-display:focus { border-color: #0d47a1; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
+    .bdisplay: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      margin-top: 8px;
+    }
+
+    .discount-icon {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .discount-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .discount-header {
+      display: none;
     }
 
     .discount-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 8px;
-      text-align: center;
+      display: none;
     }
 
-    .discount-item {
+    .current-discount {
+      display: none;
+    }
+
+    .current-discount.no-discount {
+      display: none;
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .discount-progress {
+      margin: 0;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 4px 0;
-      font-size: 12px;
-      color: #5a6c7d;
+      gap: 8px;
     }
 
-    .discount-percent {
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
+    .discount-tiers {
+      display: none;
+    }
+
+    .tier {
+      display: none
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     .action-buttons { display: flex; gap: 15px; }
@@ -145,7 +198,7 @@
           </div>
           <div class="product-description">
             <div class="description-header">
-              <h2><span style="font-size: 20px;">????</span> Product Description - English</h2>
+              <h2><span style="font-size: 20px;">ðŸ‡ºðŸ‡¸</span> Product Description - English</h2>
             </div>
             <div class="description-content" id="desc-content">
               <ul class="description-list">
@@ -160,7 +213,7 @@
         <div class="product-info-section">
           <h1>NordVPN</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€1.62</p>
+            <p class="product-price" id="display-price">â‚¬1.62</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
           <div class="variant-selector" style="margin-top: 10px;">
@@ -171,8 +224,21 @@
             <label>Quantity</label>
             <div class="quantity-controls">
               <button class="quantity-btn" id="qty-decrease">-</button>
-              <span class="quantity-display" id="quantity-display">1</span>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
+            </div>
+            
+            <!-- Dynamic Bulk Discounts -->
+            <div class="bulk-discounts">
+              <div class="discount-icon" id="discount-icon">âœ“</div>
+              <div class="discount-content">
+                <div class="discount-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                  </div>
+                  <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="action-buttons">
@@ -194,14 +260,43 @@
     const productId = 'nordvpn';
     const productTitle = 'NordVPN';
     const variants = [
-      { id: '1 Month', name: 'NordVPN — 1 Month', stock: 0, price: 1.62, oldPrice: null },
-      { id: '3 Months', name: 'NordVPN — 3 Months', stock: 0, price: 3.06, oldPrice: null },
-      { id: '6 Months', name: 'NordVPN — 6 Months', stock: 0, price: 5.22, oldPrice: null },
-      { id: '12 Months', name: 'NordVPN — 12 Months', stock: 0, price: 9.58, oldPrice: null }
+      { id: '1 Month', name: 'NordVPN â€” 1 Month', stock: 0, price: 1.62, oldPrice: null },
+      { id: '3 Months', name: 'NordVPN â€” 3 Months', stock: 0, price: 3.06, oldPrice: null },
+      { id: '6 Months', name: 'NordVPN â€” 6 Months', stock: 0, price: 5.22, oldPrice: null },
+      { id: '12 Months', name: 'NordVPN â€” 12 Months', stock: 0, price: 9.58, oldPrice: null }
     ];
     let selectedVariant = variants[0];
     let quantity = 1;
     let stockData = {};
+
+    // Helper function to find stock with flexible key matching
+    function getStockForVariant(variantId) {
+      const exactKey = `${productId}:${variantId}`;
+      
+      // Try exact match first
+      if (stockData[exactKey] !== undefined) {
+        return stockData[exactKey];
+      }
+      
+      // Try variations (singular/plural)
+      const variations = [
+        variantId,
+        variantId.replace(/ Month$/, ' Months'),
+        variantId.replace(/ Months$/, ' Month'),
+        variantId.replace(/ Year$/, ' Years'),
+        variantId.replace(/ Years$/, ' Year')
+      ];
+      
+      for (const variation of variations) {
+        const key = `${productId}:${variation}`;
+        if (stockData[key] !== undefined) {
+          return stockData[key];
+        }
+      }
+      
+      return 0;
+    }
+
     async function fetchStock() {
       try {
         const res = await fetch(`${API_BASE}/api/get-stock`);
@@ -221,8 +316,7 @@
     function renderVariants() {
       const container = document.getElementById('variants-container');
       container.innerHTML = variants.map((variant, index) => {
-        const stockKey = `${productId}:${variant.id}`;
-        const stock = stockData[stockKey] || variant.stock;
+        const stock = getStockForVariant(variant.id);
         const isSelected = selectedVariant.id === variant.id;
         return `
           <div class="variant-option ${isSelected ? 'selected' : ''}" onclick="selectVariant(${index})">
@@ -231,8 +325,8 @@
               <div class="variant-stock">${stock} in Stock</div>
             </div>
             <div class="variant-prices">
-              <div class="variant-price">€${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
+              <div class="variant-price">â‚¬${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">â‚¬${variant.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
         `;
@@ -246,11 +340,10 @@
     }
     function updatePrice() {
       const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
+      document.getElementById('display-price').textContent = `â‚¬${total.toFixed(2)}`;
     }
     function updateStockBadge() {
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stock = stockData[stockKey] || selectedVariant.stock;
+      const stock = getStockForVariant(selectedVariant.id);
       const badge = document.getElementById('stock-badge');
       if (stock > 0) {
         badge.className = 'stock-badge stock-badge--in';
@@ -260,17 +353,64 @@
         badge.textContent = 'Out of Stock';
       }
     }
+    const DISCOUNT_TIERS = [
+      { quantity: 10, discount: 3 },
+      { quantity: 25, discount: 5 },
+      { quantity: 50, discount: 8 },
+      { quantity: 100, discount: 12 }
+    ];
+    function updateDiscountSystem(qty) {
+      let currentDiscount = 0;
+      let currentTier = null;
+      let nextTier = null;
+      for (let tier of DISCOUNT_TIERS) {
+        if (qty >= tier.quantity) {
+          currentDiscount = tier.discount;
+          currentTier = tier;
+        } else {
+          if (!nextTier) {
+            nextTier = tier;
+          }
+          break;
+        }
+      }
+      const progressFill = document.querySelector('.progress-fill');
+      const progressText = document.querySelector('.progress-text');
+      if (progressFill && progressText) {
+        if (nextTier) {
+          const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
+                           (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
+          progressFill.style.width = `${Math.min(progress, 100)}%`;
+          const remaining = nextTier.quantity - qty;
+          progressText.textContent = `Add ${remaining} more for ${nextTier.discount}% OFF`;
+        } else {
+          progressFill.style.width = '100%';
+          progressText.textContent = `Maximum discount: ${currentDiscount}% OFF`;
+        }
+      }
+    }
+    const quantityInput = document.getElementById('quantity-display');
+    quantityInput.addEventListener('input', () => {
+      let val = parseInt(quantityInput.value) || 1;
+      if (val < 1) val = 1;
+      quantity = val;
+      quantityInput.value = quantity;
+      updatePrice();
+      updateDiscountSystem(quantity);
+    });
     document.getElementById('qty-decrease').addEventListener('click', () => {
       if (quantity > 1) {
         quantity--;
-        document.getElementById('quantity-display').textContent = quantity;
+        quantityInput.value = quantity;
         updatePrice();
+        updateDiscountSystem(quantity);
       }
     });
     document.getElementById('qty-increase').addEventListener('click', () => {
       quantity++;
-      document.getElementById('quantity-display').textContent = quantity;
+      quantityInput.value = quantity;
       updatePrice();
+      updateDiscountSystem(quantity);
     });
     const CART_KEY = 'plugmarket_cart';
     function getCart() {
@@ -331,6 +471,7 @@
     });
     renderCartCount();
     fetchStock();
+    updateDiscountSystem(quantity);
   </script>
   <script>
     (() => {
