@@ -212,56 +212,150 @@
     }
 
     .quantity-selector {
-      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
     }
 
     .quantity-selector label {
-      display: block;
       font-size: 16px;
       font-weight: 600;
       color: #fff;
-      margin-bottom: 12px;
     }
 
     .quantity-controls {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
       background: rgba(26, 27, 36, 0.5);
-      border: 2px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 10px 20px;
-      width: fit-content;
+      padding: 5px;
     }
 
     .quantity-btn {
-      background: transparent;
+      width: 40px;
+      height: 40px;
       border: none;
+      background: rgba(255, 255, 255, 0.05);
       color: #fff;
-      font-size: 24px;
-      font-weight: 700;
+      border-radius: 8px;
       cursor: pointer;
-      padding: 5px 15px;
+      font-size: 20px;
+      font-weight: 600;
       transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .quantity-btn:hover {
-      color: #4da3ff;
-      transform: scale(1.2);
-    }
-
-    .quantity-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: scale(1);
+      background: rgba(255, 39, 67, 0.3);
     }
 
     .quantity-display {
-      font-size: 20px;
-      font-weight: 600;
-      color: #fff;
-      min-width: 40px;
+      min-width: 60px;
       text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      background: white;
+      border: 2px solid #1e88e5;
+      border-radius: 8px;
+      padding: 8px;
+      outline: none;
+    }
+
+    .quantity-display:focus {
+      border-color: #0d47a1;
+      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+    }
+
+    .bulk-discounts {
+      margin-top: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+      border-radius: 12px;
+      border: 1px solid #e1e8f0;
+    }
+
+    .discount-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .discount-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .current-discount {
+      font-size: 12px;
+      font-weight: 600;
+      color: #27ae60;
+      background: rgba(39, 174, 96, 0.1);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .discount-progress {
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e9ecef;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: #6c757d;
+      text-align: center;
+    }
+
+    .discount-tiers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .tier {
+      font-size: 11px;
+      color: #5a6c7d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tier.active {
+      background: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      font-weight: 600;
+    }
+
+    .tier span {
+      font-weight: 600;
+      color: #27ae60;
     }
 
     .action-buttons {
@@ -473,17 +567,30 @@
             <label>Quantity</label>
             <div class="quantity-controls">
               <button class="quantity-btn" id="qty-decrease">−</button>
-              <span class="quantity-display" id="quantity-display">1</span>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
             </div>
             
-            <!-- Bulk Discounts -->
+            <!-- Dynamic Bulk Discounts -->
             <div class="bulk-discounts">
-              <div class="discount-title">💰 Bulk Discounts</div>
-              <div class="discount-item">10+ units: <span class="discount-percent">3% OFF</span></div>
-              <div class="discount-item">25+ units: <span class="discount-percent">5% OFF</span></div>
-              <div class="discount-item">50+ units: <span class="discount-percent">8% OFF</span></div>
-              <div class="discount-item">100+ units: <span class="discount-percent">12% OFF</span></div>
+              <div class="discount-header">
+                <div class="discount-title">💰 Volume Discounts</div>
+                <div class="current-discount" id="current-discount">No discount</div>
+              </div>
+              
+              <div class="discount-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Add 4 more for 3% OFF</div>
+              </div>
+              
+              <div class="discount-tiers">
+                <div class="tier" data-qty="5" data-discount="3">5+ units: <span>3% OFF</span></div>
+                <div class="tier" data-qty="10" data-discount="5">10+ units: <span>5% OFF</span></div>
+                <div class="tier" data-qty="25" data-discount="8">25+ units: <span>8% OFF</span></div>
+                <div class="tier" data-qty="50" data-discount="12">50+ units: <span>12% OFF</span></div>
+              </div>
             </div>
           </div>
 
@@ -592,14 +699,90 @@
     function selectVariant(variantId) {
       selectedVariant = variants.find(v => v.id === variantId);
       renderVariants();
+      quantity = 1;
+      quantityInput.value = 1;
       updatePrice();
       updateStockBadge();
     }
 
-    // Update price display
+    // Update price display with discount
     function updatePrice() {
+      const basePrice = selectedVariant.price * quantity;
+      let discountedPrice = basePrice;
+      
+      // Apply discount based on quantity
+      const tiers = [
+        { qty: 50, discount: 12 },
+        { qty: 25, discount: 8 },
+        { qty: 10, discount: 5 },
+        { qty: 5, discount: 3 }
+      ];
+      
+      for (let tier of tiers) {
+        if (quantity >= tier.qty) {
+          discountedPrice = basePrice * (1 - tier.discount / 100);
+          break;
+        }
+      }
+      
       const priceEl = document.getElementById('display-price');
-      priceEl.textContent = `€${selectedVariant.price.toFixed(2)}`;
+      priceEl.textContent = `€${discountedPrice.toFixed(2)}`;
+      updateDiscountDisplay();
+    }
+
+    // Update discount display
+    function updateDiscountDisplay() {
+      const tiers = [
+        { qty: 5, discount: 3 },
+        { qty: 10, discount: 5 },
+        { qty: 25, discount: 8 },
+        { qty: 50, discount: 12 }
+      ];
+      
+      // Find current discount
+      let currentDiscount = 0;
+      let nextTierQty = null;
+      
+      for (let tier of tiers) {
+        if (quantity >= tier.qty) {
+          currentDiscount = tier.discount;
+        } else if (!nextTierQty) {
+          nextTierQty = tier.qty;
+        }
+      }
+      
+      // Update current discount badge
+      const currentDiscountEl = document.getElementById('current-discount');
+      if (currentDiscount > 0) {
+        currentDiscountEl.textContent = `${currentDiscount}% OFF`;
+      } else {
+        currentDiscountEl.textContent = 'No discount';
+      }
+      
+      // Update progress
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+      
+      if (nextTierQty) {
+        const prevTierQty = tiers.find(t => t.discount === currentDiscount)?.qty || 0;
+        const progress = ((quantity - prevTierQty) / (nextTierQty - prevTierQty)) * 100;
+        progressFill.style.width = Math.min(progress, 100) + '%';
+        const remaining = nextTierQty - quantity;
+        progressText.textContent = `Add ${remaining} more for ${tiers.find(t => t.qty === nextTierQty)?.discount}% OFF`;
+      } else {
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Maximum discount reached!';
+      }
+      
+      // Update tier styles
+      document.querySelectorAll('.tier').forEach(tier => {
+        const tierQty = parseInt(tier.dataset.qty);
+        if (quantity >= tierQty) {
+          tier.classList.add('active');
+        } else {
+          tier.classList.remove('active');
+        }
+      });
     }
 
     // Update stock badge
@@ -618,20 +801,28 @@
     }
 
     // Quantity controls
+    const quantityInput = document.getElementById('quantity-display');
+    
     document.getElementById('qty-decrease').addEventListener('click', () => {
       if (quantity > 1) {
         quantity--;
-        document.getElementById('quantity-display').textContent = quantity;
+        quantityInput.value = quantity;
+        updatePrice();
       }
     });
 
     document.getElementById('qty-increase').addEventListener('click', () => {
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stockCount = stockData[stockKey] || 0;
-      if (quantity < stockCount) {
-        quantity++;
-        document.getElementById('quantity-display').textContent = quantity;
-      }
+      quantity++;
+      quantityInput.value = quantity;
+      updatePrice();
+    });
+    
+    // Handle input changes
+    quantityInput.addEventListener('input', (e) => {
+      let value = parseInt(e.target.value) || 1;
+      if (value < 1) value = 1;
+      quantity = value;
+      updatePrice();
     });
 
     // Add to cart
@@ -767,6 +958,7 @@
     // Initialize
     fetchStock();
     updateCartCount();
+    updateDiscountDisplay();
   </script>
 </body>
 
