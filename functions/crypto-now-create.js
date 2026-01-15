@@ -78,7 +78,7 @@ export default {
         price_amount: totalUSD,
         price_currency: 'usd',
         pay_currency: mappedCurrency.toLowerCase(),
-        ipn_callback_url: (env.APP_URL || 'https://plugmarket-api.laambedoor.workers.dev') + '/api/crypto/now/ipn',
+        ipn_callback_url: (env.APP_URL || 'https://plugmarket.es') + '/api/crypto/now/ipn',
         order_id: orderId,
         order_description: btoa(JSON.stringify({ cart: items, email: customerEmail }))
       };
