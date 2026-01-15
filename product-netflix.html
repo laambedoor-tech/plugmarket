@@ -235,6 +235,7 @@
       align-items: center;
       gap: 15px;
       margin-bottom: 25px;
+      position: relative;
     }
 
     .quantity-selector label {
@@ -292,33 +293,68 @@
     }
 
     .bulk-discounts {
-      margin-top: 16px;
+      position: absolute;
+      top: 50%;
+      right: -20px;
+      transform: translateY(-50%) translateX(100%);
+      width: 280px;
       padding: 16px;
-      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+      background: white;
       border-radius: 12px;
-      border: 1px solid #e1e8f0;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .bulk-discounts::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid white;
+    }
+
+    .quantity-selector:hover .bulk-discounts {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) translateX(calc(100% + 10px));
     }
 
     .discount-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .discount-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      color: #2c3e50;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .current-discount {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      color: #27ae60;
-      background: rgba(39, 174, 96, 0.1);
-      padding: 4px 8px;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 3px 8px;
       border-radius: 6px;
+    }
+
+    .current-discount.no-discount {
+      color: #6b7280;
+      background: rgba(107, 114, 128, 0.1);
     }
 
     .discount-progress {
@@ -327,25 +363,25 @@
 
     .progress-bar {
       width: 100%;
-      height: 6px;
-      background: #e9ecef;
-      border-radius: 3px;
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
       overflow: hidden;
       margin-bottom: 6px;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-      border-radius: 3px;
+      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+      border-radius: 2px;
       transition: width 0.3s ease;
       width: 0%;
     }
 
     .progress-text {
-      font-size: 11px;
-      color: #6c757d;
-      text-align: center;
+      font-size: 10px;
+      color: #6b7280;
+      text-align: left;
     }
 
     .discount-tiers {
@@ -355,26 +391,26 @@
     }
 
     .tier {
-      font-size: 11px;
-      color: #5a6c7d;
+      font-size: 10px;
+      color: #64748b;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 8px;
-      background: rgba(255, 255, 255, 0.5);
+      padding: 6px 8px;
+      background: #f8fafc;
       border-radius: 6px;
       transition: all 0.2s ease;
     }
 
     .tier.active {
-      background: rgba(39, 174, 96, 0.1);
-      color: #27ae60;
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
       font-weight: 600;
     }
 
     .tier span {
       font-weight: 600;
-      color: #27ae60;
+      color: #10b981;
     }
 
     .action-buttons {
@@ -471,6 +507,24 @@
 
       .action-buttons {
         flex-direction: column;
+      }
+
+      .bulk-discounts {
+        position: static;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+        margin-top: 15px;
+        width: 100%;
+      }
+
+      .bulk-discounts::before {
+        display: none;
+      }
+
+      .quantity-selector {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
@@ -580,12 +634,11 @@
               <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
             </div>
-            
-            <!-- Dynamic Bulk Discounts -->
+            <!-- Dynamic Bulk Discounts Tooltip -->
             <div class="bulk-discounts">
               <div class="discount-header">
-                <div class="discount-title">💰 Volume Discounts</div>
-                <div class="current-discount" id="current-discount">No discount</div>
+                <div class="discount-title">🔥 Volume Discounts</div>
+                <div class="current-discount no-discount" id="current-discount">No discount</div>
               </div>
               
               <div class="discount-progress">
@@ -596,10 +649,10 @@
               </div>
               
               <div class="discount-tiers">
-                <div class="tier" data-qty="10" data-discount="3">10+ units: <span>3% OFF</span></div>
-                <div class="tier" data-qty="25" data-discount="5">25+ units: <span>5% OFF</span></div>
-                <div class="tier" data-qty="50" data-discount="8">50+ units: <span>8% OFF</span></div>
-                <div class="tier" data-qty="100" data-discount="12">100+ units: <span>12% OFF</span></div>
+                <div class="tier" data-qty="10" data-discount="3">10+ units<span>3% OFF</span></div>
+                <div class="tier" data-qty="25" data-discount="5">25+ units<span>5% OFF</span></div>
+                <div class="tier" data-qty="50" data-discount="8">50+ units<span>8% OFF</span></div>
+                <div class="tier" data-qty="100" data-discount="12">100+ units<span>12% OFF</span></div>
               </div>
             </div>
           </div>
@@ -769,10 +822,10 @@
       if (currentDiscountElement) {
         if (currentDiscount > 0) {
           currentDiscountElement.textContent = `${currentDiscount}% OFF`;
-          currentDiscountElement.style.display = 'block';
+          currentDiscountElement.classList.remove('no-discount');
         } else {
           currentDiscountElement.textContent = 'No discount';
-          currentDiscountElement.style.display = 'block';
+          currentDiscountElement.classList.add('no-discount');
         }
       }
       
