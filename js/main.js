@@ -136,7 +136,7 @@
 // 2) Productos demo
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168') || window.location.hostname.includes('.local')
   ? 'http://localhost:8788'
-  : 'https://plugmarket-api.laambedoor.workers.dev';
+  : 'https://plugmarket.es';
 
 const products = [
   { id: 'netflix', title: 'Netflix', price: '€', tone: 'red' },

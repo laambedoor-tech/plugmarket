@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -127,7 +127,7 @@
     }
 
     .description-list li::before {
-      content: '☑';
+      content: 'â˜‘';
       color: #2ed573;
       font-weight: bold;
       font-size: 16px;
@@ -183,7 +183,7 @@
     }
 
     .variant-option.selected::after {
-      content: '✓';
+      content: 'âœ“';
       position: absolute;
       right: 15px;
       top: 50%;
@@ -279,6 +279,40 @@
       font-size: 18px;
       font-weight: 600;
       color: #fff;
+    }
+    .bulk-discounts {
+      margin-top: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+      border-radius: 8px;
+      border: 1px solid #e1e8f0;
+    }
+
+    .discount-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .discount-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      font-size: 12px;
+      color: #5a6c7d;
+    }
+
+    .discount-percent {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
     .action-buttons {
@@ -443,20 +477,20 @@
           <div class="product-description">
             <div class="description-header">
               <h2>
-                <span style="font-size: 20px;">🇺🇸</span>
+                <span style="font-size: 20px;">ðŸ‡ºðŸ‡¸</span>
                 Product Description - English
               </h2>
             </div>
             <div class="description-content" id="desc-content">
               <ul class="description-list">
-                <li><strong>Live Sports Streaming</strong> – Watch live sports events and matches.</li>
-                <li><strong>Full Access</strong> – All sports leagues and tournaments included.</li>
-                <li><strong>HD Quality</strong> – Crystal clear high-definition streaming.</li>
-                <li><strong>In-Stock & Ready</strong> – Instant delivery, no waiting.</li>
-                <li><strong>High Quality & Resell-Friendly</strong> – Great for personal use or resale.</li>
-                <li><strong>Full Warranty</strong> – Free replacements for any issues, anytime.</li>
-                <li><strong>Multi-Device</strong> – Watch on any device, anywhere.</li>
-                <li><strong>Reliable Support</strong> – Quick help and replacements if needed.</li>
+                <li><strong>Live Sports Streaming</strong> â€“ Watch live sports events and matches.</li>
+                <li><strong>Full Access</strong> â€“ All sports leagues and tournaments included.</li>
+                <li><strong>HD Quality</strong> â€“ Crystal clear high-definition streaming.</li>
+                <li><strong>In-Stock & Ready</strong> â€“ Instant delivery, no waiting.</li>
+                <li><strong>High Quality & Resell-Friendly</strong> â€“ Great for personal use or resale.</li>
+                <li><strong>Full Warranty</strong> â€“ Free replacements for any issues, anytime.</li>
+                <li><strong>Multi-Device</strong> â€“ Watch on any device, anywhere.</li>
+                <li><strong>Reliable Support</strong> â€“ Quick help and replacements if needed.</li>
               </ul>
             </div>
           </div>
@@ -466,7 +500,7 @@
         <div class="product-info-section">
           <h1>DAZN</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€2.88</p>
+            <p class="product-price" id="display-price">â‚¬2.88</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -480,9 +514,18 @@
           <div class="quantity-selector">
             <label>Quantity</label>
             <div class="quantity-controls">
-              <button class="quantity-btn" id="qty-decrease">−</button>
+              <button class="quantity-btn" id="qty-decrease">âˆ’</button>
               <span class="quantity-display" id="quantity-display">1</span>
               <button class="quantity-btn" id="qty-increase">+</button>
+                        
+            <!-- Bulk Discounts -->
+            <div class="bulk-discounts">
+              <div class="discount-title"> Bulk Discounts</div>
+              <div class="discount-item">10+ units: <span class="discount-percent">3% OFF</span></div>
+              <div class="discount-item">25+ units: <span class="discount-percent">5% OFF</span></div>
+              <div class="discount-item">50+ units: <span class="discount-percent">8% OFF</span></div>
+              <div class="discount-item">100+ units: <span class="discount-percent">12% OFF</span></div>
+            </div>
             </div>
           </div>
 
@@ -517,10 +560,10 @@
     const productTitle = 'DAZN';
     
     const variants = [
-      { id: '1 Month', name: 'DAZN — 1 Month', stock: 0, price: 2.88, oldPrice: null },
-      { id: '3 Months', name: 'DAZN — 3 Months', stock: 0, price: 7.38, oldPrice: null },
-      { id: '6 Months', name: 'DAZN — 6 Months', stock: 0, price: 13.5, oldPrice: null },
-      { id: '12 Months', name: 'DAZN — 12 Months', stock: 0, price: 25.2, oldPrice: null }
+      { id: '1 Month', name: 'DAZN â€” 1 Month', stock: 0, price: 2.88, oldPrice: null },
+      { id: '3 Months', name: 'DAZN â€” 3 Months', stock: 0, price: 7.38, oldPrice: null },
+      { id: '6 Months', name: 'DAZN â€” 6 Months', stock: 0, price: 13.5, oldPrice: null },
+      { id: '12 Months', name: 'DAZN â€” 12 Months', stock: 0, price: 25.2, oldPrice: null }
     ];
 
     let selectedVariant = variants[0];
@@ -572,8 +615,8 @@
               </div>
             </div>
             <div class="variant-prices">
-              <div class="variant-price">€${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
+              <div class="variant-price">â‚¬${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">â‚¬${variant.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
         `;
@@ -591,7 +634,7 @@
     // Update price display
     function updatePrice() {
       const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
+      document.getElementById('display-price').textContent = `â‚¬${total.toFixed(2)}`;
     }
 
     // Update stock badge
@@ -671,7 +714,7 @@
 
       const btn = document.getElementById('add-to-cart-btn');
       const originalText = btn.innerHTML;
-      btn.innerHTML = '✓ Added to Cart';
+      btn.innerHTML = 'âœ“ Added to Cart';
       setTimeout(() => {
         btn.innerHTML = originalText;
       }, 1500);
@@ -795,3 +838,4 @@
 </body>
 
 </html>
+
