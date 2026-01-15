@@ -29,21 +29,26 @@
 
     .product-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 190px;
       align-items: start;
+      padding: 0 60px;
     }
 
     .product-left {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
     }
 
     .product-image-section {
-      width: 100%;
-      overflow: hidden;
+      width: 230%;
+      overflow: visible;
       position: relative;
+      margin-left: -75%;
+      z-index: 1;
     }
 
     .product-image-box {
@@ -51,6 +56,8 @@
       justify-content: center;
       align-items: center;
       perspective: 1000px;
+      transform: scale(1);
+      margin: 0;
     }
 
     .product-image-box img {
@@ -81,6 +88,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       overflow: hidden;
+      width: 230%;
+      margin-left: -75%;
+      position: relative;
+      z-index: 1;
     }
 
     .description-header {
@@ -113,17 +124,18 @@
 
     .description-list {
       list-style: none;
-      padding: 20px;
+      padding: 25px;
       margin: 0;
     }
 
     .description-list li {
-      padding: 8px 0;
+      padding: 10px 0;
       display: flex;
       align-items: flex-start;
       gap: 12px;
       color: #d7d9e0;
-      font-size: 14px;
+      font-size: 15px;
+      line-height: 1.6;
     }
 
     .description-list li::before {
@@ -149,6 +161,10 @@
 
     .variant-selector {
       margin-bottom: 30px;
+      width: 100%;
+      margin-left: 0;
+      position: relative;
+      z-index: 2;
     }
 
     .variant-selector h3 {
@@ -162,13 +178,14 @@
       background: rgba(26, 27, 36, 0.5);
       border: 2px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 15px 20px;
-      margin-bottom: 12px;
+      padding: 10px 15px;
+      margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 13px;
     }
 
     .variant-option:hover {
@@ -201,14 +218,14 @@
     }
 
     .variant-info h4 {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 600;
-      margin: 0 0 5px 0;
+      margin: 0 0 3px 0;
       color: #fff;
     }
 
     .variant-stock {
-      font-size: 13px;
+      font-size: 11px;
       color: #898b96;
     }
 
@@ -218,10 +235,10 @@
     }
 
     .variant-price {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .variant-price-old {
@@ -294,81 +311,80 @@
     .bulk-discounts {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: rgba(26, 27, 36, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      margin-top: 8px;
     }
 
     .discount-icon {
-      width: 32px;
-      height: 32px;
-      min-width: 32px;
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-      border-radius: 8px;
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 14px;
       color: #fff;
     }
 
     .discount-content {
       flex: 1;
       min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .discount-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
+      display: none;
     }
 
     .discount-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      opacity: 0.7;
+      display: none;
     }
 
     .current-discount {
-      font-size: 11px;
-      font-weight: 600;
-      color: #10b981;
+      display: none;
     }
 
     .current-discount.no-discount {
-      color: #6b7280;
+      display: none;
     }
 
     .progress-bar {
-      width: 100%;
-      height: 6px;
+      width: 120px;
+      height: 4px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
+      border-radius: 2px;
       overflow: hidden;
-      margin-bottom: 6px;
+      margin: 0;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%);
-      border-radius: 3px;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 2px;
       transition: width 0.3s ease;
       width: 0%;
     }
 
     .progress-text {
-      font-size: 11px;
+      font-size: 10px;
       color: rgba(255, 255, 255, 0.6);
       font-weight: 500;
+      white-space: nowrap;
     }
 
     .discount-progress {
-      margin-bottom: 12px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .discount-tiers {
@@ -585,18 +601,14 @@
             
             <!-- Dynamic Bulk Discounts -->
             <div class="bulk-discounts">
-              <div class="discount-icon" id="discount-icon">
-                ✓
-              </div>
+              <div class="discount-icon" id="discount-icon">✓</div>
               <div class="discount-content">
-                <div class="discount-header">
-                  <span class="discount-title" id="discount-title">Add 9 more items to unlock 3% off</span>
-                  <span class="current-discount no-discount" id="current-discount">No discount</span>
+                <div class="discount-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                  </div>
+                  <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
                 </div>
-                <div class="progress-bar">
-                  <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <div class="progress-text" id="progress-text">at 10 pcs.</div>
               </div>
             </div>
           </div>

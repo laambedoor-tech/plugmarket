@@ -232,18 +232,12 @@
 
     .quantity-selector {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      gap: 15px;
       margin-bottom: 25px;
     }
 
-    .quantity-controls-row {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .quantity-controls-row label {
+    .quantity-selector label {
       font-size: 16px;
       font-weight: 600;
       color: #fff;
@@ -285,113 +279,41 @@
       font-size: 18px;
       font-weight: 600;
       color: #fff;
-      background: rgba(26, 27, 36, 0.8);
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 8px;
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .quantity-display:focus {
-      border-color: rgba(255, 255, 255, 0.2);
-      background: rgba(26, 27, 36, 1);
-    }
-
-    .quantity-display.error {
-      border-color: #ef4444;
-      animation: shake 0.3s ease;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    .quantity-error {
-      font-size: 11px;
-      color: #ef4444;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .quantity-error.show {
-      display: block;
     }
 
     .bulk-discounts {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
-      background: rgba(26, 27, 36, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-    }
-
-    .discount-icon {
-      width: 32px;
-      height: 32px;
-      min-width: 32px;
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      margin-top: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
-
-    .discount-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .discount-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
+      border: 1px solid #e1e8f0;
     }
 
     .discount-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .discount-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      font-size: 12px;
+      color: #5a6c7d;
+    }
+
+    .discount-percent {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
       font-size: 11px;
       font-weight: 600;
-      color: #fff;
-      opacity: 0.7;
-    }
-
-    .current-discount {
-      font-size: 11px;
-      font-weight: 600;
-      color: #10b981;
-    }
-
-    .current-discount.no-discount {
-      color: #6b7280;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 6px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%);
-      border-radius: 3px;
-      transition: width 0.3s ease;
-      width: 0%;
-    }
-
-    .progress-text {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
     .action-buttons {
@@ -590,28 +512,20 @@
 
           <!-- Quantity Selector -->
           <div class="quantity-selector">
-            <div class="quantity-controls-row">
-              <label>Quantity</label>
-              <div class="quantity-controls">
-                <button class="quantity-btn" id="qty-decrease">−</button>
-                <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
-                <button class="quantity-btn" id="qty-increase">+</button>
-              </div>
+            <label>Quantity</label>
+            <div class="quantity-controls">
+              <button class="quantity-btn" id="qty-decrease">−</button>
+              <span class="quantity-display" id="quantity-display">1</span>
+              <button class="quantity-btn" id="qty-increase">+</button>
             </div>
-            <div class="quantity-error" id="quantity-error"></div>
-            <!-- Integrated Bulk Discounts -->
+            
+            <!-- Bulk Discounts -->
             <div class="bulk-discounts">
-              <div class="discount-icon" id="discount-icon">✓</div>
-              <div class="discount-content">
-                <div class="discount-header">
-                  <span class="discount-title" id="discount-title">Add 4 more items to unlock 3% off</span>
-                  <span class="current-discount no-discount" id="current-discount">No discount</span>
-                </div>
-                <div class="progress-bar">
-                  <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <div class="progress-text" id="progress-text">at 5 pcs.</div>
-              </div>
+              <div class="discount-title">💰 Bulk Discounts</div>
+              <div class="discount-item">10+ units: <span class="discount-percent">3% OFF</span></div>
+              <div class="discount-item">25+ units: <span class="discount-percent">5% OFF</span></div>
+              <div class="discount-item">50+ units: <span class="discount-percent">8% OFF</span></div>
+              <div class="discount-item">100+ units: <span class="discount-percent">12% OFF</span></div>
             </div>
           </div>
 
@@ -644,14 +558,6 @@
     // Product Data
     const productId = 'youtube-premium';
     const productTitle = 'YouTube Premium';
-    
-    // Discount tier configuration
-    const DISCOUNT_TIERS = [
-      { quantity: 5, discount: 3 },
-      { quantity: 10, discount: 5 },
-      { quantity: 25, discount: 8 },
-      { quantity: 50, discount: 12 }
-    ];
     
     const variants = [
       { id: '1 Month', name: 'YouTube Premium — 1 Month', stock: 0, price: 2.52, oldPrice: null },
@@ -718,7 +624,6 @@
       renderVariants();
       updatePrice();
       updateStockBadge();
-      updateDiscountSystem(quantity);
     }
 
     // Update price display
@@ -742,159 +647,19 @@
       }
     }
 
-    // Update discount system
-    function updateDiscountSystem(qty) {
-      let currentDiscount = 0;
-      let currentTier = null;
-      let nextTier = null;
-      
-      // Find current discount
-      for (let tier of DISCOUNT_TIERS) {
-        if (qty >= tier.quantity) {
-          currentDiscount = tier.discount;
-          currentTier = tier;
-        } else {
-          if (!nextTier) {
-            nextTier = tier;
-          }
-          break;
-        }
-      }
-      
-      // Update current discount display
-      const currentDiscountElement = document.querySelector('.current-discount');
-      if (currentDiscountElement) {
-        if (currentDiscount > 0) {
-          currentDiscountElement.textContent = `${currentDiscount}% OFF`;
-          currentDiscountElement.classList.remove('no-discount');
-        } else {
-          currentDiscountElement.textContent = 'No discount';
-          currentDiscountElement.classList.add('no-discount');
-        }
-      }
-      
-      // Update progress bar and text
-      const progressFill = document.querySelector('.progress-fill');
-      const progressText = document.querySelector('.progress-text');
-      const discountTitle = document.getElementById('discount-title');
-      
-      if (progressFill && progressText && discountTitle) {
-        if (nextTier) {
-          const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
-                           (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
-          progressFill.style.width = `${Math.min(progress, 100)}%`;
-          
-          const remaining = nextTier.quantity - qty;
-          discountTitle.textContent = `Add ${remaining} more items to unlock ${nextTier.discount}% off`;
-          progressText.textContent = `at ${nextTier.quantity} pcs.`;
-        } else {
-          // Maximum tier reached
-          progressFill.style.width = '100%';
-          discountTitle.textContent = 'Maximum discount unlocked!';
-          progressText.textContent = `12% OFF applied`;
-        }
-      }
-    }
-    
-    // Enhanced update price with discount calculation
-    function updatePrice() {
-      let baseTotal = selectedVariant.price * quantity;
-      let discountTotal = baseTotal;
-      
-      // Apply bulk discount if applicable
-      for (let tier of [...DISCOUNT_TIERS].reverse()) {
-        if (quantity >= tier.quantity) {
-          discountTotal = baseTotal * (1 - tier.discount / 100);
-          break;
-        }
-      }
-      
-      document.getElementById('display-price').textContent = `€${discountTotal.toFixed(2)}`;
-    }
-
-    // Quantity controls with validation
-    const quantityInput = document.getElementById('quantity-display');
-    const quantityError = document.getElementById('quantity-error');
-    
-    function validateQuantity(value) {
-      const minQty = selectedVariant?.minQty || 1;
-      const inputValue = parseInt(value);
-      
-      if (value === '' || isNaN(inputValue)) {
-        return { valid: false, message: 'Please enter a valid quantity' };
-      }
-      
-      if (inputValue < minQty) {
-        if (minQty > 1) {
-          return { valid: false, message: `Minimum quantity for ${selectedVariant.name} is ${minQty} units` };
-        } else {
-          return { valid: false, message: 'Quantity must be at least 1' };
-        }
-      }
-      
-      return { valid: true, message: '' };
-    }
-    
-    function showQuantityError(message) {
-      quantityError.textContent = message;
-      quantityError.classList.add('show');
-      quantityInput.classList.add('error');
-      
-      setTimeout(() => {
-        quantityError.classList.remove('show');
-        quantityInput.classList.remove('error');
-      }, 3000);
-    }
-    
-    // Handle manual input changes
-    if (quantityInput) {
-      quantityInput.addEventListener('input', function() {
-        let inputValue = parseInt(this.value);
-        
-        // Allow empty input while typing
-        if (this.value === '') {
-          quantity = 1;
-          updatePrice();
-          updateDiscountSystem(1);
-          return;
-        }
-        
-        if (!isNaN(inputValue) && inputValue >= 1) {
-          quantity = inputValue;
-          updatePrice();
-          updateDiscountSystem(quantity);
-        }
-      });
-      
-      // Handle focus out to ensure valid value
-      quantityInput.addEventListener('blur', function() {
-        const validation = validateQuantity(this.value);
-        
-        if (!validation.valid) {
-          const minQty = selectedVariant?.minQty || 1;
-          quantity = minQty;
-          this.value = quantity;
-          updatePrice();
-          updateDiscountSystem(quantity);
-        }
-      });
-    }
-    
+    // Quantity controls
     document.getElementById('qty-decrease').addEventListener('click', () => {
-      const minQty = selectedVariant?.minQty || 1;
-      if (quantity > minQty) {
+      if (quantity > 1) {
         quantity--;
-        if (quantityInput) quantityInput.value = quantity;
+        document.getElementById('quantity-display').textContent = quantity;
         updatePrice();
-        updateDiscountSystem(quantity);
       }
     });
 
     document.getElementById('qty-increase').addEventListener('click', () => {
       quantity++;
-      if (quantityInput) quantityInput.value = quantity;
+      document.getElementById('quantity-display').textContent = quantity;
       updatePrice();
-      updateDiscountSystem(quantity);
     });
 
     // Cart functions
@@ -935,13 +700,6 @@
 
     // Add to cart button
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
-      // Validate quantity before adding to cart
-      const validation = validateQuantity(quantityInput.value);
-      if (!validation.valid) {
-        showQuantityError(validation.message);
-        return;
-      }
-      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -959,13 +717,6 @@
 
     // Buy now button
     document.getElementById('buy-now-btn').addEventListener('click', () => {
-      // Validate quantity before buying
-      const validation = validateQuantity(quantityInput.value);
-      if (!validation.valid) {
-        showQuantityError(validation.message);
-        return;
-      }
-      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -979,9 +730,6 @@
     // Initialize
     renderCartCount();
     fetchStock();
-    
-    // Initialize discount system
-    updateDiscountSystem(quantity);
   </script>
 
   <!-- Particles script -->
