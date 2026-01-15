@@ -284,16 +284,16 @@
       text-align: center;
       font-size: 18px;
       font-weight: 600;
-      color: #333;
-      background: white;
-      border: 2px solid #1e88e5;
+      color: #fff;
+      background: #000;
+      border: 2px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
       padding: 8px;
       outline: none;
     }
 
     .quantity-display:focus {
-      border-color: #0d47a1;
+      border-color: #1e88e5;
       box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
     }
 
@@ -812,6 +812,12 @@
     if (quantityInput) {
       quantityInput.addEventListener('input', function() {
         let inputValue = parseInt(this.value);
+        
+        // Allow empty input while typing
+        if (this.value === '') {
+          return;
+        }
+        
         if (isNaN(inputValue) || inputValue < 1) {
           inputValue = 1;
         }
@@ -829,7 +835,7 @@
       
       // Handle focus out to ensure valid value
       quantityInput.addEventListener('blur', function() {
-        if (this.value === '' || parseInt(this.value) < 1) {
+        if (this.value === '' || parseInt(this.value) < 1 || isNaN(parseInt(this.value))) {
           const minQty = selectedVariant?.minQty || 1;
           quantity = minQty;
           this.value = quantity;
