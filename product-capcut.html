@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -127,7 +127,7 @@
     }
 
     .description-list li::before {
-      content: 'â˜‘';
+      content: '☑';
       color: #2ed573;
       font-weight: bold;
       font-size: 16px;
@@ -183,7 +183,7 @@
     }
 
     .variant-option.selected::after {
-      content: 'âœ“';
+      content: '✓';
       position: absolute;
       right: 15px;
       top: 50%;
@@ -477,20 +477,20 @@
           <div class="product-description">
             <div class="description-header">
               <h2>
-                <span style="font-size: 20px;">ðŸ‡ºðŸ‡¸</span>
+                <span style="font-size: 20px;">🇺🇸</span>
                 Product Description - English
               </h2>
             </div>
             <div class="description-content" id="desc-content">
               <ul class="description-list">
-                <li><strong>Pro Features</strong> â€“ Access to all premium editing tools and effects.</li>
-                <li><strong>No Watermark</strong> â€“ Export videos without CapCut branding.</li>
-                <li><strong>HD & 4K Export</strong> â€“ High-quality video exports up to 4K resolution.</li>
-                <li><strong>In-Stock & Ready</strong> â€“ Instant delivery, no waiting.</li>
-                <li><strong>High Quality & Resell-Friendly</strong> â€“ Great for personal use or resale.</li>
-                <li><strong>Full Warranty</strong> â€“ Free replacements for any issues, anytime.</li>
-                <li><strong>Premium Assets</strong> â€“ Access exclusive filters, effects, and templates.</li>
-                <li><strong>Reliable Support</strong> â€“ Quick help and replacements if needed.</li>
+                <li><strong>Pro Features</strong> – Access to all premium editing tools and effects.</li>
+                <li><strong>No Watermark</strong> – Export videos without CapCut branding.</li>
+                <li><strong>HD & 4K Export</strong> – High-quality video exports up to 4K resolution.</li>
+                <li><strong>In-Stock & Ready</strong> – Instant delivery, no waiting.</li>
+                <li><strong>High Quality & Resell-Friendly</strong> – Great for personal use or resale.</li>
+                <li><strong>Full Warranty</strong> – Free replacements for any issues, anytime.</li>
+                <li><strong>Premium Assets</strong> – Access exclusive filters, effects, and templates.</li>
+                <li><strong>Reliable Support</strong> – Quick help and replacements if needed.</li>
               </ul>
             </div>
           </div>
@@ -500,7 +500,7 @@
         <div class="product-info-section">
           <h1>CapCut Pro</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">â‚¬2.61</p>
+            <p class="product-price" id="display-price">€2.61</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -514,7 +514,7 @@
           <div class="quantity-selector">
             <label>Quantity</label>
             <div class="quantity-controls">
-              <button class="quantity-btn" id="qty-decrease">âˆ’</button>
+              <button class="quantity-btn" id="qty-decrease">−</button>
               <span class="quantity-display" id="quantity-display">1</span>
               <button class="quantity-btn" id="qty-increase">+</button>
                         
@@ -560,10 +560,10 @@
     const productTitle = 'CapCut Pro';
     
     const variants = [
-      { id: '1 Month', name: 'CapCut Pro â€” 1 Month', stock: 0, price: 2.61, oldPrice: null },
-      { id: '3 Months', name: 'CapCut Pro â€” 3 Months', stock: 0, price: 6.66, oldPrice: null },
-      { id: '6 Months', name: 'CapCut Pro â€” 6 Months', stock: 0, price: 11.88, oldPrice: null },
-      { id: '12 Months', name: 'CapCut Pro â€” 12 Months', stock: 0, price: 20.88, oldPrice: null }
+      { id: '1 Month', name: 'CapCut Pro — 1 Month', stock: 0, price: 2.61, oldPrice: null },
+      { id: '3 Months', name: 'CapCut Pro — 3 Months', stock: 0, price: 6.66, oldPrice: null },
+      { id: '6 Months', name: 'CapCut Pro — 6 Months', stock: 0, price: 11.88, oldPrice: null },
+      { id: '12 Months', name: 'CapCut Pro — 12 Months', stock: 0, price: 20.88, oldPrice: null }
     ];
 
     let selectedVariant = variants[0];
@@ -615,8 +615,8 @@
               </div>
             </div>
             <div class="variant-prices">
-              <div class="variant-price">â‚¬${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">â‚¬${variant.oldPrice.toFixed(2)}</div>` : ''}
+              <div class="variant-price">€${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
         `;
@@ -634,7 +634,7 @@
     // Update price display
     function updatePrice() {
       const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `â‚¬${total.toFixed(2)}`;
+      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
     }
 
     // Update stock badge
@@ -707,14 +707,14 @@
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
       addToCart({
         pid: productId,
-        plan: selectedVariant.name,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
         qty: quantity
       });
 
       const btn = document.getElementById('add-to-cart-btn');
       const originalText = btn.innerHTML;
-      btn.innerHTML = 'âœ“ Added to Cart';
+      btn.innerHTML = '✓ Added to Cart';
       setTimeout(() => {
         btn.innerHTML = originalText;
       }, 1500);
@@ -724,7 +724,7 @@
     document.getElementById('buy-now-btn').addEventListener('click', () => {
       addToCart({
         pid: productId,
-        plan: selectedVariant.name,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
         qty: quantity
       });

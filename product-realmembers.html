@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -127,7 +127,7 @@
     }
 
     .description-list li::before {
-      content: 'â˜‘';
+      content: '?';
       color: #2ed573;
       font-weight: bold;
       font-size: 16px;
@@ -183,7 +183,7 @@
     }
 
     .variant-option.selected::after {
-      content: 'âœ“';
+      content: '?';
       position: absolute;
       right: 15px;
       top: 50%;
@@ -477,20 +477,20 @@
           <div class="product-description">
             <div class="description-header">
               <h2>
-                <span style="font-size: 20px;">ðŸ‡ºðŸ‡¸</span>
+                <span style="font-size: 20px;">????</span>
                 Product Description - English
               </h2>
             </div>
             <div class="description-content" id="desc-content">
               <ul class="description-list">
-                <li><strong>Real Discord Members</strong> â€“ 100% genuine and active users.</li>
-                <li><strong>No Bots or Tokens</strong> â€“ Only real people, no fake activity.</li>
-                <li><strong>Guaranteed Quantity</strong> â€“ You receive exactly what you purchase.</li>
-                <li><strong>Freshly Grown Members</strong> â€“ Newly cultivated users obtained organically.</li>
-                <li><strong>Private & Secure</strong> â€“ Safe, transparent, and fully reliable service.</li>
-                <li><strong>Fast & Secure Delivery</strong> â€“ Immediate growth without risking your server.</li>
-                <li><strong>Exclusive Join System</strong> â€“ Custom access method with unique keys.</li>
-                <li><strong>No Watermark</strong> â€“ This dont have any watermark, so you can resell the keys to your customers and they will not have NebulaMarket contact.</li>
+                <li><strong>Real Discord Members</strong> – 100% genuine and active users.</li>
+                <li><strong>No Bots or Tokens</strong> – Only real people, no fake activity.</li>
+                <li><strong>Guaranteed Quantity</strong> – You receive exactly what you purchase.</li>
+                <li><strong>Freshly Grown Members</strong> – Newly cultivated users obtained organically.</li>
+                <li><strong>Private & Secure</strong> – Safe, transparent, and fully reliable service.</li>
+                <li><strong>Fast & Secure Delivery</strong> – Immediate growth without risking your server.</li>
+                <li><strong>Exclusive Join System</strong> – Custom access method with unique keys.</li>
+                <li><strong>No Watermark</strong> – This dont have any watermark, so you can resell the keys to your customers and they will not have NebulaMarket contact.</li>
               </ul>
             </div>
           </div>
@@ -500,7 +500,7 @@
         <div class="product-info-section">
           <h1>Discord Real Server Members</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">â‚¬2.25</p>
+            <p class="product-price" id="display-price">€2.25</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -514,7 +514,7 @@
           <div class="quantity-selector">
             <label>Quantity</label>
             <div class="quantity-controls">
-              <button class="quantity-btn" id="qty-decrease">âˆ’</button>
+              <button class="quantity-btn" id="qty-decrease">-</button>
               <span class="quantity-display" id="quantity-display">1</span>
               <button class="quantity-btn" id="qty-increase">+</button>
                         
@@ -610,8 +610,8 @@
               </div>
             </div>
             <div class="variant-prices">
-              <div class="variant-price">â‚¬${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">â‚¬${variant.oldPrice.toFixed(2)}</div>` : ''}
+              <div class="variant-price">€${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
         `;
@@ -629,7 +629,7 @@
     // Update price display
     function updatePrice() {
       const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `â‚¬${total.toFixed(2)}`;
+      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
     }
 
     // Update stock badge
@@ -702,14 +702,14 @@
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
       addToCart({
         pid: productId,
-        plan: selectedVariant.name,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
         qty: quantity
       });
 
       const btn = document.getElementById('add-to-cart-btn');
       const originalText = btn.innerHTML;
-      btn.innerHTML = 'Ã¢Å“â€œ Added to Cart';
+      btn.innerHTML = 'âœ“ Added to Cart';
       setTimeout(() => {
         btn.innerHTML = originalText;
       }, 1500);
@@ -719,7 +719,7 @@
     document.getElementById('buy-now-btn').addEventListener('click', () => {
       addToCart({
         pid: productId,
-        plan: selectedVariant.name,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
         qty: quantity
       });

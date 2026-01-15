@@ -708,7 +708,7 @@
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
       addToCart({
         pid: productId,
-        plan: selectedVariant.name,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
         qty: quantity
       });
@@ -725,7 +725,7 @@
     document.getElementById('buy-now-btn').addEventListener('click', () => {
       addToCart({
         pid: productId,
-        plan: selectedVariant.name,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
         qty: quantity
       });
