@@ -87,7 +87,8 @@ async function loadDashboardData(auth) {
 
 function displayDashboardStats(data) {
   const orders = data.orders || [];
-  const completedOrders = orders.filter(o => o.status === 'completed').length;
+  // Count all orders as completed since they only exist if payment succeeded
+  const completedOrders = orders.length;
   const totalSpent = orders.reduce((sum, o) => sum + (parseFloat(o.total_cents / 100) || 0), 0);
   
   document.getElementById('completed-orders').textContent = completedOrders;
@@ -186,9 +187,9 @@ function displayLatestOrders(orders) {
         </td>
         <td>${formatDate(order.created_at)}</td>
         <td>
-          <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+          <span class="status-badge ${'status-completed'}">
             <span>●</span>
-            <span>${capitalizeFirst(order.status || 'pending')}</span>
+            <span>${order.status ? capitalizeFirst(order.status) : 'Completed'}</span>
           </span>
         </td>
         <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
@@ -317,9 +318,9 @@ function displayAllOrders(orders) {
         </td>
         <td>${formatDate(order.created_at)}</td>
         <td>
-          <span class="status-badge ${order.status === 'completed' ? 'status-completed' : 'status-pending'}">
+          <span class="status-badge ${'status-completed'}">
             <span>●</span>
-            <span>${capitalizeFirst(order.status || 'pending')}</span>
+            <span>${order.status ? capitalizeFirst(order.status) : 'Completed'}</span>
           </span>
         </td>
         <td>€${parseFloat(order.total_cents / 100 || 0).toFixed(2)}</td>
