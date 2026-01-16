@@ -198,21 +198,31 @@ function money(n){ return '€' + n.toFixed(2); }
 
 // Calcular descuento por volumen
 function getVolumeDiscount(totalQty) {
-  if (totalQty >= 15) return 0.05; // 5% de descuento con 15+ items
-  if (totalQty >= 5) return 0.03;  // 3% de descuento con 5+ items
+  if (totalQty >= 100) return 0.12; // 12% de descuento con 100+ items
+  if (totalQty >= 50) return 0.08;  // 8% de descuento con 50+ items
+  if (totalQty >= 25) return 0.05;  // 5% de descuento con 25+ items
+  if (totalQty >= 10) return 0.03;  // 3% de descuento con 10+ items
   return 0;
 }
 
 function getDiscountBanner(totalQty) {
-  if (totalQty >= 15) {
-    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">🎉</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">5% Discount Applied!</div><div class="muted" style="font-size: 13px;">You have ' + totalQty + ' items in your cart</div></div></div>';
+  if (totalQty >= 100) {
+    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">🎉</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">12% Discount Applied!</div><div class="muted" style="font-size: 13px;">You have ' + totalQty + ' items in your cart</div></div></div>';
   }
-  if (totalQty >= 5) {
-    const itemsNeeded = 15 - totalQty;
-    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">✨</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">3% Discount Applied!</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 5% off (at 15 pcs.)</div></div></div>';
+  if (totalQty >= 50) {
+    const itemsNeeded = 100 - totalQty;
+    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">✨</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">8% Discount Applied!</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 12% off (at 100 pcs.)</div></div></div>';
   }
-  const itemsNeeded = 5 - totalQty;
-  return '<div style="background: linear-gradient(135deg, rgba(98,160,255,.12), rgba(98,160,255,.04)); border: 1px solid rgba(98,160,255,.25); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">💎</span><div><div style="font-weight: 600; color: #62a0ff; margin-bottom: 2px;">Volume Discount Available</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 3% off (at 5 pcs.)</div></div></div>';
+  if (totalQty >= 25) {
+    const itemsNeeded = 50 - totalQty;
+    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">✨</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">5% Discount Applied!</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 8% off (at 50 pcs.)</div></div></div>';
+  }
+  if (totalQty >= 10) {
+    const itemsNeeded = 25 - totalQty;
+    return '<div style="background: linear-gradient(135deg, rgba(46,213,115,.15), rgba(46,213,115,.05)); border: 1px solid rgba(46,213,115,.3); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">✨</span><div><div style="font-weight: 600; color: #2ed573; margin-bottom: 2px;">3% Discount Applied!</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 5% off (at 25 pcs.)</div></div></div>';
+  }
+  const itemsNeeded = 10 - totalQty;
+  return '<div style="background: linear-gradient(135deg, rgba(98,160,255,.12), rgba(98,160,255,.04)); border: 1px solid rgba(98,160,255,.25); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">💎</span><div><div style="font-weight: 600; color: #62a0ff; margin-bottom: 2px;">Volume Discount Available</div><div class="muted" style="font-size: 13px;">Add ' + itemsNeeded + ' more items to unlock 3% off (at 10 pcs.)</div></div></div>';
 }
 
 function render(){
