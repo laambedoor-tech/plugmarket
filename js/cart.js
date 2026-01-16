@@ -1,6 +1,7 @@
 // Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
 const API_BASE = 'https://plugmarket.es';
+const USD_TO_EUR_RATE_CART = 0.92; // Exchange rate USD to EUR
 
 // Stripe Elements state
 let stripe = null;
@@ -692,8 +693,14 @@ async function loadBalanceInfo() {
       const insufficientEl = document.getElementById('balance-insufficient');
       const payBtn = document.getElementById('btn-pay-balance');
       
-      if (balanceAmountEl) balanceAmountEl.textContent = `$${balance.toFixed(2)}`;
-      if (balanceTotalEl) balanceTotalEl.textContent = `$${total.toFixed(2)}`;
+      // Format with USD and EUR
+      const balanceUSD = balance.toFixed(2);
+      const balanceEUR = (balance * USD_TO_EUR_RATE_CART).toFixed(2);
+      const totalUSD = total.toFixed(2);
+      const totalEUR = (total * USD_TO_EUR_RATE_CART).toFixed(2);
+      
+      if (balanceAmountEl) balanceAmountEl.textContent = `$${balanceUSD} / €${balanceEUR}`;
+      if (balanceTotalEl) balanceTotalEl.textContent = `$${totalUSD} / €${totalEUR}`;
       
       if (balance < total) {
         if (insufficientEl) insufficientEl.style.display = 'block';

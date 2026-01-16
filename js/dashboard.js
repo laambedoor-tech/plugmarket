@@ -449,10 +449,19 @@ function copyToClipboard(text, button) {
 }
 
 // Balance Functions
+const USD_TO_EUR_RATE = 0.92; // Exchange rate USD to EUR
+
 async function initializeBalance() {
   await loadBalance();
   await loadTransactions();
   setupBalanceUI();
+}
+
+function formatBalanceDisplay(balanceUSD) {
+  const balanceNum = parseFloat(balanceUSD || 0);
+  const usd = balanceNum.toFixed(2);
+  const eur = (balanceNum * USD_TO_EUR_RATE).toFixed(2);
+  return `$${usd} / €${eur}`;
 }
 
 async function loadBalance() {
@@ -472,7 +481,7 @@ async function loadBalance() {
       const balanceEl = document.getElementById('current-balance');
       console.log('Balance element:', balanceEl);
       if (balanceEl) {
-        const balanceText = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+        const balanceText = formatBalanceDisplay(data.balance);
         balanceEl.textContent = balanceText;
         console.log('Balance set to:', balanceText);
       } else {

@@ -159,6 +159,7 @@ const products = [
   { id: 'dazn', title: 'DAZN', price: '€1.35', tone: 'orange' },
   { id: 'steamaccount', title: 'Steam Accounts', price: '€0.25', tone: 'blue' },
   { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
+  { id: 'microsoft', title: 'Microsoft Random Codes', price: '€0.40', tone: 'blue' },
 ];
 
 let stockData = {};
@@ -188,6 +189,7 @@ const subscriptions = {
   movistar: { '12 Months': 2.2 },
   dazn: { 'Lifetime': 1.35 },
   steamaccount: { 'Random Games': 0.25 },
+  microsoft: { 'Random Codes': 0.40 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
 };
 
@@ -271,7 +273,8 @@ const toneToGradient = (tone) => {
       'duolingo': 'duolingo.png',
       'movistar': 'movistar+.png',
       'steamaccount': 'steamaccounts.png',
-      'realmembers': 'realmembers.png'
+      'realmembers': 'realmembers.png',
+      'microsoft': 'microsoft.png'
     };
     const logoFile = imageMap[p.id] || `${p.id}.png`;
     
@@ -353,7 +356,8 @@ const toneToGradient = (tone) => {
         'movistar': 'product-movistar.html',
         'dazn': 'product-dazn.html',
         'steamaccount': 'product-steamaccount.html',
-        'realmembers': 'product-realmembers.html'
+        'realmembers': 'product-realmembers.html',
+        'microsoft': 'product-microsoft.html'
       };
       
       if (pageMap[pid]) {
