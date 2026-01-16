@@ -280,6 +280,40 @@
       font-weight: 600;
       color: #fff;
     }
+
+    .quantity-display.invalid {
+      border-color: #ff2743;
+      background: rgba(255, 39, 67, 0.1);
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .quantity-error {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 5px;
+      font-size: 12px;
+      color: #ff5555;
+      font-weight: 600;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .quantity-error.show {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .bulk-discounts {
       margin-top: 12px;
       padding: 12px;
@@ -513,10 +547,11 @@
           <!-- Quantity Selector -->
           <div class="quantity-selector">
             <label>Quantity</label>
-            <div class="quantity-controls">
+            <div class="quantity-controls" style="position: relative;">
               <button class="quantity-btn" id="qty-decrease">−</button>
               <span class="quantity-display" id="quantity-display">1</span>
               <button class="quantity-btn" id="qty-increase">+</button>
+              <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
                         
             <!-- Bulk Discounts -->
             <div class="bulk-discounts">

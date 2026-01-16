@@ -222,10 +222,11 @@
           </div>
           <div class="quantity-selector">
             <label>Quantity</label>
-            <div class="quantity-controls">
-              <button class="quantity-btn" id="qty-decrease">-</button>
+            <div class="quantity-controls" style="position: relative;">
+              <button class="quantity-btn" id="qty-decrease">−</button>
               <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
+              <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
             </div>
             
             <!-- Dynamic Bulk Discounts -->
@@ -390,13 +391,59 @@
       }
     }
     const quantityInput = document.getElementById('quantity-display');
-    quantityInput.addEventListener('input', () => {
-      let val = parseInt(quantityInput.value) || 1;
-      if (val < 1) val = 1;
-      quantity = val;
-      quantityInput.value = quantity;
+    const errorElement = document.getElementById('quantity-error');
+    
+    function showError(message) {
+      if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+        quantityInput.classList.add('invalid');
+        setTimeout(() => {
+          errorElement.classList.remove('show');
+          quantityInput.classList.remove('invalid');
+        }, 2500);
+      }
+    }
+    
+    quantityInput.addEventListener('input', function() {
+      const minQty = selectedVariant?.minQty || 1;
+      let inputValue = parseInt(this.value);
+      
+      // Allow empty value while typing
+      if (this.value === '') {
+        return;
+      }
+      
+      if (isNaN(inputValue) || inputValue < minQty) {
+        // Show error but don't force change yet
+        if (inputValue < minQty && !isNaN(inputValue)) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          showError(`⚠️ Minimum: ${minText}`);
+        }
+        return;
+      }
+      
+      quantity = inputValue;
       updatePrice();
       updateDiscountSystem(quantity);
+    });
+    
+    // Handle focus out to ensure valid value
+    quantityInput.addEventListener('blur', function() {
+      const minQty = selectedVariant?.minQty || 1;
+      let inputValue = parseInt(this.value);
+      
+      if (this.value === '' || isNaN(inputValue) || inputValue < minQty) {
+        quantity = minQty;
+        this.value = quantity;
+        updatePrice();
+        updateDiscountSystem(quantity);
+        
+        if (inputValue < minQty && !isNaN(inputValue)) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          showError(`⚠️ Quantity set to minimum: ${minText}`);
+        }
+      }
     });
     document.getElementById('qty-decrease').addEventListener('click', () => {
       if (quantity > 1) {

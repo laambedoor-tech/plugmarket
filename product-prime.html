@@ -294,17 +294,53 @@
       text-align: center;
       font-size: 18px;
       font-weight: 600;
-      color: #333;
-      background: white;
-      border: 2px solid #1e88e5;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       padding: 8px;
       outline: none;
+      transition: all 0.2s ease;
     }
 
     .quantity-display:focus {
-      border-color: #0d47a1;
-      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+      border-color: rgba(255, 39, 67, 0.5);
+      box-shadow: 0 0 0 3px rgba(255, 39, 67, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .quantity-display.invalid {
+      border-color: #ff2743;
+      background: rgba(255, 39, 67, 0.1);
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .quantity-error {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 5px;
+      font-size: 12px;
+      color: #ff5555;
+      font-weight: 600;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .quantity-error.show {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .bulk-discounts {
@@ -592,10 +628,11 @@
           <!-- Quantity Selector -->
           <div class="quantity-selector">
             <label>Quantity</label>
-            <div class="quantity-controls">
+            <div class="quantity-controls" style="position: relative;">
               <button class="quantity-btn" id="qty-decrease">−</button>
               <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
+              <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
             </div>
             
             <!-- Dynamic Bulk Discounts -->
@@ -808,14 +845,59 @@
 
     // Quantity controls
     const quantityInput = document.getElementById('quantity-display');
+    const errorElement = document.getElementById('quantity-error');
     
-    quantityInput.addEventListener('input', () => {
-      let val = parseInt(quantityInput.value) || 1;
-      if (val < 1) val = 1;
-      quantity = val;
-      quantityInput.value = quantity;
+    function showError(message) {
+      if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+        quantityInput.classList.add('invalid');
+        setTimeout(() => {
+          errorElement.classList.remove('show');
+          quantityInput.classList.remove('invalid');
+        }, 2500);
+      }
+    }
+    
+    quantityInput.addEventListener('input', function() {
+      const minQty = selectedVariant?.minQty || 1;
+      let inputValue = parseInt(this.value);
+      
+      // Allow empty value while typing
+      if (this.value === '') {
+        return;
+      }
+      
+      if (isNaN(inputValue) || inputValue < minQty) {
+        // Show error but don't force change yet
+        if (inputValue < minQty && !isNaN(inputValue)) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          showError(`⚠️ Minimum: ${minText}`);
+        }
+        return;
+      }
+      
+      quantity = inputValue;
       updatePrice();
       updateDiscountSystem(quantity);
+    });
+    
+    // Handle focus out to ensure valid value
+    quantityInput.addEventListener('blur', function() {
+      const minQty = selectedVariant?.minQty || 1;
+      let inputValue = parseInt(this.value);
+      
+      if (this.value === '' || isNaN(inputValue) || inputValue < minQty) {
+        quantity = minQty;
+        this.value = quantity;
+        updatePrice();
+        updateDiscountSystem(quantity);
+        
+        if (inputValue < minQty && !isNaN(inputValue)) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          showError(`⚠️ Quantity set to minimum: ${minText}`);
+        }
+      }
     });
 
     document.getElementById('qty-decrease').addEventListener('click', () => {

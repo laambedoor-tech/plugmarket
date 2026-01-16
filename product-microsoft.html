@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Crunchyroll - Plug Market</title>
-  <meta name="description" content="Get your Crunchyroll subscription at the best price. Instant delivery and secure payments." />
+  <title>Microsoft Codes - Plug Market</title>
+  <meta name="description" content="Get your Microsoft random codes at the best price. Instant delivery and secure payments." />
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,21 +29,26 @@
 
     .product-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 190px;
       align-items: start;
+      padding: 0 60px;
     }
 
     .product-left {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
     }
 
     .product-image-section {
-      width: 100%;
-      overflow: hidden;
+      width: 230%;
+      overflow: visible;
       position: relative;
+      margin-left: -75%;
+      z-index: 1;
     }
 
     .product-image-box {
@@ -51,6 +56,8 @@
       justify-content: center;
       align-items: center;
       perspective: 1000px;
+      transform: scale(1);
+      margin: 0;
     }
 
     .product-image-box img {
@@ -81,6 +88,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       overflow: hidden;
+      width: 230%;
+      margin-left: -75%;
+      position: relative;
+      z-index: 1;
     }
 
     .description-header {
@@ -149,6 +160,10 @@
 
     .variant-selector {
       margin-bottom: 30px;
+      width: 100%;
+      margin-left: 0;
+      position: relative;
+      z-index: 2;
     }
 
     .variant-selector h3 {
@@ -162,13 +177,14 @@
       background: rgba(26, 27, 36, 0.5);
       border: 2px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 15px 20px;
-      margin-bottom: 12px;
+      padding: 10px 15px;
+      margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 13px;
     }
 
     .variant-option:hover {
@@ -201,14 +217,14 @@
     }
 
     .variant-info h4 {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 600;
-      margin: 0 0 5px 0;
+      margin: 0 0 3px 0;
       color: #fff;
     }
 
     .variant-stock {
-      font-size: 13px;
+      font-size: 11px;
       color: #898b96;
     }
 
@@ -218,10 +234,10 @@
     }
 
     .variant-price {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .variant-price-old {
@@ -279,6 +295,18 @@
       font-size: 18px;
       font-weight: 600;
       color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .quantity-display:focus {
+      border-color: rgba(255, 39, 67, 0.5);
+      box-shadow: 0 0 0 3px rgba(255, 39, 67, 0.1);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .quantity-display.invalid {
@@ -316,38 +344,90 @@
     }
 
     .bulk-discounts {
-      margin-top: 12px;
-      padding: 12px;
-      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
-      border-radius: 8px;
-      border: 1px solid #e1e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      margin-top: 8px;
+    }
+
+    .discount-icon {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .discount-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .discount-header {
+      display: none;
     }
 
     .discount-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 8px;
-      text-align: center;
+      display: none;
     }
 
-    .discount-item {
+    .current-discount {
+      display: none;
+    }
+
+    .current-discount.no-discount {
+      display: none;
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .discount-progress {
+      margin: 0;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 4px 0;
-      font-size: 12px;
-      color: #5a6c7d;
+      gap: 8px;
     }
 
-    .discount-percent {
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    .discount-tiers {
+      display: none;
+    }
+
+    .tier {
+      display: none;
     }
 
     .action-buttons {
@@ -504,7 +584,7 @@
         <div class="product-left">
           <div class="product-image-section">
             <div class="product-image-box">
-              <img src="./assets/products/crunchyroll.png" alt="Crunchyroll" width="500" height="500">
+              <img src="./assets/products/microsoft.png" alt="Microsoft Codes" width="500" height="500">
             </div>
           </div>
 
@@ -518,14 +598,14 @@
             </div>
             <div class="description-content" id="desc-content">
               <ul class="description-list">
-                <li><strong>Premium Access</strong> – Watch all anime without ads.</li>
-                <li><strong>Simulcast Episodes</strong> – Latest episodes right after Japan broadcast.</li>
-                <li><strong>HD Streaming</strong> – High-quality anime streaming.</li>
-                <li><strong>In-Stock & Ready</strong> – Instant delivery, no waiting.</li>
-                <li><strong>High Quality & Resell-Friendly</strong> – Great for personal use or resale.</li>
-                <li><strong>Full Warranty</strong> – Free replacements for any issues, anytime.</li>
-                <li><strong>Offline Viewing</strong> – Download episodes to watch offline.</li>
-                <li><strong>Reliable Support</strong> – Quick help and replacements if needed.</li>
+                <li><strong>Random Microsoft Codes</strong> – Get random valid Microsoft codes.</li>
+                <li><strong>Fully Verified</strong> – All codes are checked and verified before delivery.</li>
+                <li><strong>Instant Delivery</strong> – Receive your codes immediately after purchase.</li>
+                <li><strong>In-Stock & Ready</strong> – Always available, no waiting.</li>
+                <li><strong>Multiple Uses</strong> – Great for personal use or resale.</li>
+                <li><strong>Full Warranty</strong> – Free replacements for any invalid codes.</li>
+                <li><strong>Secure Transaction</strong> – Safe and encrypted payments.</li>
+                <li><strong>24/7 Support</strong> – Help available anytime you need it.</li>
               </ul>
             </div>
           </div>
@@ -533,9 +613,9 @@
 
         <!-- Right: Product Info -->
         <div class="product-info-section">
-          <h1>Crunchyroll</h1>
+          <h1>Microsoft Codes</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€1.17</p>
+            <p class="product-price" id="display-price">€1.00</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -550,18 +630,22 @@
             <label>Quantity</label>
             <div class="quantity-controls" style="position: relative;">
               <button class="quantity-btn" id="qty-decrease">−</button>
-              <span class="quantity-display" id="quantity-display">1</span>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
               <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
             </div>
             
-            <!-- Bulk Discounts -->
+            <!-- Dynamic Bulk Discounts -->
             <div class="bulk-discounts">
-              <div class="discount-title">💰 Bulk Discounts</div>
-              <div class="discount-item">10+ units: <span class="discount-percent">3% OFF</span></div>
-              <div class="discount-item">25+ units: <span class="discount-percent">5% OFF</span></div>
-              <div class="discount-item">50+ units: <span class="discount-percent">8% OFF</span></div>
-              <div class="discount-item">100+ units: <span class="discount-percent">12% OFF</span></div>
+              <div class="discount-icon" id="discount-icon">✓</div>
+              <div class="discount-content">
+                <div class="discount-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                  </div>
+                  <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -592,14 +676,11 @@
       : 'https://plugmarket.es';
 
     // Product Data
-    const productId = 'crunchly';
-    const productTitle = 'Crunchyroll';
+    const productId = 'microsoft';
+    const productTitle = 'Microsoft Codes';
     
     const variants = [
-      { id: '1 Month', name: 'Crunchyroll — 1 Month', stock: 0, price: 1.17, oldPrice: null },
-      { id: '3 Months', name: 'Crunchyroll — 3 Months', stock: 0, price: 2.97, oldPrice: null },
-      { id: '6 Months', name: 'Crunchyroll — 6 Months', stock: 0, price: 5.22, oldPrice: null },
-      { id: '12 Months', name: 'Crunchyroll — 12 Months', stock: 0, price: 9.36, oldPrice: null }
+      { id: 'Random Codes', name: 'Microsoft — Random Codes', stock: 0, price: 1.00, oldPrice: null, minQty: 1 }
     ];
 
     let selectedVariant = variants[0];
@@ -609,12 +690,12 @@
     // Helper function to find stock with flexible key matching
     function getStockForVariant(variantId) {
       const exactKey = `${productId}:${variantId}`;
-      if (stockData[exactKey] !== undefined) return stockData[exactKey];
-      const variations = [variantId, variantId.replace(/ Month$/, ' Months'), variantId.replace(/ Months$/, ' Month'), variantId.replace(/ Year$/, ' Years'), variantId.replace(/ Years$/, ' Year')];
-      for (const variation of variations) {
-        const key = `${productId}:${variation}`;
-        if (stockData[key] !== undefined) return stockData[key];
+      
+      // Try exact match first
+      if (stockData[exactKey] !== undefined) {
+        return stockData[exactKey];
       }
+      
       return 0;
     }
 
@@ -629,7 +710,7 @@
           const data = await res.json();
           console.log('Stock data received:', data);
           stockData = data.stock || {};
-          console.log('CRUNCHYROLL stock keys:', Object.keys(stockData).filter(k => k.startsWith('crunchyroll:')));
+          console.log('MICROSOFT stock keys:', Object.keys(stockData).filter(k => k.startsWith('microsoft:')));
           renderVariants();
           updateStockBadge();
         } else {
@@ -698,19 +779,123 @@
       }
     }
 
+    // Discount tier configuration
+    const DISCOUNT_TIERS = [
+      { quantity: 10, discount: 3 },
+      { quantity: 25, discount: 5 },
+      { quantity: 50, discount: 8 },
+      { quantity: 100, discount: 12 }
+    ];
+    
+    // Update discount system
+    function updateDiscountSystem(qty) {
+      let currentDiscount = 0;
+      let currentTier = null;
+      let nextTier = null;
+      
+      // Find current discount
+      for (let tier of DISCOUNT_TIERS) {
+        if (qty >= tier.quantity) {
+          currentDiscount = tier.discount;
+          currentTier = tier;
+        } else {
+          if (!nextTier) {
+            nextTier = tier;
+          }
+          break;
+        }
+      }
+      
+      // Update progress bar
+      const progressFill = document.querySelector('.progress-fill');
+      const progressText = document.querySelector('.progress-text');
+      
+      if (progressFill && progressText) {
+        if (nextTier) {
+          const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
+                           (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
+          progressFill.style.width = `${Math.min(progress, 100)}%`;
+          
+          const remaining = nextTier.quantity - qty;
+          progressText.textContent = `Add ${remaining} more for ${nextTier.discount}% OFF`;
+        } else {
+          progressFill.style.width = '100%';
+          progressText.textContent = `Maximum discount: ${currentDiscount}% OFF`;
+        }
+      }
+    }
+
     // Quantity controls
+    const quantityInput = document.getElementById('quantity-display');
+    const errorElement = document.getElementById('quantity-error');
+    
+    function showError(message) {
+      if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+        quantityInput.classList.add('invalid');
+        setTimeout(() => {
+          errorElement.classList.remove('show');
+          quantityInput.classList.remove('invalid');
+        }, 2500);
+      }
+    }
+    
+    quantityInput.addEventListener('input', function() {
+      const minQty = selectedVariant?.minQty || 1;
+      let inputValue = parseInt(this.value);
+      
+      // Allow empty value while typing
+      if (this.value === '') {
+        return;
+      }
+      
+      if (isNaN(inputValue) || inputValue < minQty) {
+        // Show error but don't force change yet
+        if (inputValue < minQty && !isNaN(inputValue)) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          showError(`⚠️ Minimum: ${minText}`);
+        }
+        return;
+      }
+      
+      quantity = inputValue;
+      updatePrice();
+      updateDiscountSystem(quantity);
+    });
+    
+    // Handle focus out to ensure valid value
+    quantityInput.addEventListener('blur', function() {
+      const minQty = selectedVariant?.minQty || 1;
+      let inputValue = parseInt(this.value);
+      
+      if (this.value === '' || isNaN(inputValue) || inputValue < minQty) {
+        quantity = minQty;
+        this.value = quantity;
+        updatePrice();
+        updateDiscountSystem(quantity);
+        
+        if (inputValue < minQty && !isNaN(inputValue)) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          showError(`⚠️ Quantity set to minimum: ${minText}`);
+        }
+      }
+    });
+
     document.getElementById('qty-decrease').addEventListener('click', () => {
       if (quantity > 1) {
         quantity--;
-        document.getElementById('quantity-display').textContent = quantity;
+        quantityInput.value = quantity;
         updatePrice();
+        updateDiscountSystem(quantity);
       }
     });
 
     document.getElementById('qty-increase').addEventListener('click', () => {
       quantity++;
-      document.getElementById('quantity-display').textContent = quantity;
+      quantityInput.value = quantity;
       updatePrice();
+      updateDiscountSystem(quantity);
     });
 
     // Cart functions
@@ -733,7 +918,7 @@
           key, 
           pid, 
           title: productTitle, 
-          tone: 'red',
+          tone: 'blue',
           plan, 
           price, 
           qty 
@@ -780,6 +965,7 @@
 
     // Initialize
     renderCartCount();
+    updateDiscountSystem(quantity);
     fetchStock();
   </script>
 
@@ -796,7 +982,7 @@
 
       const particles = [];
       const COUNT = prefersReduced ? 18 : (isMobile ? 28 : 48);
-      const COLOR = 'rgba(244,117,33,0.8)';
+      const COLOR = 'rgba(0, 168, 255, 0.8)';
       const COLOR_DIM = 'rgba(255, 255, 255, 0.15)';
 
       function resize() {
