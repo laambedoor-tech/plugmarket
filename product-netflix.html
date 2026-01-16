@@ -1011,6 +1011,24 @@
 
     // Add to cart button
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      const minQty = selectedVariant?.minQty || 1;
+      
+      // Validate minimum quantity
+      if (quantity < minQty) {
+        const errorElement = document.getElementById('quantity-error');
+        if (errorElement) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          errorElement.textContent = `⚠️ Minimum: ${minText}`;
+          errorElement.classList.add('show');
+          quantityInput.classList.add('invalid');
+          setTimeout(() => {
+            errorElement.classList.remove('show');
+            quantityInput.classList.remove('invalid');
+          }, 2500);
+        }
+        return;
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -1028,6 +1046,24 @@
 
     // Buy now button
     document.getElementById('buy-now-btn').addEventListener('click', () => {
+      const minQty = selectedVariant?.minQty || 1;
+      
+      // Validate minimum quantity
+      if (quantity < minQty) {
+        const errorElement = document.getElementById('quantity-error');
+        if (errorElement) {
+          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
+          errorElement.textContent = `⚠️ Minimum: ${minText}`;
+          errorElement.classList.add('show');
+          quantityInput.classList.add('invalid');
+          setTimeout(() => {
+            errorElement.classList.remove('show');
+            quantityInput.classList.remove('invalid');
+          }, 2500);
+        }
+        return;
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,

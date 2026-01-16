@@ -308,10 +308,13 @@ addEventListener('click', (e) => {
     const items = getCart(); 
     // Netflix Bulk has a minimum quantity of 50
     const minQty = (items[i].pid === 'netflix' && items[i].plan === 'Bulk') ? 50 : 1;
+    console.log(`Decreasing item: ${items[i].pid}:${items[i].plan}, current qty: ${items[i].qty}, minQty: ${minQty}`);
     if (items[i].qty > minQty) {
       items[i].qty--;
+      setCart(items); 
+    } else {
+      console.log(`Cannot decrease below ${minQty}`);
     }
-    setCart(items); 
   }
   if (rem){ const i = +rem.dataset.i; const items = getCart(); items.splice(i,1); setCart(items); }
   if (copy){
