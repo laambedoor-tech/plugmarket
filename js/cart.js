@@ -297,13 +297,20 @@ addEventListener('click', (e) => {
   const dec = e.target.closest('.js-dec');
   const rem = e.target.closest('.js-remove');
   const copy = e.target.closest('#btn-copy-address');
-  if (inc){ const i = +inc.dataset.i; const items = getCart(); items[i].qty++; setCart(items); }
+  if (inc){ 
+    const i = +inc.dataset.i; 
+    const items = getCart(); 
+    items[i].qty++; 
+    setCart(items); 
+  }
   if (dec){ 
     const i = +dec.dataset.i; 
     const items = getCart(); 
     // Netflix Bulk has a minimum quantity of 50
     const minQty = (items[i].pid === 'netflix' && items[i].plan === 'Bulk') ? 50 : 1;
-    items[i].qty = Math.max(minQty, items[i].qty - 1); 
+    if (items[i].qty > minQty) {
+      items[i].qty--;
+    }
     setCart(items); 
   }
   if (rem){ const i = +rem.dataset.i; const items = getCart(); items.splice(i,1); setCart(items); }
