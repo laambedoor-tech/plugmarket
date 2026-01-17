@@ -160,6 +160,7 @@ const products = [
   { id: 'steamaccount', title: 'Steam Accounts', price: '€0.25', tone: 'blue' },
   { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
   { id: 'microsoft', title: 'Microsoft Random Codes', price: '€0.40', tone: 'blue' },
+  { id: 'rockstar', title: 'Rockstar Activation Codes', price: '€0.25', tone: 'orange' },
 ];
 
 let stockData = {};
@@ -190,6 +191,7 @@ const subscriptions = {
   dazn: { 'Lifetime': 1.35 },
   steamaccount: { 'Random Games': 0.25 },
   microsoft: { 'Random Codes': 0.40 },
+  rockstar: { 'Activation Code': 0.25 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
 };
 
@@ -357,7 +359,8 @@ const toneToGradient = (tone) => {
         'dazn': 'product-dazn.html',
         'steamaccount': 'product-steamaccount.html',
         'realmembers': 'product-realmembers.html',
-        'microsoft': 'product-microsoft.html'
+        'microsoft': 'product-microsoft.html',
+        'rockstar': 'product-rockstar.html'
       };
       
       if (pageMap[pid]) {
@@ -610,3 +613,5 @@ function renderCartCount() {
   if (el) el.textContent = String(cartCount());
 }
 renderCartCount();
+
+
