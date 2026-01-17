@@ -161,6 +161,7 @@ const products = [
   { id: 'crunchy', title: 'Crunchyroll', price: '€', tone: 'orange' },
   { id: 'microsoft', title: 'Microsoft Random Codes', price: '€0.40', tone: 'blue' },
   { id: 'rockstar', title: 'Rockstar Activation Codes', price: '€0.25', tone: 'orange' },
+  { id: 'minecraft', title: 'Minecraft Lifetime', price: '€', tone: 'green' },
 ];
 
 let stockData = {};
@@ -193,6 +194,7 @@ const subscriptions = {
   microsoft: { 'Random Codes': 0.40 },
   rockstar: { 'Activation Code': 0.25 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
+  minecraft: { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
 };
 
 const toneToGradient = (tone) => {
@@ -360,7 +362,8 @@ const toneToGradient = (tone) => {
         'steamaccount': 'product-steamaccount.html',
         'realmembers': 'product-realmembers.html',
         'microsoft': 'product-microsoft.html',
-        'rockstar': 'product-rockstar.html'
+        'rockstar': 'product-rockstar.html',
+        'minecraft': 'product-minecraft.html'
       };
       
       if (pageMap[pid]) {

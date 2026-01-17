@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minecraft Accounts Lifetime - Plug Market</title>
+  <meta name="description" content="Buy Minecraft accounts (NFA/FA) Lifetime. Instant delivery, verified, and secure with warranty." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    .product-page { min-height: 100vh; padding-top: 60px; padding-bottom: 60px; }
+    .product-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .product-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 190px; align-items: start; padding: 0 60px; }
+    .product-left { display: flex; flex-direction: column; gap: 40px; position: relative; z-index: 1; }
+    .product-image-section { width: 230%; overflow: visible; position: relative; margin-left: -75%; z-index: 1; }
+    .product-image-box { display: flex; justify-content: center; align-items: center; perspective: 1000px; transform: scale(1); margin: 0; }
+    .product-image-box img { max-width: 100%; width: 100%; height: auto; border-radius: 0; transition: transform 0.3s ease; transform-style: preserve-3d; }
+    .product-info-section h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; color: #fff; }
+    .product-price { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 0; }
+    .product-description { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden; width: 230%; margin-left: -75%; position: relative; z-index: 1; }
+    .description-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(26, 27, 36, 0.5); }
+    .description-header h2 { font-size: 16px; margin: 0; color: #fff; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .description-toggle { display: none; }
+    .description-content { max-height: none; overflow: visible; background: rgba(26, 27, 36, 0.3); }
+    .description-list { list-style: none; padding: 20px; margin: 0; }
+    .description-list li { padding: 8px 0; display: flex; align-items: flex-start; gap: 12px; color: #d7d9e0; font-size: 14px; }
+    .description-list li::before { content: '☑'; color: #2ed573; font-weight: bold; font-size: 16px; flex-shrink: 0; }
+    .description-note { padding: 15px 20px; background: rgba(0, 0, 0, 0.3); border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; color: #898b96; line-height: 1.6; }
+    .description-note strong { color: #fff; }
+    .variant-selector { margin-bottom: 30px; width: 100%; margin-left: 0; position: relative; z-index: 2; }
+    .variant-selector h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 15px; }
+    .variant-option { background: rgba(26, 27, 36, 0.5); border: 2px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 15px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .variant-option:hover { border-color: rgba(77, 163, 255, 0.5); background: rgba(77, 163, 255, 0.1); }
+    .variant-option.selected { border-color: #4da3ff; background: rgba(77, 163, 255, 0.15); position: relative; }
+    .variant-option.selected::after { content: '✓'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: #4da3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 14px; }
+    .variant-info h4 { font-size: 13px; font-weight: 600; margin: 0 0 3px 0; color: #fff; }
+    .variant-stock { font-size: 11px; color: #898b96; }
+    .variant-prices { text-align: right; padding-right: 30px; }
+    .variant-price { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .variant-price-old { font-size: 14px; color: #898b96; text-decoration: line-through; }
+    .quantity-selector { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+    .quantity-selector label { font-size: 16px; font-weight: 600; color: #fff; }
+    .quantity-controls { display: flex; align-items: center; gap: 10px; background: rgba(26, 27, 36, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 5px; }
+    .quantity-btn { width: 40px; height: 40px; border: none; background: rgba(255, 255, 255, 0.05); color: #fff; border-radius: 8px; cursor: pointer; font-size: 20px; font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+    .quantity-btn:hover { background: rgba(255, 39, 67, 0.3); }
+    .quantity-display { min-width: 60px; text-align: center; font-size: 18px; font-weight: 600; color: #fff; background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px; outline: none; transition: all 0.2s ease; }
+    .quantity-display:focus { border-color: rgba(255, 39, 67, 0.5); box-shadow: 0 0 0 3px rgba(255, 39, 67, 0.1); background: rgba(255, 255, 255, 0.08); }
+    .quantity-display.invalid { border-color: #ff2743; background: rgba(255, 39, 67, 0.1); animation: shake 0.3s ease; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .quantity-error { position: absolute; top: 100%; left: 0; margin-top: 5px; font-size: 12px; color: #ff5555; font-weight: 600; display: none; white-space: nowrap; }
+    .quantity-error.show { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    .bulk-discounts { display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-radius: 10px; margin-top: 15px; font-size: 13px; font-weight: 600; background: transparent; border: none; }
+    .progress-bar { width: 120px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; position: relative; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #34d399 0%, #059669 100%); transition: width 0.3s ease; border-radius: 2px; }
+    .action-buttons { display: flex; gap: 15px; }
+    .action-buttons .btn { flex: 1; padding: 18px 30px; font-size: 16px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+    .btn-add-cart { background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; }
+    .btn-add-cart:hover { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
+    .btn-buy-now { background: linear-gradient(135deg, #34d399, #10b981); border: none; color: #fff; }
+    .btn-buy-now:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4); }
+    .back-button { display: inline-flex; align-items: center; gap: 8px; color: #898b96; text-decoration: none; font-size: 14px; margin-bottom: 30px; transition: color 0.3s ease; }
+    .back-button:hover { color: #fff; }
+    .stock-badge { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+    .stock-badge--in { background: rgba(46, 213, 115, 0.2); color: #2ed573; }
+    .stock-badge--out { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+    @media (max-width: 968px) { .product-layout { grid-template-columns: 1fr; gap: 30px; } .product-left { gap: 20px; } .product-info-section h1 { font-size: 36px; } .product-price { font-size: 32px; } .action-buttons { flex-direction: column; } }
+  </style>
+</head>
+
+<body>
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+
+  <header class="nav">
+    <a href="index.html" class="brand">
+      <img src="./assets/logo.svg" alt="Plug Market" class="brand__logo" />
+      <span class="brand__name">Plug Market</span>
+    </a>
+    <nav class="menu">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#products">Products</a>
+      <a href="./reviews.html">Reviews</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <div class="cta">
+      <a class="btn btn--icon btn--desktop-only" href="https://discord.gg/plugmarket" target="_blank"
+        rel="noopener noreferrer" aria-label="Discord" title="Join Discord">
+        <svg width="20" height="20" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z" fill="currentColor"/>
+        </svg>
+      </a>
+      <a class="btn" id="my-account-btn" href="./my-account.html" aria-label="My Account" title="My Account" style="background: linear-gradient(135deg, #34d399, #10b981); border: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        My Account
+      </a>
+      <a class="cart-link" href="./cart.html" aria-label="Cart">
+        <img src="./assets/cart.svg" alt="Cart" class="cart-link__icon" />
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="product-page">
+    <div class="product-container">
+      <a href="index.html#products" class="back-button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to Products
+      </a>
+
+      <div class="product-layout">
+        <div class="product-left">
+          <div class="product-image-section">
+            <div class="product-image-box">
+              <img src="./assets/products/minecraft.png" alt="Minecraft Accounts" width="500" height="500">
+            </div>
+          </div>
+
+          <div class="product-description">
+            <div class="description-header">
+              <h2>
+                <span style="font-size: 20px;">🇺🇸</span>
+                Product Description - English
+              </h2>
+            </div>
+            <div class="description-content" id="desc-content">
+              <ul class="description-list">
+                <li><strong>Brand New Accounts</strong> – Completely fresh, never used before.</li>
+                <li><strong>Guaranteed Full Access</strong> – Total control: email, password, and customization.</li>
+                <li><strong>Clean Status</strong> – Verified with no bans on any servers.</li>
+                <li><strong>Instant Delivery</strong> – Receive your account immediately after purchase.</li>
+                <li><strong>Full Profile Control</strong> – Change email, password, and skin anytime.</li>
+                <li><strong>High Quality & Resell-Friendly</strong> – Perfect for personal use or resale.</li>
+                <li><strong>Verified & Secure</strong> – Self-made accounts checked to ensure 100% clean status.</li>
+                <li><strong>Support & Replacement</strong> – Free replacement provided if any issue occurs.</li>
+              </ul>
+              <div class="description-note">
+                <strong>Note:</strong> Choose FA (Full Access) for email control; NFA provides account access without email change.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-info-section">
+          <h1>Minecraft Lifetime</h1>
+          <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <p class="product-price" id="display-price">€1.00</p>
+            <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
+          </div>
+
+          <div class="variant-selector" style="margin-top: 10px;">
+            <h3>Variant</h3>
+            <div id="variants-container"></div>
+          </div>
+
+          <div class="quantity-selector">
+            <label>Quantity</label>
+            <div class="quantity-controls" style="position: relative;">
+              <button class="quantity-btn" id="qty-decrease">−</button>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
+              <button class="quantity-btn" id="qty-increase">+</button>
+              <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
+              <div class="bulk-discounts">
+                <span style="font-size: 18px;">☑</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="discount-progress" style="width: 0%;"></div>
+                </div>
+                <span id="discount-text" style="color: #b3b3b3; font-size: 13px;">Add 10 more for 3% OFF</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn btn-add-cart" id="add-to-cart-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 2L7.17 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2h-3.17L15 2H9zm3 15l-5-5 1.41-1.41L11 13.17l5.59-5.59L18 9l-6 6z" fill="currentColor"/>
+              </svg>
+              Add to Cart
+            </button>
+            <button class="btn btn-buy-now" id="buy-now-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/>
+              </svg>
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168') || window.location.hostname.includes('.local')
+      ? 'http://localhost:8788'
+      : 'https://plugmarket.es';
+
+    const productId = 'minecraft';
+    const productTitle = 'Minecraft Lifetime';
+
+    const variants = [
+      { id: 'NFA Lifetime', name: 'Minecraft Account NFA Lifetime', stock: 0, price: 1.00, oldPrice: null },
+      { id: 'FA Lifetime', name: 'Minecraft Account FA Lifetime', stock: 0, price: 4.50, oldPrice: null }
+    ];
+
+    let selectedVariant = variants[0];
+    let quantity = 1;
+    let stockData = {};
+
+    function getStockForVariant(variantId) {
+      const exactKey = `${productId}:${variantId}`;
+      if (stockData[exactKey] !== undefined) return stockData[exactKey];
+      // Flexible matching: try removing common prefixes
+      const alt = variantId.replace(/^Minecraft Account\s+/i, '').trim();
+      const altKey = `${productId}:${alt}`;
+      if (stockData[altKey] !== undefined) return stockData[altKey];
+      return 0;
+    }
+
+    async function fetchStock() {
+      try {
+        const res = await fetch(`${API_BASE}/api/get-stock`);
+        if (res.ok) {
+          const data = await res.json();
+          stockData = data.stock || {};
+          renderVariants();
+          updateStockBadge();
+        } else {
+          renderVariants();
+        }
+      } catch (err) {
+        renderVariants();
+      }
+    }
+
+    function renderVariants() {
+      const container = document.getElementById('variants-container');
+      container.innerHTML = variants.map((variant, index) => {
+        const stock = getStockForVariant(variant.id);
+        const isSelected = selectedVariant.id === variant.id;
+        return `
+          <div class="variant-option ${isSelected ? 'selected' : ''}" onclick="selectVariant(${index})">
+            <div class="variant-info">
+              <h4>${variant.name}</h4>
+              <div class="variant-stock">${stock} in Stock</div>
+            </div>
+            <div class="variant-prices">
+              <div class="variant-price">€${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectVariant(index) { selectedVariant = variants[index]; renderVariants(); updatePrice(); updateStockBadge(); }
+    function updatePrice() { const total = selectedVariant.price * quantity; document.getElementById('display-price').textContent = `€${total.toFixed(2)}`; }
+    function updateStockBadge() {
+      const stock = getStockForVariant(selectedVariant.id);
+      const badge = document.getElementById('stock-badge');
+      if (stock > 0) { badge.className = 'stock-badge stock-badge--in'; badge.textContent = `${stock} In Stock`; }
+      else { badge.className = 'stock-badge stock-badge--out'; badge.textContent = 'Out of Stock'; }
+    }
+
+    const DISCOUNT_TIERS = [ { quantity: 10, discount: 3 }, { quantity: 25, discount: 5 }, { quantity: 50, discount: 8 }, { quantity: 100, discount: 12 } ];
+    function updateDiscountSystem(qty) {
+      const progressBar = document.getElementById('discount-progress');
+      const discountText = document.getElementById('discount-text');
+      let currentTier = -1; let nextTier = null;
+      for (let i = 0; i < DISCOUNT_TIERS.length; i++) { if (qty >= DISCOUNT_TIERS[i].quantity) { currentTier = i; } else { nextTier = DISCOUNT_TIERS[i]; break; } }
+      if (currentTier === DISCOUNT_TIERS.length - 1) { progressBar.style.width = '100%'; discountText.textContent = `${DISCOUNT_TIERS[currentTier].discount}% discount applied!`; discountText.style.color = '#4ade80'; }
+      else if (nextTier) { const prevQuantity = currentTier >= 0 ? DISCOUNT_TIERS[currentTier].quantity : 0; const progress = ((qty - prevQuantity) / (nextTier.quantity - prevQuantity)) * 100; progressBar.style.width = Math.min(progress, 100) + '%'; const needed = nextTier.quantity - qty; discountText.textContent = `Add ${needed} more for ${nextTier.discount}% OFF`; discountText.style.color = '#b3b3b3'; }
+    }
+
+    const quantityInput = document.getElementById('quantity-display');
+    if (quantityInput) {
+      const errorElement = document.getElementById('quantity-error');
+      function showError(message) { if (errorElement) { errorElement.textContent = message; errorElement.classList.add('show'); quantityInput.classList.add('invalid'); setTimeout(() => { errorElement.classList.remove('show'); quantityInput.classList.remove('invalid'); }, 2500); } }
+      quantityInput.addEventListener('input', function() { const minQty = selectedVariant?.minQty || 1; let inputValue = parseInt(this.value); if (this.value === '') { return; } if (isNaN(inputValue) || inputValue < minQty) { if (inputValue < minQty && !isNaN(inputValue)) { const minText = minQty > 1 ? `${minQty} units` : '1 unit'; showError(`⚠️ Minimum: ${minText}`); } return; } quantity = inputValue; updatePrice(); updateDiscountSystem(quantity); });
+      quantityInput.addEventListener('blur', function() { const minQty = selectedVariant?.minQty || 1; let inputValue = parseInt(this.value); if (this.value === '' || isNaN(inputValue) || inputValue < minQty) { quantity = minQty; this.value = quantity; updatePrice(); updateDiscountSystem(quantity); if (inputValue < minQty && !isNaN(inputValue)) { const minText = minQty > 1 ? `${minQty} units` : '1 unit'; showError(`⚠️ Quantity set to minimum: ${minText}`); } } });
+    }
+
+    document.getElementById('qty-decrease').addEventListener('click', () => { if (quantity > 1) { quantity--; quantityInput.value = quantity; updatePrice(); updateDiscountSystem(quantity); } });
+    document.getElementById('qty-increase').addEventListener('click', () => { quantity++; quantityInput.value = quantity; updatePrice(); updateDiscountSystem(quantity); });
+
+    const CART_KEY = 'plugmarket_cart';
+    function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } }
+    function setCart(items) { localStorage.setItem(CART_KEY, JSON.stringify(items)); renderCartCount(); }
+    function addToCart({ pid, plan, price, qty }) { const items = getCart(); const key = pid + '|' + plan; const idx = items.findIndex(i => i.key === key); if (idx >= 0) { items[idx].qty += qty; } else { items.push({ key, pid, title: productTitle, tone: 'green', plan, price, qty }); } setCart(items); }
+    function cartCount() { return getCart().reduce((a, b) => a + b.qty, 0); }
+    function renderCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = String(cartCount()); }
+
+    document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      addToCart({ pid: productId, plan: selectedVariant.id, price: selectedVariant.price, qty: quantity });
+      const btn = document.getElementById('add-to-cart-btn'); const originalText = btn.innerHTML; btn.innerHTML = '✓ Added to Cart'; setTimeout(() => { btn.innerHTML = originalText; }, 1500);
+    });
+    document.getElementById('buy-now-btn').addEventListener('click', () => { addToCart({ pid: productId, plan: selectedVariant.id, price: selectedVariant.price, qty: quantity }); window.location.href = 'cart.html'; });
+
+    renderCartCount();
+    fetchStock();
+    updateDiscountSystem(quantity);
+  </script>
+
+  <!-- Particles script (green tone) -->
+  <script>
+    (() => {
+      const canvas = document.getElementById('bg-particles');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = matchMedia('(max-width: 768px)').matches;
+      const DPR = prefersReduced ? 1 : (isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2));
+      let w, h;
+
+      const particles = [];
+      const COUNT = prefersReduced ? 18 : (isMobile ? 28 : 48);
+      const COLOR = 'rgba(16, 185, 129, 0.8)';
+      const COLOR_DIM = 'rgba(255, 255, 255, 0.15)';
+
+      function resize() { w = canvas.width = Math.floor(innerWidth * DPR); h = canvas.height = Math.floor(innerHeight * DPR); canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; }
+      function rand(a, b) { return Math.random() * (b - a) + a; }
+      function spawn(i) { const speed = rand(0.04, 0.14); const isAccent = i % 6 === 0; return { x: rand(0, w), y: rand(0, h), vx: rand(-speed, speed), vy: rand(-speed, speed), r: rand(1.0, isAccent ? 2.6 : 2.0), color: isAccent ? COLOR : COLOR_DIM, life: rand(0, 1) }; }
+
+      for (let i = 0; i < COUNT; i++) particles.push(spawn(i));
+      resize();
+      window.addEventListener('resize', resize);
+
+      let last = 0;
+      const FRAME_MS = prefersReduced ? 1000 / 20 : 1000 / 30;
+      function tick(ts) {
+        if (ts && ts - last < FRAME_MS) { requestAnimationFrame(tick); return; }
+        last = ts || 0; ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < particles.length; i++) { const p = particles[i]; p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > w) p.vx *= -1; if (p.y < 0 || p.y > h) p.vy *= -1; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * DPR, 0, Math.PI * 2); ctx.fill(); }
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+
+    // 3D Tilt effect on product image
+    const imageBox = document.querySelector('.product-image-box');
+    const productImage = document.querySelector('.product-image-box img');
+    if (imageBox && productImage) {
+      imageBox.addEventListener('mousemove', (e) => {
+        const rect = imageBox.getBoundingClientRect();
+        const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+        const centerX = rect.width / 2; const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -10; const rotateY = ((x - centerX) / centerX) * 10;
+        productImage.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+      });
+      imageBox.addEventListener('mouseleave', () => { productImage.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)'; });
+    }
+  </script>
+</body>
+
+</html>
