@@ -179,7 +179,7 @@ const subscriptions = {
   nordvpn: { '1 Month': 0.77, '3 Months': 1.8, '6 Months': 3.24, '12 Months': 6.21 },
   crunchy: { '1 Month': 0.81, '3 Months': 1.89, '6 Months': 3.42, '12 Months': 6.48 },
   // Discord Nitro: solo las variantes de la captura
-  nitro: { 'Boost 1m': 5.50, 'Boost 1 Year': 13.65, 'Basic 1m': 1.22 },
+  nitro: { 'Boost 1m': 4.95, 'Boost 1 Year': 13.65, 'Basic 1m': 1.22 },
   discordpromocode: { '1 Month': 0.54, '3 Months': 0.95 },
   chatgpt: { '1 Month': 2.88, '3 Months': 7.02, '6 Months': 10.69, '12 Months': 15.17 },
   'chatgpt-pro': { '1 Month': 3.15, '3 Months': 5.4 },
