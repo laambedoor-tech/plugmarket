@@ -589,7 +589,7 @@ en<!DOCTYPE html>
           </div>
         </div>
 
-        <div class="product-price" id="display-price">$3.50</div>
+        <div class="product-price" id="display-price">€3.10</div>
         
         <div style="margin-bottom: 20px; height: 6px; background: linear-gradient(90deg, #10a37f 0%, #1a7f64 100%); border-radius: 3px;"></div>
         
@@ -600,23 +600,23 @@ en<!DOCTYPE html>
 
         <div class="product-features">
           <div class="feature-badge">
-            ○ Use Your Own Account
+            ✓ Use Your Own Account
           </div>
           <div class="feature-badge">
-            + Instant Delivery
+            ✓ Instant Delivery
           </div>
         </div>
 
         <div class="plan-options">
           <div class="plan-label">Select Plan</div>
           <div class="plan-buttons">
-            <button class="plan-btn active" data-plan="1 Month" data-price="3.50" onclick="selectPlan(this)">
+            <button class="plan-btn active" data-plan="1 Month" data-price="3.10" onclick="selectPlan(this)">
               <span class="plan-duration">1 Month</span>
-              <span class="plan-price">$3.50</span>
+              <span class="plan-price">€3.10</span>
             </button>
-            <button class="plan-btn" data-plan="3 Months" data-price="6.00" onclick="selectPlan(this)">
+            <button class="plan-btn" data-plan="3 Months" data-price="6.20" onclick="selectPlan(this)">
               <span class="plan-duration">3 Months</span>
-              <span class="plan-price">$6.00</span>
+              <span class="plan-price">€6.20</span>
             </button>
           </div>
         </div>
@@ -660,11 +660,11 @@ en<!DOCTYPE html>
   <script>
     let quantity = 1;
     let selectedPlan = '1 Month';
-    let pricePerUnit = 3.50;
+    let pricePerUnit = 3.10;
 
     const planPrices = {
-      '1 Month': 3.50,
-      '3 Months': 6.00
+      '1 Month': 3.10,
+      '3 Months': 6.20
     };
 
     function updateCartCount() {
