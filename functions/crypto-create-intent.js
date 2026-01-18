@@ -11,7 +11,12 @@ const PRICES_USD = {
   discordpromocode: { '1 Month': 0.6, '3 Months': 1.05 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
   steamaccount: { 'Random Games': 0.25 },
-  dazn: { 'Lifetime': 1.5 }
+  dazn: { 'Lifetime': 1.5 },
+  microsoft: { 'Random Codes': 0.40 },
+  rockstar: { 'Activation Code': 0.25 },
+  minecraft: { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
+  stake: { 'Level 2 Verified': 0.60 },
+  xbox: { 'Game Pass Lifetime': 0.60 }
 };
 
 function validateAndPriceCart(cart){

@@ -24,7 +24,12 @@ const PRICES_USD = {
   duolingo: { '12 Months': 1.24 },
   movistar: { '12 Months': 2.44 },
   dazn: { 'Lifetime': 1.5 },
-  steamaccount: { 'Random Games': 0.25 }
+  steamaccount: { 'Random Games': 0.25 },
+  microsoft: { 'Random Codes': 0.40 },
+  rockstar: { 'Activation Code': 0.25 },
+  minecraft: { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
+  stake: { 'Level 2 Verified': 0.60 },
+  xbox: { 'Game Pass Lifetime': 0.60 }
 };
 
 function normalizePlan(raw){
