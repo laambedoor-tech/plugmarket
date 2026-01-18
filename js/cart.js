@@ -351,8 +351,6 @@ function initCheckout() {
     if (!items.length) return;
     try {
       showCheckout(true);
-      // Slight delay to ensure panel visible, then mount elements
-      setTimeout(() => { mountElements().catch(err => setMessage(err.message)); }, 50);
       document.getElementById('checkout-email')?.focus();
     } catch (e) {
       setMessage(e.message || 'Checkout unavailable');
@@ -526,8 +524,11 @@ function initCheckout() {
       return;
     }
     
-    if (!stripe || !elements) {
-      try { await mountElements(customerEmail); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
+    // Always create payment intent with email
+    try { 
+      await mountElements(customerEmail); 
+    } catch (err){ 
+      return setMessage(err.message || 'Unable to start payment'); 
     }
     
     setMessage('');
