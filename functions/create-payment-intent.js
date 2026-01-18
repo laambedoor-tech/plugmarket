@@ -4,33 +4,33 @@
  * Body: { cart: [ { pid, plan, unitAmount, qty }, ... ] }
  */
 
-// Prices synchronized with frontend subscriptions (values in cents)
+// Prices synchronized with frontend subscriptions (values in EUR cents)
 // Maintain a single source of truth later by moving to Supabase.
-const PRICES_USD = {
-  netflix: { '1 Month': 150, '3 Months': 350, '6 Months': 600, '12 Months': 1100, 'Lifetime': 1800 },
-  spotify: { '1 Month': 220, '3 Months': 380, '6 Months': 620, '12 Months': 1250 },
-  'youtube-premium': { '1 Month': 160, '3 Months': 320, '6 Months': 550, '12 Months': 1050 },
-  disney: { '1 Month': 110, '3 Months': 270, '6 Months': 480, '12 Months': 950 },
-  prime: { '1 Month': 180, '3 Months': 340, '6 Months': 580, '12 Months': 1120 },
-  hbomax: { '1 Month': 140, '3 Months': 310, '6 Months': 470, '12 Months': 980 },
-  nordvpn: { '1 Month': 85, '3 Months': 200, '6 Months': 360, '12 Months': 690 },
-  crunchy: { '1 Month': 90, '3 Months': 210, '6 Months': 380, '12 Months': 720 },
-  nitro: { 'Boost 1m': 550, 'Boost 1 Year': 1597, 'Basic 1m': 135 },
-  discordpromocode: { '1 Month': 60, '3 Months': 105 },
-  realmembers: { '[500]': 225, '[1000]': 425, '[2000]': 788, '[3000]': 1163, '[4000]': 1224, '[5000]': 1561 },
-  chatgpt: { '1 Month': 320, '3 Months': 780, '6 Months': 1250, '12 Months': 2400 },
-  'chatgpt-pro': { '1 Month': 350, '3 Months': 600 },
-  capcut: { '1 Month': 120, '3 Months': 250, '6 Months': 420, '12 Months': 800 },
-  geoguessr: { '1 Month': 200, '3 Months': 500, '12 Months': 1000 },
-  filmora: { '1 Month': 250, '3 Months': 600, '6 Months': 1050, '12 Months': 1600 },
-  duolingo: { '12 Months': 124 },
-  movistar: { '12 Months': 244 },
-  dazn: { 'Lifetime': 150 },
-  steamaccount: { 'Random Games': 25 },
-  microsoft: { 'Random Codes': 40 },
-  rockstar: { 'Activation Code': 25 },
-  minecraft: { 'NFA Lifetime': 100, 'FA Lifetime': 500 },
-  stake: { 'Level 2 Verified': 60 },
+const PRICES_EUR = {
+  netflix: { '1 Month': 69, '3 Months': 161, '6 Months': 276, '12 Months': 506, 'Lifetime': 828 },
+  spotify: { '1 Month': 101, '3 Months': 175, '6 Months': 285, '12 Months': 575 },
+  'youtube-premium': { '1 Month': 74, '3 Months': 147, '6 Months': 253, '12 Months': 483 },
+  disney: { '1 Month': 51, '3 Months': 124, '6 Months': 221, '12 Months': 437 },
+  prime: { '1 Month': 83, '3 Months': 157, '6 Months': 267, '12 Months': 515 },
+  hbomax: { '1 Month': 64, '3 Months': 143, '6 Months': 216, '12 Months': 451 },
+  nordvpn: { '1 Month': 39, '3 Months': 92, '6 Months': 166, '12 Months': 318 },
+  crunchy: { '1 Month': 41, '3 Months': 97, '6 Months': 175, '12 Months': 331 },
+  nitro: { 'Boost 1m': 253, 'Boost 1 Year': 735, 'Basic 1m': 62 },
+  discordpromocode: { '1 Month': 28, '3 Months': 48 },
+  realmembers: { '[500]': 104, '[1000]': 196, '[2000]': 363, '[3000]': 535, '[4000]': 563, '[5000]': 719 },
+  chatgpt: { '1 Month': 147, '3 Months': 359, '6 Months': 575, '12 Months': 1104 },
+  'chatgpt-pro': { '1 Month': 161, '3 Months': 276 },
+  capcut: { '1 Month': 55, '3 Months': 115, '6 Months': 193, '12 Months': 368 },
+  geoguessr: { '1 Month': 81, '3 Months': 211, '6 Months': 389, '12 Months': 713 },
+  filmora: { '1 Month': 115, '3 Months': 276, '6 Months': 483, '12 Months': 736 },
+  duolingo: { '12 Months': 57 },
+  movistar: { '12 Months': 112 },
+  dazn: { 'Lifetime': 69 },
+  steamaccount: { 'Random Games': 12 },
+  microsoft: { 'Random Codes': 18 },
+  rockstar: { 'Activation Code': 12 },
+  minecraft: { 'NFA Lifetime': 46, 'FA Lifetime': 230 },
+  stake: { 'Level 2 Verified': 28 },
   xbox: { 'Game Pass Lifetime': 60 }
 };
 
@@ -57,7 +57,7 @@ function validateAndPriceCart(cart) {
       throw new Error('Missing pid or plan in cart item');
     }
 
-    const prices = PRICES_USD[item.pid];
+    const prices = PRICES_EUR[item.pid];
     if (!prices) {
       throw new Error(`Unknown product: ${item.pid}`);
     }
