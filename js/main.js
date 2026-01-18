@@ -162,6 +162,8 @@ const products = [
   { id: 'microsoft', title: 'Microsoft Random Codes', price: '€0.40', tone: 'blue' },
   { id: 'rockstar', title: 'Rockstar Activation Codes', price: '€0.25', tone: 'orange' },
   { id: 'minecraft', title: 'Minecraft Lifetime', price: '€', tone: 'green' },
+  { id: 'stake', title: 'Stake', price: '€0.60', tone: 'blue' },
+  { id: 'xbox', title: 'Xbox', price: '€0.60', tone: 'success' },
 ];
 
 let stockData = {};
@@ -195,6 +197,8 @@ const subscriptions = {
   rockstar: { 'Activation Code': 0.25 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
   minecraft: { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
+  stake: { 'Level 2 Verified': 0.60 },
+  xbox: { 'Game Pass Lifetime': 0.60 },
 };
 
 const toneToGradient = (tone) => {
@@ -207,6 +211,7 @@ const toneToGradient = (tone) => {
     case 'cyan': return 'linear-gradient(135deg, rgba(38,198,218,.48), rgba(38,198,218,.12))';
     case 'teal': return 'linear-gradient(135deg, rgba(0,150,136,.48), rgba(0,150,136,.12))';
     case 'pink': return 'linear-gradient(135deg, rgba(236,64,122,.5), rgba(236,64,122,.14))';
+    case 'success': return 'linear-gradient(135deg, rgba(26,202,0,.48), rgba(45,218,26,.12))';
     default: return 'linear-gradient(135deg, rgba(255,39,67,.45), rgba(255,95,109,.12))';
   }
 };
@@ -363,7 +368,9 @@ const toneToGradient = (tone) => {
         'realmembers': 'product-realmembers.html',
         'microsoft': 'product-microsoft.html',
         'rockstar': 'product-rockstar.html',
-        'minecraft': 'product-minecraft.html'
+        'minecraft': 'product-minecraft.html',
+        'stake': 'product-stake.html',
+        'xbox': 'product-xbox.html'
       };
       
       if (pageMap[pid]) {
