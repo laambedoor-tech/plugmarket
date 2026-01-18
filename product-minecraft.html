@@ -269,7 +269,41 @@
       }).join('');
     }
 
-    function selectVariant(index) { selectedVariant = variants[index]; renderVariants(); updatePrice(); updateStockBadge(); }
+    function selectVariant(index) { 
+      selectedVariant = variants[index]; 
+      renderVariants(); 
+      updatePrice(); 
+      updateStockBadge();
+      
+      // Update button states based on stock
+      const stock = getStockForVariant(selectedVariant.id);
+      const addBtn = document.getElementById('add-to-cart-btn');
+      const buyBtn = document.getElementById('buy-now-btn');
+      
+      if (stock <= 0) {
+        if (addBtn) {
+          addBtn.disabled = true;
+          addBtn.style.opacity = '0.5';
+          addBtn.style.cursor = 'not-allowed';
+        }
+        if (buyBtn) {
+          buyBtn.disabled = true;
+          buyBtn.style.opacity = '0.5';
+          buyBtn.style.cursor = 'not-allowed';
+        }
+      } else {
+        if (addBtn) {
+          addBtn.disabled = false;
+          addBtn.style.opacity = '1';
+          addBtn.style.cursor = 'pointer';
+        }
+        if (buyBtn) {
+          buyBtn.disabled = false;
+          buyBtn.style.opacity = '1';
+          buyBtn.style.cursor = 'pointer';
+        }
+      }
+    }
     function updatePrice() { const total = selectedVariant.price * quantity; document.getElementById('display-price').textContent = `€${total.toFixed(2)}`; }
     function updateStockBadge() {
       const stock = getStockForVariant(selectedVariant.id);
@@ -307,10 +341,25 @@
     function renderCartCount() { const el = document.getElementById('cart-count'); if (el) el.textContent = String(cartCount()); }
 
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        alert('This product is currently out of stock.');
+        return;
+      }
+      
       addToCart({ pid: productId, plan: selectedVariant.id, price: selectedVariant.price, qty: quantity });
       const btn = document.getElementById('add-to-cart-btn'); const originalText = btn.innerHTML; btn.innerHTML = '✓ Added to Cart'; setTimeout(() => { btn.innerHTML = originalText; }, 1500);
     });
-    document.getElementById('buy-now-btn').addEventListener('click', () => { addToCart({ pid: productId, plan: selectedVariant.id, price: selectedVariant.price, qty: quantity }); window.location.href = 'cart.html'; });
+    document.getElementById('buy-now-btn').addEventListener('click', () => {
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        alert('This product is currently out of stock.');
+        return;
+      }
+      
+      addToCart({ pid: productId, plan: selectedVariant.id, price: selectedVariant.price, qty: quantity }); 
+      window.location.href = 'cart.html'; 
+    });
 
     renderCartCount();
     fetchStock();

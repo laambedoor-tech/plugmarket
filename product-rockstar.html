@@ -605,6 +605,13 @@
     }
 
     function addToCart() {
+      // Check stock before adding to cart
+      const stockText = document.getElementById('stock-count')?.textContent || '';
+      if (stockText.includes('Out of Stock')) {
+        alert('This product is currently out of stock.');
+        return;
+      }
+      
       const cart = JSON.parse(localStorage.getItem('plugmarket_cart') || '[]');
       
       const pid = 'rockstar';
@@ -641,6 +648,13 @@
     }
 
     function buyNow() {
+      // Check stock before buying
+      const stockText = document.getElementById('stock-count')?.textContent || '';
+      if (stockText.includes('Out of Stock')) {
+        alert('This product is currently out of stock.');
+        return;
+      }
+      
       addToCart();
       window.location.href = './cart.html';
     }

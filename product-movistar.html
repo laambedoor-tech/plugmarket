@@ -698,6 +698,35 @@
       renderVariants();
       updatePrice();
       updateStockBadge();
+      
+      // Update button states based on stock
+      const stock = getStockForVariant(selectedVariant.id);
+      const addBtn = document.getElementById('add-to-cart-btn');
+      const buyBtn = document.getElementById('buy-now-btn');
+      
+      if (stock <= 0) {
+        if (addBtn) {
+          addBtn.disabled = true;
+          addBtn.style.opacity = '0.5';
+          addBtn.style.cursor = 'not-allowed';
+        }
+        if (buyBtn) {
+          buyBtn.disabled = true;
+          buyBtn.style.opacity = '0.5';
+          buyBtn.style.cursor = 'not-allowed';
+        }
+      } else {
+        if (addBtn) {
+          addBtn.disabled = false;
+          addBtn.style.opacity = '1';
+          addBtn.style.cursor = 'pointer';
+        }
+        if (buyBtn) {
+          buyBtn.disabled = false;
+          buyBtn.style.opacity = '1';
+          buyBtn.style.cursor = 'pointer';
+        }
+      }
     }
 
     // Update price display
@@ -874,6 +903,12 @@
 
     // Add to cart button
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        alert('This product is currently out of stock.');
+        return;
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -891,6 +926,12 @@
 
     // Buy now button
     document.getElementById('buy-now-btn').addEventListener('click', () => {
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        alert('This product is currently out of stock.');
+        return;
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
