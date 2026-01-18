@@ -353,6 +353,7 @@ const toneToGradient = (tone) => {
         'prime': 'product-prime.html',
         'hbomax': 'product-hbomax.html',
         'nordvpn': 'product-nordvpn.html',
+        'crunchy': 'product-crunchyroll.html',
         'crunchyroll': 'product-crunchyroll.html',
         'nitro': 'product-nitro.html',
         'discordpromocode': 'product-discordpromocode.html',
