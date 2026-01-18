@@ -346,12 +346,24 @@ addEventListener('click', (e) => {
 // Clear and checkout
 function initCheckout() {
   document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
+  
+  // Auto-mount Stripe Elements when valid email is entered
+  document.getElementById('checkout-email')?.addEventListener('blur', async (e) => {
+    const email = e.target.value.trim();
+    if (email && email.includes('@') && !stripe) {
+      try {
+        await mountElements(email);
+      } catch (err) {
+        console.warn('Failed to pre-mount Elements:', err);
+      }
+    }
+  });
+  
   document.getElementById('btn-checkout')?.addEventListener('click', async () => {
     const items = getCart();
     if (!items.length) return;
     try {
       showCheckout(true);
-      // Elements will be mounted when user clicks Pay (after email validation)
       document.getElementById('checkout-email')?.focus();
     } catch (e) {
       setMessage(e.message || 'Checkout unavailable');
@@ -529,10 +541,12 @@ function initCheckout() {
     const btn = document.getElementById('btn-pay');
     btn && (btn.disabled = true);
     
-    // Mount Elements with email - this creates the payment intent with email in metadata
+    // Ensure Elements are mounted (should already be from blur event)
     if (!stripe || !elements) {
       try { 
         await mountElements(customerEmail); 
+        // Give Elements time to fully mount before confirming
+        await new Promise(resolve => setTimeout(resolve, 500));
       } catch (err){ 
         btn && (btn.disabled = false);
         return setMessage(err.message || 'Unable to start payment'); 
