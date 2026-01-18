@@ -614,15 +614,9 @@
         <!-- Right: Product Info -->
         <div class="product-info-section">
           <h1>HBO Max</h1>
-          <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+          <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
             <p class="product-price" id="display-price">€1.08</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
-          </div>
-
-          <!-- Variant Selector -->
-          <div class="variant-selector" style="margin-top: 10px;">
-            <h3>Variant</h3>
-            <div id="variants-container"></div>
           </div>
 
           <!-- Quantity Selector -->
@@ -632,7 +626,6 @@
               <button class="quantity-btn" id="qty-decrease">−</button>
               <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
-              <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
             </div>
             
             <!-- Dynamic Bulk Discounts -->
@@ -678,35 +671,21 @@
     // Product Data
     const productId = 'hbomax';
     const productTitle = 'HBO Max';
+    const productPlan = 'Lifetime';
+    const productPrice = 1.08;
     
-    const variants = [
-      { id: 'Lifetime', name: 'HBO Max — Lifetime', stock: 0, price: 0.97, oldPrice: null }
-    ];
-
-    let selectedVariant = variants[0];
     let quantity = 1;
     let stockData = {};
 
-    // Helper function to find stock with flexible key matching
-    function getStockForVariant(variantId) {
-      const exactKey = `${productId}:${variantId}`;
-      
-      // Try exact match first
-      if (stockData[exactKey] !== undefined) {
-        return stockData[exactKey];
-      }
-      
-      // Try variations (singular/plural)
-      const variations = [
-        variantId,
-        variantId.replace(/ Month$/, ' Months'),
-        variantId.replace(/ Months$/, ' Month'),
-        variantId.replace(/ Year$/, ' Years'),
-        variantId.replace(/ Years$/, ' Year')
+    // Get stock for this product
+    function getStock() {
+      const keys = [
+        `${productId}:${productPlan}`,
+        `${productId}:Lifetime`,
+        productId
       ];
       
-      for (const variation of variations) {
-        const key = `${productId}:${variation}`;
+      for (const key of keys) {
         if (stockData[key] !== undefined) {
           return stockData[key];
         }
@@ -718,64 +697,42 @@
     // Fetch stock
     async function fetchStock() {
       try {
-        console.log('Fetching stock from:', `${API_BASE}/api/get-stock`);
         const res = await fetch(`${API_BASE}/api/get-stock`);
-        console.log('Stock response status:', res.status);
         
         if (res.ok) {
           const data = await res.json();
-          console.log('Stock data received:', data);
           stockData = data.stock || {};
-          console.log('HBOMAX stock keys:', Object.keys(stockData).filter(k => k.startsWith('hbomax:')));
-          renderVariants();
           updateStockBadge();
-        } else {
-          console.error('Stock fetch failed with status:', res.status);
-          renderVariants();
+          updateButtons();
         }
       } catch (err) {
         console.error('Failed to fetch stock:', err);
-        renderVariants();
       }
     }
 
-    // Render variants
-    function renderVariants() {
-      const container = document.getElementById('variants-container');
-      console.log('Rendering variants. StockData:', stockData);
-      
-      container.innerHTML = variants.map((variant, index) => {
-        const stock = getStockForVariant(variant.id);
-        const isSelected = selectedVariant.id === variant.id;
-        
-        console.log(`Variant: ${variant.name}, Stock: ${stock}`);
-        
-        return `
-          <div class="variant-option ${isSelected ? 'selected' : ''}" onclick="selectVariant(${index})">
-            <div class="variant-info">
-              <h4>${variant.name}</h4>
-              <div class="variant-stock">
-                ${stock} in Stock
-              </div>
-            </div>
-            <div class="variant-prices">
-              <div class="variant-price">€${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
+    // Update price display
+    function updatePrice() {
+      const total = productPrice * quantity;
+      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
     }
 
-    // Select variant
-    function selectVariant(index) {
-      selectedVariant = variants[index];
-      renderVariants();
-      updatePrice();
-      updateStockBadge();
+    // Update stock badge
+    function updateStockBadge() {
+      const stock = getStock();
+      const badge = document.getElementById('stock-badge');
       
-      // Disable add to cart and buy now buttons if out of stock
-      const stock = getStockForVariant(selectedVariant.id);
+      if (stock > 0) {
+        badge.className = 'stock-badge stock-badge--in';
+        badge.textContent = `${stock} In Stock`;
+      } else {
+        badge.className = 'stock-badge stock-badge--out';
+        badge.textContent = 'Out of Stock';
+      }
+    }
+
+    // Update buttons based on stock
+    function updateButtons() {
+      const stock = getStock();
       const addToCartBtn = document.getElementById('add-to-cart-btn');
       const buyNowBtn = document.getElementById('buy-now-btn');
       
@@ -803,26 +760,6 @@
           buyNowBtn.style.opacity = '1';
           buyNowBtn.style.cursor = 'pointer';
         }
-      }
-    }
-
-    // Update price display
-    function updatePrice() {
-      const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
-    }
-
-    // Update stock badge
-    function updateStockBadge() {
-      const stock = getStockForVariant(selectedVariant.id);
-      const badge = document.getElementById('stock-badge');
-      
-      if (stock > 0) {
-        badge.className = 'stock-badge stock-badge--in';
-        badge.textContent = `${stock} In Stock`;
-      } else {
-        badge.className = 'stock-badge stock-badge--out';
-        badge.textContent = 'Out of Stock';
       }
     }
 
@@ -889,7 +826,6 @@
     }
     
     quantityInput.addEventListener('input', function() {
-      const minQty = selectedVariant?.minQty || 1;
       let inputValue = parseInt(this.value);
       
       // Allow empty value while typing
@@ -897,11 +833,9 @@
         return;
       }
       
-      if (isNaN(inputValue) || inputValue < minQty) {
-        // Show error but don't force change yet
-        if (inputValue < minQty && !isNaN(inputValue)) {
-          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
-          showError(`⚠️ Minimum: ${minText}`);
+      if (isNaN(inputValue) || inputValue < 1) {
+        if (inputValue < 1 && !isNaN(inputValue)) {
+          showError(`⚠️ Minimum: 1 unit`);
         }
         return;
       }
@@ -913,18 +847,16 @@
     
     // Handle focus out to ensure valid value
     quantityInput.addEventListener('blur', function() {
-      const minQty = selectedVariant?.minQty || 1;
       let inputValue = parseInt(this.value);
       
-      if (this.value === '' || isNaN(inputValue) || inputValue < minQty) {
-        quantity = minQty;
+      if (this.value === '' || isNaN(inputValue) || inputValue < 1) {
+        quantity = 1;
         this.value = quantity;
         updatePrice();
         updateDiscountSystem(quantity);
         
-        if (inputValue < minQty && !isNaN(inputValue)) {
-          const minText = minQty > 1 ? `${minQty} units` : '1 unit';
-          showError(`⚠️ Quantity set to minimum: ${minText}`);
+        if (inputValue < 1 && !isNaN(inputValue)) {
+          showError(`⚠️ Quantity set to minimum: 1 unit`);
         }
       }
     });
@@ -985,21 +917,15 @@
     // Add to cart button
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
       // Check stock before adding
-      const stock = getStockForVariant(selectedVariant.id);
-      if (stock <= 0) {
-        return; // Don't add if out of stock
-      }
-      
-      // Check stock before adding
-      const stock = getStockForVariant(selectedVariant.id);
+      const stock = getStock();
       if (stock <= 0) {
         return; // Don't add if out of stock
       }
       
       addToCart({
         pid: productId,
-        plan: selectedVariant.id,
-        price: selectedVariant.price,
+        plan: productPlan,
+        price: productPrice,
         qty: quantity
       });
 
@@ -1014,15 +940,15 @@
     // Buy now button
     document.getElementById('buy-now-btn').addEventListener('click', () => {
       // Check stock before buying
-      const stock = getStockForVariant(selectedVariant.id);
+      const stock = getStock();
       if (stock <= 0) {
         return; // Don't proceed if out of stock
       }
       
       addToCart({
         pid: productId,
-        plan: selectedVariant.id,
-        price: selectedVariant.price,
+        plan: productPlan,
+        price: productPrice,
         qty: quantity
       });
 
