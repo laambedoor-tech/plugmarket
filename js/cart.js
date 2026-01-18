@@ -36,18 +36,21 @@ async function initStripe(){
   return stripe;
 }
 
-async function createPaymentIntent(){
+async function createPaymentIntent(customerEmail){
   const items = getCart();
   const data = await fetchJSON(`${API_BASE}/api/create-payment-intent`, {
     method: 'POST',
-    body: JSON.stringify({ cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
+    body: JSON.stringify({ 
+      cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
+      customerEmail: customerEmail || '' 
+    })
   });
   return data.clientSecret;
 }
 
-async function mountElements(){
+async function mountElements(customerEmail){
   await initStripe();
-  clientSecret = await createPaymentIntent();
+  clientSecret = await createPaymentIntent(customerEmail);
   elements = stripe.elements({ clientSecret });
   paymentElement = elements.create('payment');
   paymentElement.mount('#payment-element');
@@ -514,16 +517,17 @@ function initCheckout() {
 
   document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!stripe || !elements) {
-      try { await mountElements(); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
-    }
     
-    // Get email from form
+    // Get email from form first
     const emailEl = document.getElementById('checkout-email');
     const customerEmail = emailEl ? emailEl.value.trim() : '';
     if (!customerEmail) {
       setMessage('Please enter your email');
       return;
+    }
+    
+    if (!stripe || !elements) {
+      try { await mountElements(customerEmail); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
     }
     
     setMessage('');

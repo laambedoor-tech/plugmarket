@@ -144,9 +144,14 @@ export default {
             metadata: pi.metadata
           });
 
-          const customerEmail = pi.receipt_email;
+          // Get email from receipt_email or metadata as fallback
+          const customerEmail = pi.receipt_email || pi.metadata?.customer_email;
           if (!customerEmail) {
-            console.error('No customer email found in payment intent', { id: pi.id });
+            console.error('No customer email found in payment intent (checked receipt_email and metadata.customer_email)', { 
+              id: pi.id,
+              receipt_email: pi.receipt_email,
+              metadata_email: pi.metadata?.customer_email
+            });
             break;
           }
 

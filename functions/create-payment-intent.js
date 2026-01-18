@@ -120,7 +120,7 @@ export default {
     }
 
     try {
-      const { cart } = await request.json();
+      const { cart, customerEmail } = await request.json();
 
       if (!Array.isArray(cart) || cart.length === 0) {
         return new Response(
@@ -144,7 +144,8 @@ export default {
         automatic_payment_methods: { enabled: true },
         metadata: {
           cart: JSON.stringify(normalizedCart),
-          site: 'plugmarket'
+          site: 'plugmarket',
+          customer_email: customerEmail || ''
         }
       };
 
