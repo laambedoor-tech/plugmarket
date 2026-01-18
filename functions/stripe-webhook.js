@@ -220,6 +220,7 @@ export default {
                 
                 orderItems.push({
                   pid: item.pid,
+                  name: item.pid,
                   plan: item.plan,
                   unitAmount: item.unitAmount,
                   credentials: itemCreds

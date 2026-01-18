@@ -772,7 +772,7 @@ async function processBalancePayment() {
   const payload = {
     cart: cart.map(item => ({
       pid: item.pid,
-      name: item.name,
+      name: item.title || item.pid,
       plan: item.plan,
       price: item.price,
       qty: item.qty || 1
