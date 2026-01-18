@@ -776,9 +776,11 @@
       updatePrice();
       updateStockBadge();
       
-      // Disable add to cart button if out of stock
+      // Disable add to cart and buy now buttons if out of stock
       const stock = getStockForVariant(selectedVariant.id);
       const addToCartBtn = document.getElementById('add-to-cart-btn');
+      const buyNowBtn = document.getElementById('buy-now-btn');
+      
       if (addToCartBtn) {
         if (stock <= 0) {
           addToCartBtn.disabled = true;
@@ -790,6 +792,18 @@
           addToCartBtn.style.opacity = '1';
           addToCartBtn.style.cursor = 'pointer';
           addToCartBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L7.17 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2h-3.17L15 2H9zm3 15l-5-5 1.41-1.41L11 13.17l5.59-5.59L18 9l-6 6z" fill="currentColor"/></svg> Add to Cart';
+        }
+      }
+      
+      if (buyNowBtn) {
+        if (stock <= 0) {
+          buyNowBtn.disabled = true;
+          buyNowBtn.style.opacity = '0.5';
+          buyNowBtn.style.cursor = 'not-allowed';
+        } else {
+          buyNowBtn.disabled = false;
+          buyNowBtn.style.opacity = '1';
+          buyNowBtn.style.cursor = 'pointer';
         }
       }
     }
@@ -977,6 +991,12 @@
         return; // Don't add if out of stock
       }
       
+      // Check stock before adding
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        return; // Don't add if out of stock
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -994,6 +1014,12 @@
 
     // Buy now button
     document.getElementById('buy-now-btn').addEventListener('click', () => {
+      // Check stock before buying
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        return; // Don't proceed if out of stock
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
