@@ -351,6 +351,8 @@ function initCheckout() {
     if (!items.length) return;
     try {
       showCheckout(true);
+      // Slight delay to ensure panel visible, then mount elements
+      setTimeout(() => { mountElements().catch(err => setMessage(err.message)); }, 50);
       document.getElementById('checkout-email')?.focus();
     } catch (e) {
       setMessage(e.message || 'Checkout unavailable');
@@ -524,11 +526,26 @@ function initCheckout() {
       return;
     }
     
-    // Always create payment intent with email
-    try { 
-      await mountElements(customerEmail); 
-    } catch (err){ 
-      return setMessage(err.message || 'Unable to start payment'); 
+    if (!stripe || !elements) {
+      try { await mountElements(); } catch (err){ return setMessage(err.message || 'Unable to start payment'); }
+    }
+    
+    // Update payment intent with email before confirming
+    try {
+      const response = await fetch(`${API_BASE}/api/update-payment-intent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          clientSecret: clientSecret,
+          customerEmail: customerEmail 
+        })
+      });
+      
+      if (!response.ok) {
+        console.warn('Failed to update payment intent with email');
+      }
+    } catch (err) {
+      console.warn('Error updating payment intent:', err);
     }
     
     setMessage('');
