@@ -29,21 +29,26 @@
 
     .product-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 190px;
       align-items: start;
+      padding: 0 60px;
     }
 
     .product-left {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
     }
 
     .product-image-section {
-      width: 100%;
-      overflow: hidden;
+      width: 230%;
+      overflow: visible;
       position: relative;
+      margin-left: -75%;
+      z-index: 1;
     }
 
     .product-image-box {
@@ -51,6 +56,8 @@
       justify-content: center;
       align-items: center;
       perspective: 1000px;
+      transform: scale(1);
+      margin: 0;
     }
 
     .product-image-box img {
@@ -81,6 +88,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       overflow: hidden;
+      width: 230%;
+      margin-left: -75%;
+      position: relative;
+      z-index: 1;
     }
 
     .description-header {
@@ -279,6 +290,9 @@
       font-size: 18px;
       font-weight: 600;
       color: #fff;
+      background: transparent;
+      border: none;
+      outline: none;
     }
 
     .quantity-display.invalid {
@@ -314,39 +328,92 @@
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     .bulk-discounts {
-      margin-top: 12px;
-      padding: 12px;
-      background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
-      border-radius: 8px;
-      border: 1px solid #e1e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      margin-top: 8px;
+    }
+
+    .discount-icon {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .discount-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .discount-header {
+      display: none;
     }
 
     .discount-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 8px;
-      text-align: center;
+      display: none;
     }
 
-    .discount-item {
+    .current-discount {
+      display: none;
+    }
+
+    .current-discount.no-discount {
+      display: none;
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .discount-progress {
+      margin: 0;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 4px 0;
-      font-size: 12px;
-      color: #5a6c7d;
+      gap: 8px;
     }
 
-    .discount-percent {
-      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    .discount-tiers {
+      display: none;
+    }
+
+    .tier {
+      display: none;
     }
 
     .action-buttons {
@@ -525,6 +592,7 @@
                 <li><strong>Full Warranty</strong> – Free replacements for any issues, anytime.</li>
                 <li><strong>Unused Codes</strong> – Fresh, never-redeemed promo codes.</li>
                 <li><strong>Reliable Support</strong> – Quick help and replacements if needed.</li>
+                <li><strong>⚠️ Important</strong> – Record a video when purchasing and redeeming, or no replacement will be provided.</li>
               </ul>
             </div>
           </div>
@@ -534,7 +602,7 @@
         <div class="product-info-section">
           <h1>Discord Promo Code</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€1.8</p>
+            <p class="product-price" id="display-price">€0.89</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -549,18 +617,22 @@
             <label>Quantity</label>
             <div class="quantity-controls" style="position: relative;">
               <button class="quantity-btn" id="qty-decrease">−</button>
-              <span class="quantity-display" id="quantity-display">1</span>
+              <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
               <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
-                        
-            <!-- Bulk Discounts -->
-            <div class="bulk-discounts">
-              <div class="discount-title"> Bulk Discounts</div>
-              <div class="discount-item">10+ units: <span class="discount-percent">3% OFF</span></div>
-              <div class="discount-item">25+ units: <span class="discount-percent">5% OFF</span></div>
-              <div class="discount-item">50+ units: <span class="discount-percent">8% OFF</span></div>
-              <div class="discount-item">100+ units: <span class="discount-percent">12% OFF</span></div>
             </div>
+            
+            <!-- Dynamic Bulk Discounts -->
+            <div class="bulk-discounts">
+              <div class="discount-icon" id="discount-icon">✓</div>
+              <div class="discount-content">
+                <div class="discount-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                  </div>
+                  <div class="progress-text" id="progress-text">Add 9 more for 3% OFF</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -595,8 +667,8 @@
     const productTitle = 'Discord Promo Code';
     
     const variants = [
-      { id: '1 Month Nitro', name: 'Discord Promo Code — 1 Month Nitro', stock: 0, price: 1.62, oldPrice: null },
-      { id: '3 Months Nitro', name: 'Discord Promo Code — 3 Months Nitro', stock: 0, price: 4.37, oldPrice: null }
+      { id: 'Boost 1m', name: 'Discord Promo Code — 1 Month Nitro', stock: 0, price: 0.89, oldPrice: null },
+      { id: 'Boost 3m', name: 'Discord Promo Code — 3 Months Nitro', stock: 0, price: 0.99, oldPrice: null }
     ];
 
     let selectedVariant = variants[0];
@@ -626,7 +698,7 @@
           const data = await res.json();
           console.log('Stock data received:', data);
           stockData = data.stock || {};
-          console.log('DISCORDPROMOCODE stock keys:', Object.keys(stockData).filter(k => k.startsWith('discordpromocode:')));
+          console.log('Discord Promo Code stock keys:', Object.keys(stockData).filter(k => k.startsWith('discordpromocode:')));
           renderVariants();
           updateStockBadge();
         } else {
@@ -673,6 +745,7 @@
       renderVariants();
       updatePrice();
       updateStockBadge();
+      updateDiscountSystem(quantity);
       
       // Disable add to cart button if out of stock
       const stock = getStockForVariant(selectedVariant.id);
@@ -705,10 +778,20 @@
       }
     }
 
-    // Update price display
+    // Enhanced update price with discount calculation
     function updatePrice() {
-      const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
+      let baseTotal = selectedVariant.price * quantity;
+      let discountTotal = baseTotal;
+      
+      // Apply bulk discount if applicable
+      for (let tier of [...DISCOUNT_TIERS].reverse()) {
+        if (quantity >= tier.quantity) {
+          discountTotal = baseTotal * (1 - tier.discount / 100);
+          break;
+        }
+      }
+      
+      document.getElementById('display-price').textContent = `€${discountTotal.toFixed(2)}`;
     }
 
     // Update stock badge
@@ -725,19 +808,126 @@
       }
     }
 
-    // Quantity controls
+    // Discount tier configuration
+    const DISCOUNT_TIERS = [
+      { quantity: 10, discount: 3 },
+      { quantity: 25, discount: 5 },
+      { quantity: 50, discount: 8 },
+      { quantity: 100, discount: 12 }
+    ];
+    
+    // Update discount system
+    function updateDiscountSystem(qty) {
+      let currentDiscount = 0;
+      let currentTier = null;
+      let nextTier = null;
+      
+      // Find current discount
+      for (let tier of DISCOUNT_TIERS) {
+        if (qty >= tier.quantity) {
+          currentDiscount = tier.discount;
+          currentTier = tier;
+        } else {
+          if (!nextTier) {
+            nextTier = tier;
+          }
+          break;
+        }
+      }
+      
+      // Update progress bar
+      const progressFill = document.querySelector('.progress-fill');
+      const progressText = document.querySelector('.progress-text');
+      
+      if (progressFill && progressText) {
+        if (nextTier) {
+          const progress = ((qty - (currentTier ? currentTier.quantity : 0)) / 
+                           (nextTier.quantity - (currentTier ? currentTier.quantity : 0))) * 100;
+          progressFill.style.width = `${Math.min(progress, 100)}%`;
+          
+          const remaining = nextTier.quantity - qty;
+          progressText.textContent = `Add ${remaining} more for ${nextTier.discount}% OFF`;
+        } else {
+          // Maximum tier reached
+          progressFill.style.width = '100%';
+          progressText.textContent = 'Maximum discount achieved!';
+        }
+      }
+    }
+
+    // Quantity controls with dynamic discount updates
+    const quantityInput = document.getElementById('quantity-display');
+    
+    // Handle manual input changes
+    if (quantityInput) {
+      const errorElement = document.getElementById('quantity-error');
+      
+      function showError(message) {
+        if (errorElement) {
+          errorElement.textContent = message;
+          errorElement.classList.add('show');
+          quantityInput.classList.add('invalid');
+          setTimeout(() => {
+            errorElement.classList.remove('show');
+            quantityInput.classList.remove('invalid');
+          }, 2500);
+        }
+      }
+      
+      quantityInput.addEventListener('input', function() {
+        const minQty = 1;
+        let inputValue = parseInt(this.value);
+        
+        // Allow empty value while typing
+        if (this.value === '') {
+          return;
+        }
+        
+        if (isNaN(inputValue) || inputValue < minQty) {
+          // Show error but don't force change yet
+          if (inputValue < minQty && !isNaN(inputValue)) {
+            showError('⚠️ Minimum: 1 unit');
+          }
+          return;
+        }
+        
+        quantity = inputValue;
+        updatePrice();
+        updateDiscountSystem(quantity);
+      });
+      
+      // Handle focus out to ensure valid value
+      quantityInput.addEventListener('blur', function() {
+        const minQty = 1;
+        let inputValue = parseInt(this.value);
+        
+        if (this.value === '' || isNaN(inputValue) || inputValue < minQty) {
+          quantity = minQty;
+          this.value = quantity;
+          updatePrice();
+          updateDiscountSystem(quantity);
+          
+          if (inputValue < minQty && !isNaN(inputValue)) {
+            showError('⚠️ Quantity set to minimum: 1 unit');
+          }
+        }
+      });
+    }
+    
     document.getElementById('qty-decrease').addEventListener('click', () => {
       if (quantity > 1) {
         quantity--;
-        document.getElementById('quantity-display').textContent = quantity;
+        if (quantityInput) quantityInput.value = quantity;
         updatePrice();
+        updateDiscountSystem(quantity);
       }
     });
 
     document.getElementById('qty-increase').addEventListener('click', () => {
       quantity++;
-      document.getElementById('quantity-display').textContent = quantity;
+      if (quantityInput) quantityInput.value = quantity;
       updatePrice();
+      updateDiscountSystem(quantity);
     });
 
     // Cart functions
@@ -820,6 +1010,7 @@
     // Initialize
     renderCartCount();
     fetchStock();
+    updateDiscountSystem(quantity);
   </script>
 
   <!-- Particles script -->
