@@ -775,6 +775,23 @@
       renderVariants();
       updatePrice();
       updateStockBadge();
+      
+      // Disable add to cart button if out of stock
+      const stock = getStockForVariant(selectedVariant.id);
+      const addToCartBtn = document.getElementById('add-to-cart-btn');
+      if (addToCartBtn) {
+        if (stock <= 0) {
+          addToCartBtn.disabled = true;
+          addToCartBtn.style.opacity = '0.5';
+          addToCartBtn.style.cursor = 'not-allowed';
+          addToCartBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L7.17 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2h-3.17L15 2H9zm3 15l-5-5 1.41-1.41L11 13.17l5.59-5.59L18 9l-6 6z" fill="currentColor"/></svg> Out of Stock';
+        } else {
+          addToCartBtn.disabled = false;
+          addToCartBtn.style.opacity = '1';
+          addToCartBtn.style.cursor = 'pointer';
+          addToCartBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L7.17 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2h-3.17L15 2H9zm3 15l-5-5 1.41-1.41L11 13.17l5.59-5.59L18 9l-6 6z" fill="currentColor"/></svg> Add to Cart';
+        }
+      }
     }
 
     // Update price display
@@ -954,6 +971,12 @@
 
     // Add to cart button
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      // Check stock before adding
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
+        return; // Don't add if out of stock
+      }
+      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
