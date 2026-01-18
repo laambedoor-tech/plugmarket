@@ -705,13 +705,24 @@
     // Fetch stock
     async function fetchStock() {
       try {
+        console.log('Fetching stock from:', `${API_BASE}/api/get-stock`);
         const res = await fetch(`${API_BASE}/api/get-stock`);
         
         if (res.ok) {
           const data = await res.json();
           stockData = data.stock || {};
+          console.log('Stock data received:', stockData);
+          console.log('Looking for keys:', [
+            `${productId}:${productPlan}`,
+            `${productId}:Lifetime`,
+            productId
+          ]);
+          const currentStock = getStock();
+          console.log('HBO Max stock:', currentStock);
           updateStockBadge();
           updateButtons();
+        } else {
+          console.error('Stock API error:', res.status, res.statusText);
         }
       } catch (err) {
         console.error('Failed to fetch stock:', err);
