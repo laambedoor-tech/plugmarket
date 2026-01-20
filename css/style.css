@@ -1087,7 +1087,7 @@ main {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color .2s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .faq-item:hover {
@@ -1107,7 +1107,7 @@ main {
   align-items: center;
   justify-content: space-between;
   user-select: none;
-  transition: background .2s ease;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .faq-item__question:hover {
@@ -1119,7 +1119,7 @@ main {
   font-size: 24px;
   font-weight: 300;
   color: var(--accent);
-  transition: transform .25s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .faq-item[open] .faq-item__question::after {
@@ -1130,6 +1130,18 @@ main {
   padding: 0 20px 16px;
   color: var(--text-300);
   line-height: 1.6;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .faq-item__answer p {
