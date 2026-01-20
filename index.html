@@ -615,7 +615,7 @@
                 <div class="discord-stat-label">Total members</div>
               </div>
               <div class="discord-stat">
-                <div class="discord-stat-value" id="discord-orders">23,567</div>
+                <div class="discord-stat-value" id="discord-orders">5,193</div>
                 <div class="discord-stat-label">Orders solved</div>
               </div>
               <div class="discord-stat">
@@ -833,6 +833,52 @@
     setInterval(fetchDiscordWidget, 30 * 1000);
   </script>
   <script>
+    // Smooth Scroll Reveal Animations
+    (function() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, observerOptions);
+
+      // Add reveal classes to elements
+      document.addEventListener('DOMContentLoaded', () => {
+        // Product cards
+        document.querySelectorAll('.product-card').forEach((card, index) => {
+          card.classList.add('reveal');
+          card.style.animationDelay = `${index * 0.05}s`;
+          observer.observe(card);
+        });
+
+        // Section titles and content
+        document.querySelectorAll('.section__title, .hero__title, .discord-title').forEach(el => {
+          el.classList.add('reveal-scale');
+          observer.observe(el);
+        });
+
+        // Features and stats
+        document.querySelectorAll('.feature-card, .stat, .discord-feature').forEach((el, index) => {
+          el.classList.add('reveal');
+          el.style.animationDelay = `${index * 0.1}s`;
+          observer.observe(el);
+        });
+
+        // Buttons
+        document.querySelectorAll('.btn').forEach(el => {
+          el.classList.add('reveal');
+          observer.observe(el);
+        });
+      });
+    })();
+  </script>
+  <script>
     // Show Dashboard links if logged in
     (function() {
       const token = localStorage.getItem('auth_token');
@@ -855,7 +901,24 @@
         }
       }
     })();
-  </script>
-</body>
+  </script>  <script>
+    // Nav scroll effect
+    (function() {
+      const nav = document.querySelector('.nav');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+        
+        lastScroll = currentScroll;
+      });
+    })();
+  </script></body>
 
 </html>

@@ -615,7 +615,7 @@
         <div class="product-info-section">
           <h1>Amazon Prime Video</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€0.72</p>
+            <p class="product-price" id="display-price">€0.65</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -680,9 +680,7 @@
     const productTitle = 'Amazon Prime Video';
     
     const variants = [
-      { id: '1 Month', name: 'Amazon Prime Video — 1 Month', stock: 0, price: 0.65, oldPrice: null },
-      { id: '3 Months', name: 'Amazon Prime Video — 3 Months', stock: 0, price: 1.78, oldPrice: null },
-      { id: '12 Months', name: 'Amazon Prime Video — 12 Months', stock: 0, price: 5.99, oldPrice: null }
+      { id: 'Lifetime', name: 'Amazon Prime Video — Lifetime', stock: 0, price: 0.65, oldPrice: null }
     ];
 
     let selectedVariant = variants[0];
@@ -991,12 +989,6 @@
         return; // Don't add if out of stock
       }
       
-      // Check stock before adding
-      const stock = getStockForVariant(selectedVariant.id);
-      if (stock <= 0) {
-        return; // Don't add if out of stock
-      }
-      
       addToCart({
         pid: productId,
         plan: selectedVariant.id,
@@ -1034,6 +1026,13 @@
     renderCartCount();
     updateDiscountSystem(quantity);
     fetchStock();
+    
+    // Initialize discount system after page load
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        updateDiscountSystem(quantity);
+      }, 500);
+    });
   </script>
 
   <!-- Particles script -->
