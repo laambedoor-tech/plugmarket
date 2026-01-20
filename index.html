@@ -24,7 +24,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-  <!-- Preload imágenes críticas de productos -->
+  <!-- Preload imágenes críticas -->
+  <link rel="preload" as="image" href="./assets/logonuevo.png" fetchpriority="high">
   <link rel="preload" as="image" href="./assets/products/netflix.png" fetchpriority="high">
   <link rel="preload" as="image" href="./assets/products/spotify.png" fetchpriority="high">
   <link rel="preload" as="image" href="./assets/products/youtube.png" fetchpriority="high">
@@ -116,16 +117,15 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      min-width: 180px;
-      display: inline-block;
+      display: inline;
     }
 
     .cursor {
       color: #ff2743;
-      animation: blink 0.8s step-end infinite;
-      font-weight: 300;
-      display: inline-block;
-      margin-left: 2px;
+      animation: blink 0.7s step-end infinite;
+      font-weight: 400;
+      display: inline;
+      margin-left: 0;
     }
 
     @keyframes blink {
@@ -215,21 +215,21 @@
     }
 
     .discord-server-icon {
-      width: 56px;
-      height: 56px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 8px;
+      padding: 0;
       overflow: hidden;
     }
 
     .discord-server-icon img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
     }
 
     .discord-server-name {
@@ -363,22 +363,6 @@
 
 <body>
   <canvas id="bg-particles" aria-hidden="true"></canvas>
-  
-  <!-- Christmas Snow Effect -->
-  <div class="snowflakes" aria-hidden="true">
-    <div class="snowflake">❅</div>
-    <div class="snowflake">❆</div>
-    <div class="snowflake">❅</div>
-    <div class="snowflake">❆</div>
-    <div class="snowflake">❅</div>
-    <div class="snowflake">❆</div>
-    <div class="snowflake">❅</div>
-    <div class="snowflake">❆</div>
-    <div class="snowflake">❅</div>
-    <div class="snowflake">❆</div>
-    <div class="snowflake">❅</div>
-    <div class="snowflake">❆</div>
-  </div>
 
   <header class="nav">
     <a href="#" class="brand">
@@ -610,7 +594,7 @@
             <div class="discord-widget-header">
               <div class="discord-widget-info">
                 <div class="discord-server-icon">
-                  <img src="./assets/logonuevo.png" alt="Plug Market">
+                  <img src="./assets/logonuevo.png" alt="Plug Market" loading="eager" fetchpriority="high" width="72" height="72">
                 </div>
                 <div>
                   <h3 class="discord-server-name">Plug Market</h3>
@@ -748,32 +732,27 @@
     
     function typeWriter() {
       const typedTextElement = document.getElementById('typed-text');
-      const cursorElement = document.querySelector('.cursor');
       if (!typedTextElement) return;
       
       const currentText = texts[textIndex];
       
       if (isDeleting) {
-        charIndex--;
         typedTextElement.textContent = currentText.substring(0, charIndex);
+        charIndex--;
         typingSpeed = 75;
       } else {
-        charIndex++;
         typedTextElement.textContent = currentText.substring(0, charIndex);
+        charIndex++;
         typingSpeed = 150;
       }
       
-      // Make cursor visible during typing
-      if (cursorElement) {
-        cursorElement.style.opacity = '1';
-      }
-      
-      if (!isDeleting && charIndex === currentText.length) {
+      if (!isDeleting && charIndex > currentText.length) {
         typingSpeed = 2000;
         isDeleting = true;
-      } else if (isDeleting && charIndex === 0) {
+      } else if (isDeleting && charIndex < 0) {
         isDeleting = false;
         textIndex = (textIndex + 1) % texts.length;
+        charIndex = 0;
         typingSpeed = 500;
       }
       
