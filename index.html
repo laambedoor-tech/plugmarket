@@ -122,8 +122,10 @@
 
     .cursor {
       color: #ff2743;
-      animation: blink 1s step-end infinite;
+      animation: blink 0.8s step-end infinite;
       font-weight: 300;
+      display: inline-block;
+      margin-left: 2px;
     }
 
     @keyframes blink {
@@ -216,17 +218,18 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #ff2743, #ff5f6d);
+      background: rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px;
+      padding: 8px;
+      overflow: hidden;
     }
 
     .discord-server-icon img {
       width: 100%;
       height: 100%;
-      filter: brightness(0) invert(1);
+      object-fit: contain;
     }
 
     .discord-server-name {
@@ -607,7 +610,7 @@
             <div class="discord-widget-header">
               <div class="discord-widget-info">
                 <div class="discord-server-icon">
-                  <img src="./assets/logo.svg" alt="Plug Market">
+                  <img src="./assets/logonuevo.png" alt="Plug Market">
                 </div>
                 <div>
                   <h3 class="discord-server-name">Plug Market</h3>
@@ -745,18 +748,24 @@
     
     function typeWriter() {
       const typedTextElement = document.getElementById('typed-text');
+      const cursorElement = document.querySelector('.cursor');
       if (!typedTextElement) return;
       
       const currentText = texts[textIndex];
       
       if (isDeleting) {
-        typedTextElement.textContent = currentText.substring(0, charIndex - 1);
         charIndex--;
+        typedTextElement.textContent = currentText.substring(0, charIndex);
         typingSpeed = 75;
       } else {
-        typedTextElement.textContent = currentText.substring(0, charIndex + 1);
         charIndex++;
+        typedTextElement.textContent = currentText.substring(0, charIndex);
         typingSpeed = 150;
+      }
+      
+      // Make cursor visible during typing
+      if (cursorElement) {
+        cursorElement.style.opacity = '1';
       }
       
       if (!isDeleting && charIndex === currentText.length) {
@@ -781,25 +790,68 @@
         
         if (response.ok) {
           const data = await response.json();
+          console.log('Discord API data:', data);
+          
+          // Get exact online count from API
           const onlineCount = data.presence_count || 0;
           document.getElementById('discord-online-count').textContent = onlineCount.toLocaleString();
-          const totalMembers = data.members ? Math.max(data.members.length * 15, 6000) : 6764;
-          document.getElementById('discord-total-members').textContent = totalMembers.toLocaleString();
+          
+          // Try to get exact member count - Discord widget API doesn't always provide this
+          // We need to fetch from a different endpoint
+          fetchTotalMembers(serverId);
+        } else {
+          console.log('Widget API failed, trying alternative method');
+          fetchTotalMembers(serverId);
+        }
+      } catch (error) {
+        console.log('Error fetching Discord data:', error);
+        setStaticDiscordData();
+      }
+    }
+
+    async function fetchTotalMembers(serverId) {
+      try {
+        // Try to get approximate member count from invite
+        const inviteResponse = await fetch(`https://discord.com/api/v9/invites/plugmarket?with_counts=true`);
+        
+        if (inviteResponse.ok) {
+          const inviteData = await inviteResponse.json();
+          console.log('Discord invite data:', inviteData);
+          
+          if (inviteData.approximate_member_count) {
+            document.getElementById('discord-total-members').textContent = inviteData.approximate_member_count.toLocaleString();
+          } else {
+            setStaticDiscordData();
+          }
+          
+          if (inviteData.approximate_presence_count) {
+            document.getElementById('discord-online-count').textContent = inviteData.approximate_presence_count.toLocaleString();
+          }
         } else {
           setStaticDiscordData();
         }
       } catch (error) {
+        console.log('Error fetching member count:', error);
         setStaticDiscordData();
       }
     }
 
     function setStaticDiscordData() {
-      document.getElementById('discord-online-count').textContent = '2,978';
-      document.getElementById('discord-total-members').textContent = '6,764';
+      // Only update if elements don't have data yet
+      const onlineEl = document.getElementById('discord-online-count');
+      const totalEl = document.getElementById('discord-total-members');
+      
+      if (onlineEl.textContent === 'Loading...' || onlineEl.textContent === '--') {
+        onlineEl.textContent = '1,297';
+      }
+      if (totalEl.textContent === '--') {
+        totalEl.textContent = '7,122';
+      }
     }
 
     fetchDiscordWidget();
-    setInterval(fetchDiscordWidget, 5 * 60 * 1000);
+    // Update more frequently - every 30 seconds
+    setInterval(fetchDiscordWidget, 30 * 1000);
   </script>
   <script>
     // Show Dashboard links if logged in
