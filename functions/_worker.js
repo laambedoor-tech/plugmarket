@@ -28,6 +28,7 @@ import paypalFFAutoVerify from './paypal-ff-auto-verify.js';
 import searchOrders from './search-orders.js';
 import findMissingOrders from './find-missing-orders.js';
 import recoverStripeOrder from './recover-stripe-order.js';
+import manualCreateOrder from './manual-create-order.js';
 
 export default {
   // Cron trigger for automatic PayPal verification (runs every 2 minutes)
@@ -56,6 +57,7 @@ export default {
     if (path === '/api/create-payment-intent') return createPaymentIntent.fetch(request, env, ctx);
     if (path === '/api/stripe-webhook') return stripeWebhook.fetch(request, env, ctx);
     if (path === '/api/recover-stripe-order') return recoverStripeOrder.fetch(request, env, ctx);
+    if (path === '/api/manual-create-order') return manualCreateOrder.fetch(request, env, ctx);
     if (path === '/api/get-orders') return getOrders.fetch(request, env, ctx);
     if (path === '/api/search-orders') return searchOrders.fetch(request, env, ctx);
     if (path === '/api/find-missing-orders') return findMissingOrders.fetch(request, env, ctx);
