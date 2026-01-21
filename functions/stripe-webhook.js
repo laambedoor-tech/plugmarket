@@ -157,16 +157,10 @@ export default {
 
           // Check if this is a balance top-up
           if (pi.metadata?.type === 'balance_topup') {
-            console.log('Processing balance top-up:', {
-              email: customerEmail,
-              amount: pi.metadata.amount
-            });
-            
             try {
               const supabase = getSupabase(env);
               const topupAmount = parseFloat(pi.metadata.amount);
               
-              // Create balance transaction (trigger will update user balance)
               const { error: txError } = await supabase
                 .from('balance_transactions')
                 .insert({
@@ -180,11 +174,6 @@ export default {
                 
               if (txError) {
                 console.error('Failed to create balance transaction:', txError);
-              } else {
-                console.log('✅ Balance top-up completed:', {
-                  email: customerEmail,
-                  amount: topupAmount
-                });
               }
             } catch (error) {
               console.error('Error processing balance top-up:', error);
@@ -194,23 +183,16 @@ export default {
 
           // Parse cart from metadata (normal purchase)
           const cart = JSON.parse(pi.metadata?.cart || '[]');
-          console.log('Processing cart:', cart);
 
-          // Collect all assigned credentials for the order
           const orderItems = [];
-          let allAssigned = true;
 
-          // Process each item respecting quantity
           for (const item of cart) {
             const qty = Number(item.qty) > 0 ? Number(item.qty) : 1;
-            console.log(`Item ${item.pid} - ${item.plan} requested qty=${qty}`);
 
             for (let i = 0; i < qty; i++) {
               try {
                 const credentials = await assignAccount(env, item.pid, item.plan, customerEmail);
-                console.log(`✅ Assigned account (${i + 1}/${qty}) for ${item.pid} - ${item.plan} to ${customerEmail}`);
 
-                // Store credentials for order record
                 const itemCreds = {
                   email: credentials.email,
                   password: credentials.password
@@ -226,11 +208,8 @@ export default {
                   credentials: itemCreds
                 });
               } catch (err) {
-                console.error(`❌ Failed to assign account (${i + 1}/${qty}) for ${item.pid}:`, err.message);
-                allAssigned = false;
-
+                console.error(`Failed to assign account for ${item.pid}:`, err.message);
                 if (String(err.message).includes('No available accounts')) {
-                  console.warn(`Stock exhausted for ${item.pid} - ${item.plan}. Assigned ${i} of ${qty}.`);
                   break;
                 }
               }
@@ -261,9 +240,7 @@ export default {
 
         case 'payment_intent.payment_failed': {
           const pi = evt.data.object;
-          console.warn('Payment failed', {
-            id: pi.id,
-            last_payment_error: pi.last_payment_error?.message
+          conast_payment_error: pi.last_payment_error?.message
           });
           break;
         }
