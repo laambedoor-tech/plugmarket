@@ -25,6 +25,7 @@ import paypalFFCreateOrder from './paypal-ff-create-order.js';
 import paypalFFWebhook from './paypal-ff-webhook.js';
 import paypalFFTestComplete from './paypal-ff-test-complete.js';
 import paypalFFAutoVerify from './paypal-ff-auto-verify.js';
+import searchOrders from './search-orders.js';
 
 export default {
   // Cron trigger for automatic PayPal verification (runs every 2 minutes)
@@ -53,6 +54,7 @@ export default {
     if (path === '/api/create-payment-intent') return createPaymentIntent.fetch(request, env, ctx);
     if (path === '/api/stripe-webhook') return stripeWebhook.fetch(request, env, ctx);
     if (path === '/api/get-orders') return getOrders.fetch(request, env, ctx);
+    if (path === '/api/search-orders') return searchOrders.fetch(request, env, ctx);
     if (path === '/api/get-stock') return getStock.fetch(request, env, ctx);
 
     // PayPal Business API
