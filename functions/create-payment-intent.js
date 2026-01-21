@@ -8,11 +8,11 @@
 // Maintain a single source of truth later by moving to Supabase.
 const PRICES_EUR = {
   boosts: { '3 Months': 475 },
-  netflix: { '1 Month': 122, '3 Months': 284, '6 Months': 486, '12 Months': 891, 'Bulk': 54, 'Lifetime': 1458 },
+  netflix: { '1 Month': 122, '3 Months': 284, '6 Months': 486, '12 Months': 891, 'Bulk': 54, 'Lifetime': 122 },
   spotify: { '1 Month': 178, '3 Months': 308, '6 Months': 502, '12 Months': 962, 'Lifetime': 178 },
   'youtube-premium': { '1 Month': 227, '6 Months': 680, '12 Months': 1013, 'Lifetime': 227 },
   disney: { '1 Month': 89, '3 Months': 219, '6 Months': 389, '12 Months': 770, 'Lifetime': 89 },
-  prime: { '1 Month': 65, '3 Months': 178, '12 Months': 599, 'Lifetime': 1134 },
+  prime: { '1 Month': 65, '3 Months': 178, '12 Months': 599, 'Lifetime': 65 },
   hbomax: { 'Lifetime': 108 },
   nordvpn: { '1 Month': 146, '3 Months': 275, '6 Months': 470, '12 Months': 862, 'Lifetime': 146 },
   crunchy: { '1 Month': 105, '3 Months': 267, '6 Months': 470, '12 Months': 842, 'Lifetime': 105 },
@@ -26,7 +26,7 @@ const PRICES_EUR = {
   filmora: { '1 Month': 729, '3 Months': 2187, '6 Months': 4374, '12 Months': 8748, 'Lifetime': 729 },
   duolingo: { '1 Month': 162, '3 Months': 389, '6 Months': 648, '12 Months': 1118, 'Lifetime': 162 },
   movistar: { '1 Month': 292, '3 Months': 729, '6 Months': 1345, '12 Months': 2511, 'Lifetime': 292 },
-  dazn: { '1 Month': 259, '3 Months': 664, '6 Months': 1215, '12 Months': 2268, 'Lifetime': 135 },
+  dazn: { '1 Month': 259, '3 Months': 664, '6 Months': 1215, '12 Months': 2268, 'Lifetime': 259 },
   steamaccount: { 'Random Games': 65 },
   microsoft: { 'Random Codes': 90 },
   rockstar: { 'Activation Code': 25 },
