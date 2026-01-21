@@ -53,8 +53,6 @@ export default {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    console.log(`🔍 [get-orders] Raw email: "${email}"`);
-    console.log(`🔍 [get-orders] Normalized email: "${normalizedEmail}"`);
 
     try {
       const supabase = getSupabase(env);
@@ -64,27 +62,6 @@ export default {
         .select('*')
         .eq('customer_email', normalizedEmail)
         .order('created_at', { ascending: false });
-
-      console.log(`📦 [get-orders] Found ${orders?.length || 0} orders for "${normalizedEmail}"`);
-      console.log(`📝 [get-orders] Orders:`, JSON.stringify(orders?.map(o => ({
-        id: o.id?.slice(0, 8),
-        email: o.customer_email,
-        total: o.total_cents,
-        items: o.items?.map(i => i.pid).join(', ')
-      })), null, 2));
-      
-      // Also fetch recent orders to compare
-      const { data: recentOrders } = await supabase
-        .from('orders')
-        .select('id, customer_email, created_at')
-        .order('created_at', { ascending: false })
-        .limit(10);
-      
-      console.log(`📋 [get-orders] Recent 10 orders in DB:`, JSON.stringify(recentOrders?.map(o => ({
-        id: o.id?.slice(0, 8),
-        email: o.customer_email,
-        created: o.created_at
-      })), null, 2));
 
       if (error) {
         console.error('Supabase error:', error);
