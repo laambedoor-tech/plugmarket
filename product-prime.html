@@ -615,7 +615,10 @@
         <div class="product-info-section">
           <h1>Amazon Prime Video</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€0.65</p>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <p style="font-size: 28px; color: #898b96; text-decoration: line-through; margin: 0;">€0.65</p>
+              <p class="product-price" id="display-price">€0.59</p>
+            </div>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -680,7 +683,7 @@
     const productTitle = 'Amazon Prime Video';
     
     const variants = [
-      { id: 'Lifetime', name: 'Amazon Prime Video — Lifetime', stock: 0, price: 0.65, oldPrice: null }
+      { id: 'Lifetime', name: 'Amazon Prime Video — Lifetime', stock: 0, price: 0.59, oldPrice: 0.65 }
     ];
 
     let selectedVariant = variants[0];
