@@ -230,8 +230,6 @@ export default {
 
             if (orderError) {
               console.error('Failed to save order:', orderError.message);
-            } else {
-              console.log(`✅ Order saved for ${customerEmail} with ${orderItems.length} item(s)`);
             }
           }
 
@@ -240,8 +238,7 @@ export default {
 
         case 'payment_intent.payment_failed': {
           const pi = evt.data.object;
-          conast_payment_error: pi.last_payment_error?.message
-          });
+          console.error('Payment failed:', pi.last_payment_error?.message);
           break;
         }
 
