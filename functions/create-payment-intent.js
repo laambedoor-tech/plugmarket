@@ -8,7 +8,7 @@
 // Maintain a single source of truth later by moving to Supabase.
 const PRICES_EUR = {
   boosts: { '3 Months': 475 },
-  netflix: { '1 Month': 122, '3 Months': 284, '6 Months': 486, '12 Months': 891, 'Bulk': 54, 'Lifetime': 110 },
+  netflix: { '1 Month': 122, '3 Months': 284, '6 Months': 486, '12 Months': 891, 'Bulk': 54, 'Lifetime': 1458 },
   spotify: { '1 Month': 178, '3 Months': 308, '6 Months': 502, '12 Months': 962, 'Lifetime': 178 },
   'youtube-premium': { '1 Month': 227, '6 Months': 680, '12 Months': 1013, 'Lifetime': 227 },
   disney: { '1 Month': 89, '3 Months': 219, '6 Months': 389, '12 Months': 770, 'Lifetime': 89 },

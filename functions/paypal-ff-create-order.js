@@ -7,7 +7,7 @@
 const PRICES_USD = {
   test: { 'Test': 10 },
   boosts: { '3 Months': 525 },
-  netflix: { '1 Month': 150, '3 Months': 350, '6 Months': 600, '12 Months': 1100, 'Lifetime': 110 },
+  netflix: { '1 Month': 150, '3 Months': 350, '6 Months': 600, '12 Months': 1100, 'Lifetime': 1800 },
   spotify: { '1 Month': 220, '3 Months': 380, '6 Months': 620, '12 Months': 1250, 'Lifetime': 178 },
   'youtube-premium': { '1 Month': 160, '3 Months': 320, '6 Months': 550, '12 Months': 1050, 'Lifetime': 227 },
   disney: { '1 Month': 110, '3 Months': 270, '6 Months': 480, '12 Months': 950, 'Lifetime': 89 },

@@ -23,12 +23,24 @@ function formatDate(isoString) {
 
 // Fetch orders from API
 async function fetchOrders(email) {
-  const res = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(email)}`);
+  console.log(`🔍 [orders.js] Fetching orders for: "${email}"`);
+  const normalizedEmail = email.toLowerCase().trim();
+  console.log(`🔍 [orders.js] Normalized to: "${normalizedEmail}"`);
+  
+  const res = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(normalizedEmail)}`);
+  console.log(`📡 [orders.js] Response status: ${res.status}`);
+  
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Failed to fetch orders' }));
+    console.error(`❌ [orders.js] Error response:`, error);
     throw new Error(error.error || 'Failed to fetch orders');
   }
-  return res.json();
+  
+  const data = await res.json();
+  console.log(`📦 [orders.js] Received ${data.orders?.length || 0} orders`);
+  console.log(`📝 [orders.js] Orders data:`, JSON.stringify(data, null, 2));
+  
+  return data;
 }
 
 // Show login panel
@@ -288,7 +300,11 @@ addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     setMessage('');
 
-    const email = document.getElementById('login-email').value.trim();
+    const rawEmail = document.getElementById('login-email').value.trim();
+    const email = rawEmail.toLowerCase();
+    
+    console.log(`🔐 [orders.js] Login attempt with email: "${rawEmail}" -> "${email}"`);
+    
     if (!email) {
       setMessage('Please enter your email', true);
       return;
@@ -301,6 +317,7 @@ addEventListener('DOMContentLoaded', () => {
       setMessage('');
       showOrders(email, data.orders);
     } catch (err) {
+      console.error('❌ [orders.js] Login error:', err);
       setMessage(err.message, true);
     }
   });
