@@ -24,21 +24,34 @@ function formatDate(isoString) {
 // Fetch orders from API
 async function fetchOrders(email) {
   console.log(`🔍 [orders.js] Fetching orders for: "${email}"`);
+  alert(`🔍 DEBUG: Buscando órdenes para el email: "${email}"`);
+  
   const normalizedEmail = email.toLowerCase().trim();
   console.log(`🔍 [orders.js] Normalized to: "${normalizedEmail}"`);
   
   const res = await fetch(`${API_BASE}/api/get-orders?email=${encodeURIComponent(normalizedEmail)}`);
   console.log(`📡 [orders.js] Response status: ${res.status}`);
+  alert(`📡 DEBUG: Status de respuesta: ${res.status}`);
   
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Failed to fetch orders' }));
     console.error(`❌ [orders.js] Error response:`, error);
+    alert(`❌ ERROR: ${JSON.stringify(error, null, 2)}`);
     throw new Error(error.error || 'Failed to fetch orders');
   }
   
   const data = await res.json();
   console.log(`📦 [orders.js] Received ${data.orders?.length || 0} orders`);
   console.log(`📝 [orders.js] Orders data:`, JSON.stringify(data, null, 2));
+  
+  const ordersSummary = data.orders?.map(o => ({
+    id: o.id?.slice(0,8),
+    email: o.customer_email,
+    total: o.total_cents,
+    items: o.items?.map(i => i.pid).join(', ')
+  }));
+  
+  alert(`📦 DEBUG: Encontradas ${data.orders?.length || 0} órdenes\n\n${JSON.stringify(ordersSummary, null, 2)}`);
   
   return data;
 }
