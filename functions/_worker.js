@@ -3,6 +3,7 @@ import createPaymentIntent from './create-payment-intent.js';
 import stripeWebhook from './stripe-webhook.js';
 import getOrders from './get-orders.js';
 import getStock from './get-stock.js';
+import debugNetflixAccounts from './debug-netflix-accounts.js';
 import paypalCreateOrder from './paypal-create-order.js';
 import paypalCaptureOrder from './paypal-capture-order.js';
 import submitReview from './submit-review.js';
@@ -62,6 +63,7 @@ export default {
     if (path === '/api/search-orders') return searchOrders.fetch(request, env, ctx);
     if (path === '/api/find-missing-orders') return findMissingOrders.fetch(request, env, ctx);
     if (path === '/api/get-stock') return getStock.fetch(request, env, ctx);
+    if (path === '/api/debug-netflix-accounts') return debugNetflixAccounts.fetch(request, env, ctx);
 
     // PayPal Business API
     if (path === '/api/paypal/config') {
