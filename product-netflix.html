@@ -728,7 +728,9 @@
           const data = await res.json();
           console.log('Stock data received:', data);
           stockData = data.stock || {};
-          console.log('Netflix stock keys:', Object.keys(stockData).filter(k => k.startsWith('netflix:')));
+          console.log('All stock keys:', Object.keys(stockData));
+          console.log('Netflix stock keys:', Object.keys(stockData).filter(k => k.toLowerCase().includes('netflix')));
+          console.log('Looking for keys: netflix:Lifetime, netflix:Bulk');
           renderVariants();
           updateStockBadge();
         } else {
