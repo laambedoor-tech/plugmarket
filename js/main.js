@@ -267,9 +267,8 @@ const toneToGradient = (tone) => {
   };
 
   grid.innerHTML = products.map((p, index) => {
-    const min = getMinPrice(p.id);
-    // Si el producto tiene un precio fijo, usarlo en lugar del mínimo calculado
-    const priceText = p.price.startsWith('€') && p.price !== '€' ? p.price : (min == null ? 'Plans available' : `From €${min.toFixed(2)}`);
+    // Usar el precio del array directamente
+    const priceText = p.price;
     // Mapeo de IDs a nombres de archivos de imágenes
     const imageMap = {
       'spotify': 'spotify.png',
