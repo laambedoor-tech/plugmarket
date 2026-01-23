@@ -288,7 +288,7 @@ const toneToGradient = (tone) => {
       'steamaccount': 'steamaccounts.png',
       'realmembers': 'realmembers.png',
       'microsoft': 'microsoft.png',
-      'roblox': 'roblox.jpg'
+      'roblox': 'roblox.png'
     };
     const logoFile = imageMap[p.id] || `${p.id}.png`;
     
