@@ -165,6 +165,7 @@ const products = [
   { id: 'minecraft', title: 'Minecraft Lifetime', price: 'From €1.00', tone: 'green' },
   { id: 'stake', title: 'Stake', price: '€0.60', tone: 'blue' },
   { id: 'xbox', title: 'Xbox', price: '€0.60', tone: 'success' },
+  { id: 'roblox', title: 'Roblox Robux', price: '€6.00', tone: 'red' },
 ];
 
 let stockData = {};
@@ -201,6 +202,7 @@ const subscriptions = {
   minecraft: { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
   stake: { 'Level 2 Verified': 0.60 },
   xbox: { 'Game Pass Lifetime': 0.60 },
+  roblox: { '1000 Robux': 6.00 },
 };
 
 const toneToGradient = (tone) => {
