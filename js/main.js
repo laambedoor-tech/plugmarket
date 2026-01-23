@@ -287,7 +287,8 @@ const toneToGradient = (tone) => {
       'movistar': 'movistar+.png',
       'steamaccount': 'steamaccounts.png',
       'realmembers': 'realmembers.png',
-      'microsoft': 'microsoft.png'
+      'microsoft': 'microsoft.png',
+      'roblox': 'roblox.jpg'
     };
     const logoFile = imageMap[p.id] || `${p.id}.png`;
     
@@ -376,7 +377,8 @@ const toneToGradient = (tone) => {
         'rockstar': 'product-rockstar.html',
         'minecraft': 'product-minecraft.html',
         'stake': 'product-stake.html',
-        'xbox': 'product-xbox.html'
+        'xbox': 'product-xbox.html',
+        'roblox': 'product-roblox.html'
       };
       
       if (pageMap[pid]) {

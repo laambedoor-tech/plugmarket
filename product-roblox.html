@@ -945,6 +945,41 @@
       updateDiscountSystem(quantity);
     });
     
+    // Cart functions
+    function getCart() {
+      return JSON.parse(localStorage.getItem('plugmarket_cart') || '[]');
+    }
+    function setCart(items) {
+      localStorage.setItem('plugmarket_cart', JSON.stringify(items));
+      renderCartCount();
+    }
+    function addToCart({ pid, plan, price, qty }) {
+      const items = getCart();
+      const key = pid + '|' + plan;
+      const idx = items.findIndex(i => i.key === key);
+      if (idx >= 0) { 
+        items[idx].qty += qty; 
+      } else { 
+        items.push({ 
+          key, 
+          pid, 
+          title: productTitle, 
+          tone: 'red',
+          plan, 
+          price, 
+          qty 
+        }); 
+      }
+      setCart(items);
+    }
+    function cartCount() { 
+      return getCart().reduce((a, b) => a + b.qty, 0); 
+    }
+    function renderCartCount() {
+      const el = document.getElementById('cart-count');
+      if (el) el.textContent = String(cartCount());
+    }
+    
     // Add to Cart
     document.getElementById('add-to-cart-btn')?.addEventListener('click', () => {
       const stock = getStockForVariant(selectedVariant.id);
@@ -953,27 +988,12 @@
         return;
       }
       
-      const item = {
-        id: productId,
-        title: productTitle,
-        variant: selectedVariant.name,
-        variantId: selectedVariant.id,
+      addToCart({
+        pid: productId,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
-        quantity: quantity,
-        image: './assets/products/roblox.jpg'
-      };
-      
-      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const existingIndex = cart.findIndex(i => i.id === item.id && i.variantId === item.variantId);
-      
-      if (existingIndex >= 0) {
-        cart[existingIndex].quantity += quantity;
-      } else {
-        cart.push(item);
-      }
-      
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartCount();
+        qty: quantity
+      });
       
       // Visual feedback
       const btn = document.getElementById('add-to-cart-btn');
@@ -997,33 +1017,24 @@
         return;
       }
       
-      const item = {
-        id: productId,
-        title: productTitle,
-        variant: selectedVariant.name,
-        variantId: selectedVariant.id,
+      addToCart({
+        pid: productId,
+        plan: selectedVariant.id,
         price: selectedVariant.price,
-        quantity: quantity,
-        image: './assets/products/roblox.jpg'
-      };
+        qty: quantity
+      });
       
-      localStorage.setItem('cart', JSON.stringify([item]));
       window.location.href = './cart.html';
     });
     
-    // Update cart count
+    // Update cart count on page load (legacy function for compatibility)
     function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const cartCountEl = document.getElementById('cart-count');
-      if (cartCountEl) {
-        cartCountEl.textContent = count;
-      }
+      renderCartCount();
     }
     
     // Initialize
     fetchStock();
-    updateCartCount();
+    renderCartCount();
     updateDiscountSystem(quantity);
   </script>
   
