@@ -130,21 +130,20 @@ export default {
 
       // Store order in database
       const orderData = {
-        order_id: orderId,
         customer_email: email,
-        items: JSON.stringify(items),
-        subtotal: subtotal,
-        discount_percentage: discount * 100,
-        total: total,
-        payment_method: 'paypal_ff',
-        status: 'pending_payment',
-        created_at: new Date().toISOString(),
-        payment_note: note
+        payment_intent_id: orderId,
+        total_cents: Math.round(total * 100),
+        items: JSON.stringify(items)
       };
 
       // Insert into Supabase
       const supabaseUrl = env.SUPABASE_URL;
       const supabaseKey = env.SUPABASE_ANON_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
+        console.error('Missing Supabase credentials');
+        throw new Error('Server configuration error');
+      }
 
       const insertRes = await fetch(`${supabaseUrl}/rest/v1/orders`, {
         method: 'POST',
@@ -158,8 +157,9 @@ export default {
       });
 
       if (!insertRes.ok) {
-        console.error('Failed to insert order:', await insertRes.text());
-        throw new Error('Failed to create order');
+        const errorText = await insertRes.text();
+        console.error('Failed to insert order:', errorText);
+        throw new Error(`Database error: ${errorText}`);
       }
 
       // Return payment instructions

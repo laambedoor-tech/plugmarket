@@ -33,7 +33,7 @@ export default {
       const supabaseKey = env.SUPABASE_ANON_KEY;
 
       const response = await fetch(
-        `${supabaseUrl}/rest/v1/orders?order_id=eq.${orderId}`,
+        `${supabaseUrl}/rest/v1/orders?payment_intent_id=eq.${orderId}`,
         {
           headers: {
             'apikey': supabaseKey,
@@ -56,13 +56,15 @@ export default {
       }
 
       const order = orders[0];
+      
+      // Check if completed (payment_intent_id contains "_completed_")
+      const isCompleted = order.payment_intent_id && order.payment_intent_id.includes('_completed_');
 
       return new Response(JSON.stringify({
-        orderId: order.order_id,
-        status: order.status,
-        total: order.total,
-        createdAt: order.created_at,
-        completedAt: order.completed_at
+        orderId: order.payment_intent_id,
+        status: isCompleted ? 'completed' : 'pending_payment',
+        total: order.total_cents / 100,
+        createdAt: order.created_at
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }

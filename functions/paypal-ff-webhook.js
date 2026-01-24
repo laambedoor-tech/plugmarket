@@ -53,7 +53,7 @@ export default {
 
       // Search for pending orders with matching amount
       const searchRes = await fetch(
-        `${supabaseUrl}/rest/v1/orders?payment_method=eq.paypal_ff&status=eq.pending_payment&total=eq.${amount}`,
+        `${supabaseUrl}/rest/v1/orders?payment_intent_id=like.PPFF-*&total_cents=eq.${Math.round(amount * 100)}`,
         {
           headers: {
             'apikey': supabaseKey,
@@ -83,7 +83,7 @@ export default {
 
       // Update order status
       const updateRes = await fetch(
-        `${supabaseUrl}/rest/v1/orders?order_id=eq.${matchedOrder.order_id}`,
+        `${supabaseUrl}/rest/v1/orders?payment_intent_id=eq.${matchedOrder.payment_intent_id}`,
         {
           method: 'PATCH',
           headers: {
@@ -93,10 +93,7 @@ export default {
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify({
-            status: 'completed',
-            payment_txn_id: txnId,
-            payer_email: payerEmail,
-            completed_at: new Date().toISOString()
+            payment_intent_id: `${matchedOrder.payment_intent_id}_completed_${txnId}`
           })
         }
       );

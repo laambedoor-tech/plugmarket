@@ -8,10 +8,6 @@ routes = [
   { pattern = "plugmarket.es/api/*", zone_name = "plugmarket.es" }
 ]
 
-# Cron trigger for automatic PayPal F&F verification (every 2 minutes)
-[triggers]
-crons = ["*/2 * * * *"]
-
 [vars]
 STRIPE_PUBLISHABLE_KEY = "pk_live_51SQAD7GqeSmKEqnwptb6rHCNyCBYmYQQa1HwAIUGjAnwlfp5kUXbCsIw0qhJ3nNZa5YYmCEUFIlevNKetXrXFdJ300ECXpbADy"
 STRIPE_WEBHOOK_SECRET = "whsec_WFWyo9U4IQPHNrQMxklBCntFU7t55WzT"

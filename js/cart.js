@@ -292,13 +292,13 @@ function initCheckout() {
     } catch {}
   });
   document.getElementById('tab-balance')?.addEventListener('click', async () => {
-    documepaypal = document.getElementById('paypal-container'); if (paypal) paypal.style.display = 'none';
+    document.getElementById('payment-form').style.display = 'none';
+    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const paypal = document.getElementById('paypal-container'); if (paypal) paypal.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'block';
     document.getElementById('tab-balance')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypalntById('balance-container'); if (balance) balance.style.display = 'block';
-    document.getElementById('tab-balance')?.classList.add('btn--primary');
-    document.getElementById('tab-card')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     try { await loadBalanceInfo(); } catch (e){ console.error('Failed to load balance:', e); }
   });
