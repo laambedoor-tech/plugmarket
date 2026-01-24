@@ -36,7 +36,7 @@ const PRICES_USD = {
   filmora: { 'Lifetime': 7.29 },
   duolingo: { '12 Months': 1.24, 'Lifetime': 1.62 },
   movistar: { '12 Months': 2.44, 'Lifetime': 2.92 },
-  discordpromocode: { '1 Month': 0.6, '3 Months': 1.05, 'Boost 1m': 4.95, 'Boost 3m': 15.0 },
+  discordpromocode: { '1 Month': 0.6, '3 Months': 1.05, 'Boost 1m': 4.00, 'Boost 3m': 15.0 },
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
   steamaccount: { 'Random Games': 0.25 },
   dazn: { 'Lifetime': 1.5 },

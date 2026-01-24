@@ -16,7 +16,7 @@ const PRICES_EUR = {
   hbomax: { 'Lifetime': 108 },
   nordvpn: { '1 Month': 146, '3 Months': 275, '6 Months': 470, '12 Months': 862, 'Lifetime': 146 },
   crunchy: { '1 Month': 105, '3 Months': 267, '6 Months': 470, '12 Months': 842, 'Lifetime': 105 },
-  nitro: { 'Boost 1m': 495, 'Boost 1 Year': 1229, 'Basic 1m': 110 },
+  nitro: { 'Boost 1m': 400, 'Boost 1 Year': 1229, 'Basic 1m': 110 },
   discordpromocode: { '1 Month Nitro': 89, '3 Months Nitro': 99, 'Boost 1m': 89, 'Boost 3m': 99 },
   realmembers: { '[500]': 203, '[1000]': 383, '[2000]': 709, '[3000]': 1047, '[4000]': 1102, '[5000]': 1405 },
   chatgpt: { '1 Month': 259, '3 Months': 632, '6 Months': 962, '12 Months': 1365 },
