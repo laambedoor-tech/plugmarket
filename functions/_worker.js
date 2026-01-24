@@ -24,19 +24,13 @@ import getBalanceTransactions from './get-balance-transactions.js';
 import payWithBalance from './pay-with-balance.js';
 import paypalFFCreateOrder from './paypal-ff-create-order.js';
 import paypalFFWebhook from './paypal-ff-webhook.js';
-import paypalFFTestComplete from './paypal-ff-test-complete.js';
-import paypalFFAutoVerify from './paypal-ff-auto-verify.js';
+import paypalFFCheckOrder from './paypal-ff-check-order.js';
 import searchOrders from './search-orders.js';
 import findMissingOrders from './find-missing-orders.js';
 import recoverStripeOrder from './recover-stripe-order.js';
 import manualCreateOrder from './manual-create-order.js';
 
 export default {
-  // Cron trigger for automatic PayPal verification (runs every 2 minutes)
-  async scheduled(event, env, ctx) {
-    await paypalFFAutoVerify.scheduled(event, env, ctx);
-  },
-  
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -85,8 +79,7 @@ export default {
     // PayPal Friends & Family routes
     if (path === '/api/paypal-ff/create-order') return paypalFFCreateOrder.fetch(request, env, ctx);
     if (path === '/api/paypal-ff/webhook') return paypalFFWebhook.fetch(request, env, ctx);
-    if (path === '/api/paypal-ff/test-complete') return paypalFFTestComplete.fetch(request, env, ctx);
-    if (path === '/api/paypal-ff/auto-verify') return paypalFFAutoVerify.fetch(request, env, ctx);
+    if (path === '/api/paypal-ff/check-order') return paypalFFCheckOrder.fetch(request, env, ctx);
 
     // NOWPayments crypto routes
     if (path === '/api/crypto/now/create') return cryptoNowCreate.fetch(request, env, ctx);

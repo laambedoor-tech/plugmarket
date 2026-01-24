@@ -8,9 +8,6 @@ let stripe = null;
 let elements = null;
 let paymentElement = null;
 let clientSecret = null;
-let paypalLoaded = false;
-let paypalConfig = null;
-let paypalOrderRef = '';
 
 async function fetchJSON(url, opts){
   const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
@@ -62,121 +59,6 @@ function setMessage(msg){
   if (!msg){ el.style.display = 'none'; el.textContent = ''; return; }
   el.textContent = msg;
   el.style.display = 'block';
-}
-
-function setPaypalMessage(msg){
-  const el = document.getElementById('paypal-message');
-  if (!el) return;
-  if (!msg){ el.style.display = 'none'; el.textContent = ''; return; }
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-async function ensurePaypal(){
-  if (paypalLoaded) return true;
-  paypalConfig = await fetchJSON(`${API_BASE}/api/paypal/config`);
-  if (!paypalConfig.clientId){ setPaypalMessage('PayPal is not configured yet.'); return false; }
-  await new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    // Use capture intent; disable card/credit to avoid duplicate flows via PayPal
-    const currency = encodeURIComponent(paypalConfig.currency || 'USD');
-    const clientId = encodeURIComponent(paypalConfig.clientId);
-    s.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&intent=capture&disable-funding=card,credit,venmo&components=buttons&commit=true`;
-    s.onload = () => { paypalLoaded = true; resolve(); };
-    s.onerror = () => reject(new Error('Failed to load PayPal SDK'));
-    document.head.appendChild(s);
-  });
-  return true;
-}
-
-async function mountPaypalButtons(){
-  const ok = await ensurePaypal();
-  if (!ok) return;
-  // @ts-ignore
-  if (!window.paypal) { setPaypalMessage('PayPal SDK not available'); return; }
-  // Prevent PayPal usage for very small orders (< $1.00) which PayPal rejects in live.
-  try {
-    const items = getCart();
-    const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-    if (subtotal < 1) {
-      setPaypalMessage('PayPal requires a minimum of $1.00. Please add more items or use Card.');
-      const container = document.getElementById('paypal-buttons');
-      if (container) container.innerHTML = '';
-      return;
-    }
-  } catch {}
-  const container = document.getElementById('paypal-buttons');
-  container.innerHTML = '';
-  // @ts-ignore
-  window.paypal.Buttons({
-    style: { layout: 'vertical', shape: 'rect', color: 'gold' },
-    createOrder: async () => {
-      const items = getCart();
-      const res = await fetch(`${API_BASE}/api/paypal/create-order`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })) })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        const detail = data?.details?.[0]?.issue || data?.details?.[0]?.description || data?.name || '';
-        setPaypalMessage(`PayPal error: ${data.error || detail || 'Failed to create order'}`);
-        throw new Error(data.error || detail || 'Failed to create PayPal order');
-      }
-      paypalOrderRef = data.reference || '';
-      const refEl = document.getElementById('paypal-reference');
-      if (refEl) {
-        if (paypalOrderRef) {
-          refEl.textContent = `Referencia PayPal: ${paypalOrderRef}`;
-          refEl.style.display = 'block';
-        } else {
-          refEl.textContent = '';
-          refEl.style.display = 'none';
-        }
-      }
-      return data.id;
-    },
-    onApprove: async (data) => {
-      try {
-        const emailEl = document.getElementById('paypal-email');
-        const customerEmail = emailEl ? emailEl.value.trim() : '';
-        if (!customerEmail) {
-          setPaypalMessage('Please enter your email');
-          return;
-        }
-        const items = getCart();
-        const res = await fetch(`${API_BASE}/api/paypal/capture-order`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderId: data.orderID,
-            cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
-            customerEmail
-          })
-        });
-        const j = await res.json();
-        if (!res.ok) {
-          const detail = j?.details?.[0]?.issue || j?.details?.[0]?.description || j?.name || '';
-          setPaypalMessage(`PayPal capture error: ${j.error || detail || 'Capture failed'}`);
-          throw new Error(j.error || detail || 'Capture failed');
-        }
-        // success
-        setCart([]);
-        showCheckout(false);
-        const modal = document.getElementById('success-modal');
-        if (modal) modal.style.display = 'flex';
-        if (modal){
-          const note = modal.querySelector('.paypal-ref');
-          if (note) {
-            note.textContent = paypalOrderRef ? `Referencia: ${paypalOrderRef}` : '';
-            note.style.display = paypalOrderRef ? 'block' : 'none';
-          }
-        }
-      } catch (e) {
-        setPaypalMessage(e.message || 'Capture failed');
-      }
-    },
-    onCancel: () => { setPaypalMessage('Payment was cancelled.'); },
-    onError: (err) => { setPaypalMessage('An error occurred with PayPal.'); }
-  }).render('#paypal-buttons');
 }
 
 // local toneToGradient copy to avoid module scope issues
@@ -373,58 +255,35 @@ function initCheckout() {
   // Method tab switching
   document.getElementById('tab-card')?.addEventListener('click', () => {
     document.getElementById('payment-form').style.display = 'block';
-    document.getElementById('paypal-container').style.display = 'none';
-    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const paypal = document.getElementById('paypal-container'); if (paypal) paypal.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-card').classList.add('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
   });
-  document.getElementById('tab-paypal')?.addEventListener('click', async () => {
+
+  document.getElementById('tab-paypal')?.addEventListener('click', () => {
     document.getElementById('payment-form').style.display = 'none';
-    document.getElementById('paypal-container').style.display = 'block';
-    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    const paypal = document.getElementById('paypal-container'); if (paypal) paypal.style.display = 'block';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
-    document.getElementById('tab-paypal').classList.add('btn--primary');
+    document.getElementById('tab-paypal')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
-    try { await mountPaypalButtons(); } catch (e){ setPaypalMessage(e.message || 'Unable to load PayPal'); }
   });
-  document.getElementById('tab-paypal-ff')?.addEventListener('click', () => {
-    document.getElementById('payment-form').style.display = 'none';
-    document.getElementById('paypal-container').style.display = 'none';
-    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'block';
-    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
-    const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
-    document.getElementById('tab-paypal-ff')?.classList.add('btn--primary');
-    document.getElementById('tab-card')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
-    document.getElementById('tab-crypto')?.classList.remove('btn--primary');
-    document.getElementById('tab-balance')?.classList.remove('btn--primary');
-    
-    // Pre-fill email if exists
-    const savedEmail = localStorage.getItem('userEmail');
-    const emailInput = document.getElementById('paypal-ff-email');
-    if (savedEmail && emailInput && !emailInput.value) {
-      emailInput.value = savedEmail;
-    }
-  });
+
+
   document.getElementById('tab-crypto')?.addEventListener('click', async () => {
     document.getElementById('payment-form').style.display = 'none';
-    document.getElementById('paypal-container').style.display = 'none';
-    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
     const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'block';
+    const paypal = document.getElementById('paypal-container'); if (paypal) paypal.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'none';
     document.getElementById('tab-crypto')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-paypal')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
     document.getElementById('tab-balance')?.classList.remove('btn--primary');
     try {
       const sel = document.getElementById('crypto-currency');
@@ -433,65 +292,21 @@ function initCheckout() {
     } catch {}
   });
   document.getElementById('tab-balance')?.addEventListener('click', async () => {
-    document.getElementById('payment-form').style.display = 'none';
-    document.getElementById('paypal-container').style.display = 'none';
-    const paypalFF = document.getElementById('paypal-ff-container'); if (paypalFF) paypalFF.style.display = 'none';
-    const crypto = document.getElementById('crypto-container'); if (crypto) crypto.style.display = 'none';
+    documepaypal = document.getElementById('paypal-container'); if (paypal) paypal.style.display = 'none';
     const balance = document.getElementById('balance-container'); if (balance) balance.style.display = 'block';
     document.getElementById('tab-balance')?.classList.add('btn--primary');
     document.getElementById('tab-card')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal')?.classList.remove('btn--primary');
-    document.getElementById('tab-paypal-ff')?.classList.remove('btn--primary');
+    document.getElementById('tab-paypalntById('balance-container'); if (balance) balance.style.display = 'block';
+    document.getElementById('tab-balance')?.classList.add('btn--primary');
+    document.getElementById('tab-card')?.classList.remove('btn--primary');
     document.getElementById('tab-crypto')?.classList.remove('btn--primary');
     try { await loadBalanceInfo(); } catch (e){ console.error('Failed to load balance:', e); }
   });
   
-  // PayPal F&F button - Validate email first, then show warning modal
-  document.getElementById('btn-pay-paypal-ff')?.addEventListener('click', () => {
-    // Get email from the input field in the panel
-    const emailInput = document.getElementById('paypal-ff-email');
-    const email = emailInput?.value.trim();
-    
-    // Validate email
-    if (!email || !email.includes('@') || !email.includes('.')) {
-      emailInput.style.borderColor = '#ff0055';
-      emailInput.style.background = 'rgba(255, 0, 85, 0.1)';
-      emailInput.focus();
-      
-      // Show error message
-      const existingError = document.getElementById('email-error-msg');
-      if (existingError) existingError.remove();
-      
-      const errorMsg = document.createElement('p');
-      errorMsg.id = 'email-error-msg';
-      errorMsg.style.cssText = 'color: #ff5555; font-size: 13px; margin: 8px 0 0 0; font-weight: 600;';
-      errorMsg.textContent = '⚠️ Please enter a valid email address';
-      emailInput.parentElement.appendChild(errorMsg);
-      
-      setTimeout(() => {
-        emailInput.style.borderColor = 'rgba(100, 100, 255, 0.2)';
-        emailInput.style.background = 'rgba(255, 255, 255, 0.05)';
-        if (errorMsg.parentElement) errorMsg.remove();
-      }, 3000);
-      
-      return;
-    }
-    
-    // Save email to localStorage
-    localStorage.setItem('userEmail', email);
-    
-    // Show PayPal warning modal
-    showPayPalWarningModal();
-  });
-  document.getElementById('btn-cancel-paypal-ff')?.addEventListener('click', () => {
-    showCheckout(false);
-  });
+
   
   document.getElementById('btn-create-crypto')?.addEventListener('click', async () => {
     try { await startCryptoCheckout(); } catch (e){ setCryptoMessage(e.message || 'Unable to start crypto checkout'); }
-  });
-  document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
-    showCheckout(false); setPaypalMessage('');
   });
   document.getElementById('btn-cancel-crypto')?.addEventListener('click', () => {
     showCheckout(false);
@@ -502,6 +317,21 @@ function initCheckout() {
     document.getElementById('btn-cancel-crypto').style.display = 'none';
     try { if (cryptoPoll) clearInterval(cryptoPoll); } catch {}
   });
+
+  // PayPal F&F buttons
+  document.getElementById('btn-create-paypal')?.addEventListener('click', async () => {
+    try { await startPayPalCheckout(); } catch (e){ setPayPalMessage(e.message || 'Unable to start PayPal checkout'); }
+  });
+  document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
+    showCheckout(false);
+    setPayPalMessage('');
+    setPayPalStatus('waiting');
+    const panel = document.getElementById('paypal-panel'); if (panel) panel.style.display = 'none';
+    document.getElementById('btn-create-paypal').style.display = 'inline-block';
+    document.getElementById('btn-cancel-paypal').style.display = 'none';
+    try { if (paypalPoll) clearInterval(paypalPoll); } catch {}
+  });
+
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);
     setMessage('');
@@ -846,253 +676,144 @@ function getTotalAmount() {
   }, 0);
 }
 
-function showPayPalFFWarning() {
-  // Email is now handled in the panel, just show the warning modal
-  showPayPalWarningModal();
+// PayPal F&F functions
+function setPayPalMessage(msg){
+  const el = document.getElementById('paypal-message');
+  if (!el) return;
+  if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
+  el.textContent = msg;
+  el.style.display = 'block';
 }
 
-function showEmailModal() {
-  const modal = document.createElement('div');
-  modal.id = 'email-modal';
-  modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10001;
-    backdrop-filter: blur(10px);
-    animation: fadeIn 0.3s ease;
-  `;
-
-  const modalContent = document.createElement('div');
-  modalContent.style.cssText = `
-    background: linear-gradient(145deg, #1a1a3e 0%, #16213e 100%);
-    border-radius: 24px;
-    padding: 44px;
-    max-width: 480px;
-    width: 90%;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(100, 100, 255, 0.2);
-    animation: slideUp 0.4s ease;
-  `;
-
-  modalContent.innerHTML = `
-    <style>
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      @keyframes slideUp {
-        from { transform: translateY(30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      .email-input {
-        width: 100%;
-        padding: 16px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 2px solid rgba(100, 100, 255, 0.2);
-        border-radius: 12px;
-        color: #fff;
-        font-size: 15px;
-        outline: none;
-        transition: all 0.3s;
-      }
-      .email-input:focus {
-        border-color: #0088ff;
-        background: rgba(255, 255, 255, 0.08);
-      }
-      .email-input::placeholder {
-        color: #7788aa;
-      }
-    </style>
-    <div style="text-align: center;">
-      <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #ff0080, #ff0055); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(255, 0, 128, 0.5);">
-        <svg width="32" height="32" fill="none" stroke="white" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-        </svg>
-      </div>
-      <h2 style="color: #fff; font-size: 24px; margin-bottom: 12px; font-weight: 700;">Email Required</h2>
-      <p style="color: #8899ff; font-size: 15px; line-height: 1.6; margin-bottom: 32px;">
-        Please enter your email address to receive order updates and confirmation.
-      </p>
-      
-      <input type="email" id="userEmailInput" class="email-input" placeholder="your.email@example.com" autofocus>
-      
-      <div style="display: flex; gap: 12px; margin-top: 28px;">
-        <button id="cancel-email" style="flex: 1; padding: 16px; background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-          Cancel
-        </button>
-        <button id="save-email" style="flex: 1; padding: 16px; background: linear-gradient(135deg, #ff0080, #ff0055); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(255, 0, 128, 0.4);">
-          Continue →
-        </button>
-      </div>
-    </div>
-  `;
-
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
-
-  const input = modal.querySelector('#userEmailInput');
-  const cancelBtn = modal.querySelector('#cancel-email');
-  const saveBtn = modal.querySelector('#save-email');
-
-  // Hover effects
-  cancelBtn.addEventListener('mouseenter', () => {
-    cancelBtn.style.background = 'rgba(255, 255, 255, 0.12)';
-  });
-  cancelBtn.addEventListener('mouseleave', () => {
-    cancelBtn.style.background = 'rgba(255, 255, 255, 0.08)';
-  });
-
-  saveBtn.addEventListener('mouseenter', () => {
-    saveBtn.style.transform = 'translateY(-2px)';
-    saveBtn.style.boxShadow = '0 6px 24px rgba(255, 0, 128, 0.6)';
-  });
-  saveBtn.addEventListener('mouseleave', () => {
-    saveBtn.style.transform = 'translateY(0)';
-    saveBtn.style.boxShadow = '0 4px 16px rgba(255, 0, 128, 0.4)';
-  });
-
-  cancelBtn.addEventListener('click', () => {
-    document.body.removeChild(modal);
-  });
-
-  saveBtn.addEventListener('click', () => {
-    const email = input.value.trim();
-    if (!email || !email.includes('@') || !email.includes('.')) {
-      input.style.borderColor = '#ff0055';
-      input.focus();
-      return;
-    }
-    localStorage.setItem('userEmail', email);
-    document.body.removeChild(modal);
-    showPayPalWarningModal();
-  });
-
-  input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      saveBtn.click();
-    }
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      document.body.removeChild(modal);
-    }
-  });
+function setPayPalStatus(status){
+  const el = document.getElementById('paypal-status');
+  if (!el) return;
+  const msgs = {
+    'waiting': '⏳ Waiting for payment...',
+    'verifying': '🔍 Verifying payment...',
+    'confirmed': '✅ Payment confirmed!',
+    'failed': '❌ Payment failed',
+  };
+  const text = msgs[status] || msgs['waiting'];
+  const colors = {
+    'waiting': 'rgba(255,171,64,.2); color:#ffab40',
+    'verifying': 'rgba(98,160,255,.2); color:#62a0ff',
+    'confirmed': 'rgba(46,213,115,.2); color:#2ed573',
+    'failed': 'rgba(255,39,67,.2); color:#ff2743',
+  };
+  const color = colors[status] || colors['waiting'];
+  el.style.background = color.split(';')[0];
+  el.style.color = color.split(';')[1].replace('color:', '');
+  el.textContent = text;
 }
 
-function showPayPalWarningModal() {
-  const modal = document.createElement('div');
-  modal.id = 'paypal-ff-modal';
-  modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    backdrop-filter: blur(10px);
-    animation: fadeIn 0.3s ease;
-  `;
+let paypalPoll = null;
+async function startPayPalCheckout(){
+  const emailEl = document.getElementById('paypal-email');
+  const customerEmail = emailEl ? emailEl.value.trim() : '';
+  
+  if (!customerEmail || !customerEmail.includes('@')) { 
+    setPayPalMessage('Please enter a valid email address'); 
+    return; 
+  }
+  
+  const items = getCart();
+  if (!items.length) { 
+    setPayPalMessage('Your cart is empty'); 
+    return; 
+  }
+  
+  setPayPalMessage('');
+  setPayPalStatus('waiting');
+  
+  const panel = document.getElementById('paypal-panel'); 
+  if (panel) panel.style.display = 'block';
+  
+  const createBtn = document.getElementById('btn-create-paypal'); 
+  if (createBtn) createBtn.style.display = 'none';
+  
+  const cancelBtn = document.getElementById('btn-cancel-paypal'); 
+  if (cancelBtn) cancelBtn.style.display = 'inline-block';
 
-  const modalContent = document.createElement('div');
-  modalContent.style.cssText = `
-    background: linear-gradient(145deg, #1a1a3e 0%, #16213e 100%);
-    border-radius: 24px;
-    padding: 44px;
-    max-width: 520px;
-    width: 90%;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(100, 100, 255, 0.2);
-    animation: slideUp 0.4s ease;
-  `;
-
-  modalContent.innerHTML = `
-    <div style="text-align: center;">
-      <div style="width: 68px; height: 68px; background: linear-gradient(135deg, #0088ff, #0066cc); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(0, 136, 255, 0.5);">
-        <svg width="36" height="36" fill="white" viewBox="0 0 24 24">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-        </svg>
-      </div>
-      <h2 style="color: #fff; font-size: 26px; margin-bottom: 16px; font-weight: 700; letter-spacing: -0.5px;">Important - Friends & Family Payment</h2>
-      <p style="color: #8899ff; font-size: 15px; line-height: 1.7; margin-bottom: 32px;">
-        Make sure to send the payment as <strong style="color: #00ff88;">Friends & Family</strong> 
-        and include the <strong style="color: #00ff88;">payment note</strong>, otherwise your order 
-        <strong style="color: #ff5555;">will not be processed automatically</strong>.
-      </p>
-      
-      <div style="background: rgba(0, 136, 255, 0.08); border: 1px solid rgba(0, 136, 255, 0.25); border-radius: 14px; padding: 20px; margin-bottom: 32px;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <div style="width: 42px; height: 42px; background: rgba(0, 136, 255, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg width="22" height="22" fill="none" stroke="#0088ff" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-          </div>
-          <div style="text-align: left; flex: 1;">
-            <div style="color: #0088ff; font-size: 14px; font-weight: 700; margin-bottom: 4px;">For Friends and Family</div>
-            <div style="color: #7788aa; font-size: 13px; line-height: 1.4;">Buyer Protection doesn't apply to this payment</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 14px;">
-        <button id="cancel-paypal-ff" style="flex: 1; padding: 16px; background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-          Cancel
-        </button>
-        <button id="continue-paypal-ff" style="flex: 2; padding: 16px; background: linear-gradient(135deg, #ff0080, #ff0055); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(255, 0, 128, 0.4);">
-          I Understand, Continue →
-        </button>
-      </div>
-    </div>
-  `;
-
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
-
-  const cancelBtn = modal.querySelector('#cancel-paypal-ff');
-  const continueBtn = modal.querySelector('#continue-paypal-ff');
-
-  cancelBtn.addEventListener('mouseenter', () => {
-    cancelBtn.style.background = 'rgba(255, 255, 255, 0.12)';
-  });
-  cancelBtn.addEventListener('mouseleave', () => {
-    cancelBtn.style.background = 'rgba(255, 255, 255, 0.08)';
-  });
-
-  continueBtn.addEventListener('mouseenter', () => {
-    continueBtn.style.transform = 'translateY(-2px)';
-    continueBtn.style.boxShadow = '0 6px 28px rgba(255, 0, 128, 0.6)';
-  });
-  continueBtn.addEventListener('mouseleave', () => {
-    continueBtn.style.transform = 'translateY(0)';
-    continueBtn.style.boxShadow = '0 4px 20px rgba(255, 0, 128, 0.4)';
-  });
-
-  cancelBtn.addEventListener('click', () => {
-    document.body.removeChild(modal);
-  });
-
-  continueBtn.addEventListener('click', () => {
-    document.body.removeChild(modal);
-    const cart = getCart();
-    const cartParam = encodeURIComponent(JSON.stringify(cart));
-    window.location.href = `paypal-ff.html?cart=${cartParam}`;
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      document.body.removeChild(modal);
+  try {
+    const res = await fetch(`${API_BASE}/api/paypal-ff/create-order`, {
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
+        email: customerEmail
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to create PayPal order');
     }
-  });
-}
 
+    const { orderId, email, amount, note } = data;
+    
+    // Display payment information
+    const orderIdEl = document.getElementById('paypal-order-id');
+    if (orderIdEl) orderIdEl.textContent = orderId;
+    
+    const amountEl = document.getElementById('paypal-amount');
+    if (amountEl) amountEl.textContent = `$${amount.toFixed(2)} USD`;
+    
+    const receiverEl = document.getElementById('paypal-receiver-email');
+    if (receiverEl) receiverEl.textContent = email;
+    
+    const noteEl = document.getElementById('paypal-note');
+    if (noteEl) noteEl.textContent = note;
+
+    // Start polling for payment confirmation
+    try { if (paypalPoll) clearInterval(paypalPoll); } catch {}
+    
+    paypalPoll = setInterval(async () => {
+      try {
+        const statusRes = await fetch(`${API_BASE}/api/paypal-ff/check-order?orderId=${encodeURIComponent(orderId)}`);
+        const statusData = await statusRes.json();
+        
+        if (!statusRes.ok) {
+          console.warn('Failed to check order status');
+          return;
+        }
+        
+        const orderStatus = statusData.status;
+        
+        if (orderStatus === 'completed') {
+          setPayPalStatus('confirmed');
+          clearInterval(paypalPoll);
+          
+          // Clear cart and show success
+          try { setCart([]); } catch {}
+          
+          setTimeout(() => {
+            const modal = document.getElementById('success-modal'); 
+            if (modal) modal.style.display = 'flex';
+            
+            const createBtn2 = document.getElementById('btn-create-paypal'); 
+            if (createBtn2) createBtn2.style.display = 'inline-block';
+            
+            const cancelBtn2 = document.getElementById('btn-cancel-paypal'); 
+            if (cancelBtn2) cancelBtn2.style.display = 'none';
+          }, 1000);
+        } else if (orderStatus === 'pending_payment') {
+          setPayPalStatus('waiting');
+        }
+      } catch (err) {
+        console.warn('PayPal poll error:', err?.message || err);
+      }
+    }, 5000); // Check every 5 seconds
+
+  } catch (err) {
+    setPayPalMessage(err.message || 'Failed to create PayPal order');
+    setPayPalStatus('failed');
+    
+    const createBtn = document.getElementById('btn-create-paypal'); 
+    if (createBtn) createBtn.style.display = 'inline-block';
+    
+    const cancelBtn = document.getElementById('btn-cancel-paypal'); 
+    if (cancelBtn) cancelBtn.style.display = 'none';
+  }
+}

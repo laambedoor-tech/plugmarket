@@ -1,0 +1,6 @@
+name = "plugmarket-paypal-ipn"
+main = "worker.js"
+compatibility_date = "2025-01-24"
+
+# Este Worker solo necesita manejar el forwarding de IPN
+# No requiere variables de entorno adicionales

@@ -1,198 +1,145 @@
 /**
  * POST /api/paypal-ff/webhook
- * Receives PayPal IPN notifications for Friends & Family payments
- * Verifies the payment and updates order status
+ * Receives IPN notifications from PayPal (via Cloudflare Worker forwarder)
+ * Verifies and processes Friends & Family payments
  */
-
-import { createClient } from '@supabase/supabase-js';
 
 export default {
   async fetch(request, env) {
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      }});
-    }
-
     if (request.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
     try {
-      // Parse IPN data (comes as form-urlencoded)
-      const contentType = request.headers.get('content-type') || '';
-      let ipnData;
-
-      if (contentType.includes('application/x-www-form-urlencoded')) {
-        const formData = await request.text();
-        ipnData = Object.fromEntries(new URLSearchParams(formData));
-      } else {
-        ipnData = await request.json();
-      }
-
-      console.log('Received IPN:', JSON.stringify(ipnData, null, 2));
-
-      // Verify with PayPal (IMPORTANT: This validates the IPN is genuine)
-      const verificationResponse = await verifyIPN(ipnData, env);
+      // Read IPN data
+      const body = await request.text();
+      const params = new URLSearchParams(body);
       
-      if (!verificationResponse.verified) {
+      // Log IPN for debugging
+      console.log('Received IPN:', Object.fromEntries(params));
+
+      // Verify IPN with PayPal
+      const verified = await verifyIPN(body, env);
+      if (!verified) {
         console.error('IPN verification failed');
-        return new Response('INVALID', { status: 400 });
+        return new Response('Verification failed', { status: 400 });
       }
 
-      console.log('✓ IPN verified successfully');
+      // Extract payment data
+      const paymentStatus = params.get('payment_status');
+      const receiverEmail = params.get('receiver_email');
+      const amount = parseFloat(params.get('mc_gross') || '0');
+      const currency = params.get('mc_currency');
+      const txnId = params.get('txn_id');
+      const payerEmail = params.get('payer_email');
+      const note = params.get('custom') || params.get('memo') || '';
 
-      // Extract payment info
-      const {
-        payment_status,
-        receiver_email,
-        mc_gross,
-        mc_currency,
-        txn_id,
-        payer_email,
-        custom,
-        item_name,
-        memo,
-        item_number
-      } = ipnData;
-
-      console.log('Payment details:', {
-        status: payment_status,
-        amount: mc_gross,
-        currency: mc_currency,
-        txn_id,
-        memo,
-        custom,
-        item_name,
-        item_number
-      });
-
-      // Extract casual note from various possible fields
-      const casualNote = (memo || custom || item_name || item_number || '').trim();
-      
-      if (!casualNote) {
-        console.error('No note found in IPN. Available fields:', Object.keys(ipnData));
-        return new Response('OK', { status: 200 }); // Still return OK to prevent retries
-      }
-
-      console.log('Processing payment with note:', casualNote);
-
-      // Check if payment is completed
-      if (payment_status !== 'Completed') {
-        console.log(`Payment status is ${payment_status}, not Completed`);
+      // Only process completed payments
+      if (paymentStatus !== 'Completed') {
+        console.log(`Payment status is ${paymentStatus}, ignoring`);
         return new Response('OK', { status: 200 });
       }
 
-      // Create Supabase client
-      const supabase = createClient(
-        env.SUPABASE_URL,
-        env.SUPABASE_ANON_KEY
+      // Verify receiver email matches
+      const expectedEmail = env.PAYPAL_MANUAL_EMAIL;
+      if (receiverEmail !== expectedEmail) {
+        console.error(`Wrong receiver: ${receiverEmail} vs ${expectedEmail}`);
+        return new Response('OK', { status: 200 });
+      }
+
+      // Find matching order by amount and note
+      const supabaseUrl = env.SUPABASE_URL;
+      const supabaseKey = env.SUPABASE_ANON_KEY;
+
+      // Search for pending orders with matching amount
+      const searchRes = await fetch(
+        `${supabaseUrl}/rest/v1/orders?payment_method=eq.paypal_ff&status=eq.pending_payment&total=eq.${amount}`,
+        {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        }
       );
 
-      // Find the order by casual note
-      const { data: order, error: findError } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('payment_intent_id', casualNote)
-        .single();
-
-      if (findError || !order) {
-        console.error('Order not found for note:', casualNote);
-        console.error('Find error:', findError);
-        
-        // Try to find ALL orders to see what's in the database
-        const { data: allOrders } = await supabase
-          .from('orders')
-          .select('id, payment_intent_id, customer_email, total_cents')
-          .order('created_at', { ascending: false })
-          .limit(10);
-        
-        console.log('Recent orders in database:', allOrders);
+      if (!searchRes.ok) {
+        console.error('Failed to search orders:', await searchRes.text());
         return new Response('OK', { status: 200 });
       }
 
-      console.log('Found order:', order.id, 'Email:', order.customer_email);
-
-      // Check if already processed - if payment_intent_id changed from casual note to txn_id
-      if (order.payment_intent_id && order.payment_intent_id.length > 20) {
-        console.log('Order already completed:', order.id);
-        return new Response('OK', { status: 200 });
-      }
-
-      // Verify amount matches
-      const expectedAmount = (order.total_cents / 100).toFixed(2);
-      console.log('Amount check:', { received: mc_gross, expected: expectedAmount });
+      const orders = await searchRes.json();
       
-      if (parseFloat(mc_gross) < parseFloat(expectedAmount)) {
-        console.error(`Amount mismatch: received ${mc_gross}, expected ${expectedAmount}`);
+      if (orders.length === 0) {
+        console.log(`No matching order found for amount $${amount}`);
         return new Response('OK', { status: 200 });
       }
 
-      console.log('✓ Amount verified');
-
-      // Mark order as completed by updating payment_intent_id to the transaction ID
-      console.log('Updating order with transaction ID:', txn_id);
-      
-      const { error: updateError } = await supabase
-        .from('orders')
-        .update({
-          payment_intent_id: txn_id
-        })
-        .eq('id', order.id);
-
-      if (updateError) {
-        console.error('Failed to update order:', updateError);
-        return new Response('ERROR', { status: 500 });
+      // Match by note if available
+      let matchedOrder = orders[0];
+      if (note) {
+        const noteMatch = orders.find(o => o.payment_note === note);
+        if (noteMatch) matchedOrder = noteMatch;
       }
 
-      console.log(`✅ Order ${order.id} completed successfully with txn ${txn_id}`);
+      // Update order status
+      const updateRes = await fetch(
+        `${supabaseUrl}/rest/v1/orders?order_id=eq.${matchedOrder.order_id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            status: 'completed',
+            payment_txn_id: txnId,
+            payer_email: payerEmail,
+            completed_at: new Date().toISOString()
+          })
+        }
+      );
 
-      // TODO: Send confirmation email to customer
-      // TODO: Fulfill order (send digital products)
+      if (!updateRes.ok) {
+        console.error('Failed to update order:', await updateRes.text());
+        return new Response('OK', { status: 200 });
+      }
+
+      // TODO: Deliver products to customer
+      // Call your fulfillment function here
+      console.log(`Order ${matchedOrder.order_id} completed, delivering products...`);
 
       return new Response('OK', { status: 200 });
 
     } catch (err) {
       console.error('Error processing IPN:', err);
-      return new Response('ERROR', { status: 500 });
+      return new Response('Error', { status: 500 });
     }
   }
 };
 
-/**
- * Verify IPN with PayPal
- * Sends the IPN data back to PayPal to confirm it's genuine
- */
-async function verifyIPN(ipnData, env) {
+async function verifyIPN(body, env) {
   try {
-    // Determine PayPal verification URL
-    const isProduction = env.PAYPAL_ENV === 'live' || env.PAYPAL_ENV === 'production';
-    const verifyUrl = isProduction
+    // Verify with PayPal
+    const verifyUrl = env.PAYPAL_ENV === 'production'
       ? 'https://ipnpb.paypal.com/cgi-bin/webscr'
       : 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr';
 
-    // Build verification request
-    const verifyParams = new URLSearchParams(ipnData);
-    verifyParams.set('cmd', '_notify-validate');
+    const verifyBody = 'cmd=_notify-validate&' + body;
 
     const response = await fetch(verifyUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: verifyParams.toString()
+      body: verifyBody
     });
 
-    const verificationResult = await response.text();
-    
-    return {
-      verified: verificationResult === 'VERIFIED',
-      result: verificationResult
-    };
+    const text = await response.text();
+    return text === 'VERIFIED';
   } catch (err) {
     console.error('IPN verification error:', err);
-    return { verified: false, error: err.message };
+    return false;
   }
 }
