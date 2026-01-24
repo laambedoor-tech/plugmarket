@@ -758,7 +758,7 @@ async function startPayPalCheckout(){
     if (orderIdEl) orderIdEl.textContent = orderId;
     
     const amountEl = document.getElementById('paypal-amount');
-    if (amountEl) amountEl.textContent = `$${amount.toFixed(2)} USD`;
+    if (amountEl) amountEl.textContent = `€${amount.toFixed(2)}`;
     
     const receiverEl = document.getElementById('paypal-receiver-email');
     if (receiverEl) receiverEl.textContent = email;

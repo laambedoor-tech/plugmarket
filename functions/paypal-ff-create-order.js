@@ -4,26 +4,34 @@
  * Creates a PayPal Friends & Family order with payment instructions
  */
 
-const PRICES_USD = {
-  netflix: { '1 Month': 1.50, '3 Months': 3.50, '6 Months': 6.00, '12 Months': 11.00, 'Lifetime': 18.00 },
-  spotify: { '1 Month': 2.20, '3 Months': 3.80, '6 Months': 6.20, '12 Months': 12.50, 'Lifetime': 1.78 },
-  'youtube-premium': { '1 Month': 1.60, '3 Months': 3.20, '6 Months': 5.50, '12 Months': 10.50, 'Lifetime': 2.27 },
-  disney: { '1 Month': 1.10, '3 Months': 2.70, '6 Months': 4.80, '12 Months': 9.50, 'Lifetime': 0.89 },
-  prime: { '1 Month': 1.80, '3 Months': 3.40, '6 Months': 5.80, '12 Months': 11.20, 'Lifetime': 14.00 },
-  hbomax: { '1 Month': 1.40, '3 Months': 3.10, '6 Months': 4.70, '12 Months': 9.80, 'Lifetime': 13.00 },
-  nordvpn: { '1 Month': 0.85, '3 Months': 2.00, '6 Months': 3.60, '12 Months': 6.90, 'Lifetime': 1.46 },
-  crunchy: { '1 Month': 0.90, '3 Months': 2.10, '6 Months': 3.80, '12 Months': 7.20, 'Lifetime': 1.05 },
-  nitro: { 'Boost 1m': 5.50, 'Boost 1 Year': 15.97, 'Basic 1m': 1.35 },
-  discordpromocode: { '1 Month': 0.60, '3 Months': 1.05, 'Boost 1m': 5.50, 'Boost 3m': 15.00 },
-  chatgpt: { '1 Month': 3.20, '3 Months': 7.80, '6 Months': 12.50, '12 Months': 24.00 },
-  'chatgpt-pro': { '1 Month': 3.15, '3 Months': 6.00 },
-  capcut: { '1 Month': 1.20, '3 Months': 2.50, '6 Months': 4.20, '12 Months': 8.00, 'Lifetime': 2.35 },
-  geoguessr: { '1 Month': 2.00, '3 Months': 5.00, '12 Months': 10.00, 'Lifetime': 0.81 },
-  filmora: { '1 Month': 2.50, '3 Months': 6.00, '6 Months': 10.50, '12 Months': 16.00, 'Lifetime': 7.29 },
-  duolingo: { '12 Months': 1.24, 'Lifetime': 1.62 },
-  movistar: { '12 Months': 2.44, 'Lifetime': 2.92 },
-  dazn: { 'Lifetime': 1.35 },
-  roblox: { '800 Robux': 10, '1700 Robux': 20, '4500 Robux': 50 }
+const PRICES_EUR = {
+  boosts: { '3 Months': 6.65 },
+  netflix: { '1 Month': 1.22, '3 Months': 2.84, '6 Months': 4.86, '12 Months': 8.91, 'Bulk': 0.49, 'Lifetime': 1.10 },
+  spotify: { '1 Month': 1.78, '3 Months': 3.08, '6 Months': 5.02, '12 Months': 9.62, 'Lifetime': 1.78 },
+  'youtube-premium': { '1 Month': 2.27, '6 Months': 6.80, '12 Months': 10.13, 'Lifetime': 2.27 },
+  disney: { '1 Month': 0.89, '3 Months': 2.19, '6 Months': 3.89, '12 Months': 7.70, 'Lifetime': 0.89 },
+  prime: { '1 Month': 0.65, '3 Months': 1.78, '12 Months': 5.99, 'Lifetime': 0.65 },
+  hbomax: { 'Lifetime': 1.08 },
+  nordvpn: { '1 Month': 1.46, '3 Months': 2.75, '6 Months': 4.70, '12 Months': 8.62, 'Lifetime': 1.46 },
+  crunchy: { '1 Month': 1.05, '3 Months': 2.67, '6 Months': 4.70, '12 Months': 8.42, 'Lifetime': 1.05 },
+  nitro: { 'Boost 1m': 4.95, 'Boost 1 Year': 12.29, 'Basic 1m': 1.10 },
+  discordpromocode: { '1 Month': 0.62, '3 Months': 1.19, 'Boost 1m': 4.95, 'Boost 3m': 13.65 },
+  realmembers: { '[500]': 2.03, '[1000]': 3.83, '[2000]': 7.09, '[3000]': 10.47, '[4000]': 11.02, '[5000]': 14.05 },
+  chatgpt: { '1 Month': 2.95, '3 Months': 6.48, '6 Months': 11.13, '12 Months': 21.87 },
+  'chatgpt-pro': { '1 Month': 2.84, '3 Months': 5.40 },
+  capcut: { '1 Month': 1.08, '3 Months': 2.25, '6 Months': 3.78, '12 Months': 7.20, 'Lifetime': 2.12 },
+  geoguessr: { '1 Month': 1.80, '3 Months': 4.50, '12 Months': 9.00, 'Lifetime': 0.73 },
+  filmora: { '1 Month': 2.25, '3 Months': 5.40, '6 Months': 9.45, '12 Months': 14.40, 'Lifetime': 6.56 },
+  duolingo: { '12 Months': 1.12, 'Lifetime': 1.46 },
+  movistar: { '12 Months': 2.20, 'Lifetime': 2.63 },
+  dazn: { 'Lifetime': 1.22 },
+  steamaccount: { 'Random Games': 0.25 },
+  microsoft: { 'Random Codes': 0.40 },
+  rockstar: { 'Activation Code': 0.25 },
+  minecraft: { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
+  stake: { 'Level 2 Verified': 0.60 },
+  xbox: { 'Game Pass Lifetime': 0.60 },
+  roblox: { '800 Robux': 10.00, '1700 Robux': 20.00, '4500 Robux': 50.00 }
 };
 
 // Random casual payment notes to make it look natural
@@ -106,7 +114,7 @@ export default {
           });
         }
 
-        const productPrices = PRICES_USD[pid];
+        const productPrices = PRICES_EUR[pid];
         if (!productPrices || !productPrices[plan]) {
           return new Response(JSON.stringify({ error: `Invalid product or plan: ${pid} - ${plan}` }), {
             status: 400,

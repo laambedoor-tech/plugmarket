@@ -32,7 +32,11 @@ export default {
       const currency = params.get('mc_currency');
       const txnId = params.get('txn_id');
       const payerEmail = params.get('payer_email');
-      const note = params.get('custom') || params.get('memo') || '';
+      
+      // PayPal F&F no envía el note en el IPN, solo en la transacción
+      // Por eso buscamos solo por monto
+      
+      console.log(`Processing payment: $${amount} from ${payerEmail} to ${receiverEmail}`);
 
       // Only process completed payments
       if (paymentStatus !== 'Completed') {
@@ -70,16 +74,15 @@ export default {
       const orders = await searchRes.json();
       
       if (orders.length === 0) {
-        console.log(`No matching order found for amount $${amount}`);
+        console.log(`No matching order found for amount €${amount}`);
         return new Response('OK', { status: 200 });
       }
 
-      // Match by note if available
-      let matchedOrder = orders[0];
-      if (note) {
-        const noteMatch = orders.find(o => o.payment_note === note);
-        if (noteMatch) matchedOrder = noteMatch;
-      }
+      // Tomar la orden más reciente que no esté completada
+      let matchedOrder = orders.find(o => !o.payment_intent_id.includes('_completed_'));
+      if (!matchedOrder) matchedOrder = orders[0];
+      
+      console.log(`Matched order: ${matchedOrder.payment_intent_id}`);
 
       // Update order status
       const updateRes = await fetch(
@@ -104,8 +107,7 @@ export default {
       }
 
       // TODO: Deliver products to customer
-      // Call your fulfillment function here
-      console.log(`Order ${matchedOrder.order_id} completed, delivering products...`);
+      console.log(`Order ${matchedOrder.payment_intent_id} completed successfully!`);
 
       return new Response('OK', { status: 200 });
 

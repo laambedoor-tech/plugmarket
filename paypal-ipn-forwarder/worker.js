@@ -13,7 +13,7 @@
  */
 
 export default {
-  async fetch(request) {
+  async fetch(request, env, ctx) {
     // Solo aceptar POST requests
     if (request.method !== 'POST') {
       return new Response('Only POST requests allowed', { status: 405 });
@@ -22,33 +22,38 @@ export default {
     // Leer el cuerpo de la petición IPN
     const body = await request.text();
 
+    console.log('IPN received from PayPal, forwarding...');
+
     // URL de tu servidor donde está desplegado tu Worker de PlugMarket
     // Actualiza esto con tu dominio real
     const targetUrl = 'https://plugmarket.es/api/paypal-ff/webhook';
 
-    try {
-      // Reenviar la petición IPN a tu servidor
-      const upstreamResponse = await fetch(targetUrl, {
+    // Responder inmediatamente a PayPal con 200 OK
+    // Esto evita que PayPal marque el IPN como fallido y lo reintente
+    const paypalResponse = new Response('OK', { status: 200 });
+
+    // Procesar el reenvío de forma asíncrona usando waitUntil
+    ctx.waitUntil(
+      fetch(targetUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          // Opcional: agregar un header secreto para verificar que viene del forwarder
           'X-IPN-Forwarder': 'plugmarket-ipn-v1'
         },
         body: body
-      });
+      })
+      .then(res => {
+        console.log(`Forwarded to webhook, status: ${res.status}`);
+        return res.text();
+      })
+      .then(text => {
+        console.log(`Webhook response: ${text}`);
+      })
+      .catch(err => {
+        console.error('Error forwarding to webhook:', err);
+      })
+    );
 
-      // Leer la respuesta de tu servidor
-      const responseBody = await upstreamResponse.text();
-
-      // Devolver la misma respuesta a PayPal
-      return new Response(responseBody, {
-        status: upstreamResponse.status,
-        headers: upstreamResponse.headers
-      });
-    } catch (err) {
-      console.error('Error forwarding IPN:', err);
-      return new Response('Forwarding error', { status: 500 });
-    }
+    return paypalResponse;
   }
 };
