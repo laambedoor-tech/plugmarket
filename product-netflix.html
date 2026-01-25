@@ -610,82 +610,6 @@
               </ul>
             </div>
           </div>
-
-          <!-- Full Access Instructions (Only shown for FA variant) -->
-          <div class="product-description" id="fa-instructions" style="display: none;">
-            <div class="description-header" style="cursor: pointer;" onclick="toggleFASection('usage')">
-              <h2>
-                ▶ Product usage instructions
-              </h2>
-            </div>
-            <div class="description-content" id="fa-usage-content" style="display: none;">
-              <div style="padding: 25px; color: #d7d9e0; font-size: 14px; line-height: 1.8;">
-                <div style="margin-bottom: 20px;">
-                  <strong style="color: #fff; font-size: 15px;">Mobile:</strong>
-                  <ul style="margin: 8px 0 0 20px; padding: 0;">
-                    <li>Use exclusively through the official Netflix mobile app.</li>
-                  </ul>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                  <strong style="color: #fff; font-size: 15px;">PC / Browser:</strong>
-                  <ul style="margin: 8px 0 0 20px; padding: 0;">
-                    <li>Access via cookies only when using a web browser.</li>
-                    <li>Username and password are supported <strong style="color: #fff;">only in the official app</strong>, not in browsers.</li>
-                    <li>Browser access may work in some cases but is <strong style="color: #fff;">not guaranteed</strong>.</li>
-                  </ul>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                  <strong style="color: #fff; font-size: 15px;">VPN:</strong>
-                  <ul style="margin: 8px 0 0 20px; padding: 0;">
-                    <li>Not required.</li>
-                    <li>Recommended to connect from the account's region for best stability.</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <strong style="color: #fff; font-size: 15px;">Help:</strong>
-                  <ul style="margin: 8px 0 0 20px; padding: 0;">
-                    <li>If you have issues or are unfamiliar with cookie login, follow this tutorial: <a href="#" style="color: #4da3ff; text-decoration: none;">Click here</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="product-description" id="fa-login-instructions" style="display: none; margin-top: 20px;">
-            <div class="description-header" style="cursor: pointer;" onclick="toggleFASection('login')">
-              <h2>
-                ▶ Full Access log in instructions
-              </h2>
-            </div>
-            <div class="description-content" id="fa-login-content" style="display: none;">
-              <div style="padding: 25px; color: #d7d9e0; font-size: 14px; line-height: 1.8;">
-                <div style="margin-bottom: 25px;">
-                  <strong style="color: #fff; font-size: 15px; display: block; margin-bottom: 10px;">Option A — "Forgot password" (recommended)</strong>
-                  <div style="padding-left: 15px;">
-                    <p style="margin: 8px 0;">On the Netflix login screen, select <strong style="color: #fff;">Forgot password?</strong></p>
-                    <p style="margin: 8px 0;">Choose <strong style="color: #fff;">Email</strong> and enter the <strong style="color: #fff;">account email</strong> provided.</p>
-                    <p style="margin: 8px 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided.</p>
-                    <p style="margin: 8px 0;">Use the reset email from Netflix to <strong style="color: #fff;">set a new Netflix password</strong>.</p>
-                    <p style="margin: 8px 0;">Log in to Netflix with the <strong style="color: #fff;">new password</strong>.</p>
-                  </div>
-                </div>
-
-                <div>
-                  <strong style="color: #fff; font-size: 15px; display: block; margin-bottom: 10px;">Option B — "Sign in with code"</strong>
-                  <div style="padding-left: 15px;">
-                    <p style="margin: 8px 0;">On the Netflix login screen, select <strong style="color: #fff;">Sign in with a code</strong>.</p>
-                    <p style="margin: 8px 0;">Netflix will send a code to the account email.</p>
-                    <p style="margin: 8px 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided and retrieve the code.</p>
-                    <p style="margin: 8px 0;">Log in using the code.</p>
-                    <p style="margin: 8px 0;">Go to <strong style="color: #fff;">Account Settings → Change password</strong> and set a new Netflix password.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Right: Product Info -->
@@ -864,18 +788,6 @@
       updateStockBadge();
       updateDiscountSystem(quantity);
       
-      // Show/hide Full Access instructions
-      const faInstructions = document.getElementById('fa-instructions');
-      const faLoginInstructions = document.getElementById('fa-login-instructions');
-      
-      if (selectedVariant.id === 'FA') {
-        faInstructions.style.display = 'block';
-        faLoginInstructions.style.display = 'block';
-      } else {
-        faInstructions.style.display = 'none';
-        faLoginInstructions.style.display = 'none';
-      }
-      
       // Disable add to cart and buy now buttons if out of stock
       const stock = getStockForVariant(selectedVariant.id);
       const addToCartBtn = document.getElementById('add-to-cart-btn');
@@ -905,21 +817,6 @@
           buyNowBtn.style.opacity = '1';
           buyNowBtn.style.cursor = 'pointer';
         }
-      }
-    }
-
-    // Toggle Full Access sections
-    function toggleFASection(section) {
-      const content = document.getElementById(`fa-${section}-content`);
-      const header = content.previousElementSibling;
-      const arrow = header.querySelector('h2');
-      
-      if (content.style.display === 'none') {
-        content.style.display = 'block';
-        arrow.innerHTML = arrow.innerHTML.replace('▶', '▼');
-      } else {
-        content.style.display = 'none';
-        arrow.innerHTML = arrow.innerHTML.replace('▼', '▶');
       }
     }
 
