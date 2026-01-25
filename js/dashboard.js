@@ -130,7 +130,14 @@ function displayLatestOrders(orders) {
   let ordersHTML = '';
   ordersList.forEach(order => {
     const detailsId = `details-${order.id}`;
-    const items = order.items || [];
+    // Parse cart_items if it's a string
+    let items = [];
+    try {
+      items = typeof order.cart_items === 'string' ? JSON.parse(order.cart_items) : (order.cart_items || order.items || []);
+    } catch (e) {
+      console.error('Error parsing cart_items:', e);
+      items = order.items || [];
+    }
     
     let credentialsHTML = '';
     items.forEach((item, index) => {
@@ -265,7 +272,14 @@ function displayAllOrders(orders) {
   let ordersHTML = '';
   orders.forEach(order => {
     const detailsId = `details-all-${order.id}`;
-    const items = order.items || [];
+    // Parse cart_items if it's a string
+    let items = [];
+    try {
+      items = typeof order.cart_items === 'string' ? JSON.parse(order.cart_items) : (order.cart_items || order.items || []);
+    } catch (e) {
+      console.error('Error parsing cart_items:', e);
+      items = order.items || [];
+    }
     
     let credentialsHTML = '';
     items.forEach((item, index) => {
