@@ -17,7 +17,7 @@ const PRICES_EUR = {
   nitro: { 'Boost 1m': 4.00, 'Boost 1 Year': 12.29, 'Basic 1m': 1.10 },
   discordpromocode: { '1 Month': 0.62, '3 Months': 1.19, 'Boost 1m': 4.00, 'Boost 3m': 13.65 },
   realmembers: { '[500]': 2.03, '[1000]': 3.83, '[2000]': 7.09, '[3000]': 10.47, '[4000]': 11.02, '[5000]': 14.05 },
-  chatgpt: { '1 Month': 2.95, '3 Months': 6.48, '6 Months': 11.13, '12 Months': 21.87 },
+  'chatgpt-plus': { '1 Month': 2.95, '3 Months': 6.48, '6 Months': 11.13, '12 Months': 9.69 },
   'chatgpt-pro': { '1 Month': 2.84, '3 Months': 5.40 },
   capcut: { '1 Month': 1.08, '3 Months': 2.25, '6 Months': 3.78, '12 Months': 7.20, 'Lifetime': 2.12 },
   geoguessr: { '1 Month': 1.80, '3 Months': 4.50, '12 Months': 9.00, 'Lifetime': 0.73 },

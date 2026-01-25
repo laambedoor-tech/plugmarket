@@ -142,7 +142,7 @@ function render(){
       'crunchy': 'resized/crunchyroll84.png',
       'nitro': 'resized/nitroboost84.png',
       'discordpromocode': 'resized/discordpromo84.png',
-      'chatgpt': 'resized/chatgptplus84.png',
+      'chatgpt-plus': 'resized/chatgptplus84.png',
       'chatgpt-pro': 'resized/chatgptpro84.png',
       'capcut': 'resized/capcutpro84.png',
       'geoguessr': 'resized/geoguessr84.png',
