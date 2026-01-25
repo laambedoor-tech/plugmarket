@@ -123,9 +123,12 @@ function displayLatestOrders(orders) {
     return;
   }
   
+  // Asegurarse que orders es un array
+  const ordersList = Array.isArray(orders) ? orders : [];
+  
   // Show ALL orders
   let ordersHTML = '';
-  orders.forEach(order => {
+  ordersList.forEach(order => {
     const detailsId = `details-${order.id}`;
     const items = order.items || [];
     

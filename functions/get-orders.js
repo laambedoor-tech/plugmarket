@@ -1,6 +1,7 @@
 /**
  * Cloudflare Workers: Get Orders
  * Routes: GET /api/get-orders?email=user@example.com
+ *         GET /api/get-orders (returns all orders for admin)
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -39,29 +40,23 @@ export default {
     }
 
     const email = url.searchParams.get('email');
-    if (!email) {
-      return new Response(
-        JSON.stringify({ error: 'Missing email parameter' }),
-        { 
-          status: 400, 
-          headers: { 
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        }
-      );
-    }
-
-    const normalizedEmail = email.toLowerCase().trim();
 
     try {
       const supabase = getSupabase(env);
 
-      const { data: orders, error } = await supabase
+      let query = supabase
         .from('orders')
         .select('*')
-        .eq('customer_email', normalizedEmail)
         .order('created_at', { ascending: false });
+
+      // Si se proporciona email, filtrar por ese email
+      // Si NO se proporciona, devolver todas las órdenes (para admin)
+      if (email) {
+        const normalizedEmail = email.toLowerCase().trim();
+        query = query.eq('customer_email', normalizedEmail);
+      }
+
+      const { data: orders, error } = await query;
 
       if (error) {
         console.error('Supabase error:', error);

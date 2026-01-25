@@ -484,7 +484,8 @@
           throw new Error('Error al cargar órdenes');
         }
 
-        const orders = await response.json();
+        const data = await response.json();
+        const orders = data.orders || data; // Soportar ambos formatos
         
         // Filtrar solo órdenes PayPal FF pendientes
         const pendingPayPalOrders = orders.filter(order => 

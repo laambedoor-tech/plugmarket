@@ -31,7 +31,8 @@ async function fetchOrders(email) {
     throw new Error(error.error || 'Failed to fetch orders');
   }
   
-  return res.json();
+  const data = await res.json();
+  return data.orders || data; // Soportar ambos formatos: { orders: [...] } o [...]
 }
 
 // Show login panel
