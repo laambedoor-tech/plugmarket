@@ -62,7 +62,17 @@ function showOrders(email, orders) {
   }
 
   empty.style.display = 'none';
-  list.innerHTML = orders.map(order => `
+  list.innerHTML = orders.map(order => {
+    // Parse cart_items if it's a string
+    let items = [];
+    try {
+      items = typeof order.cart_items === 'string' ? JSON.parse(order.cart_items) : (order.cart_items || order.items || []);
+    } catch (e) {
+      console.error('Error parsing cart_items:', e);
+      items = order.items || [];
+    }
+    
+    return `
     <div class="card" style="margin-bottom: 1.5rem;">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
         <div>
@@ -76,13 +86,13 @@ function showOrders(email, orders) {
             ${money(order.total_cents)}
           </div>
           <div style="font-size: 0.875rem; color: var(--text-muted);">
-            ${order.items.length} item(s)
+            ${items.length} item(s)
           </div>
         </div>
       </div>
 
       <div class="order-items">
-        ${order.items.map((item, idx) => `
+        ${items.map((item, idx) => `
           <div class="order-item" style="
             padding: 1rem;
             border: 1px solid var(--border);
@@ -240,7 +250,8 @@ function showOrders(email, orders) {
         `).join('')}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 // Set message
@@ -305,7 +316,7 @@ addEventListener('DOMContentLoaded', () => {
     try {
       const data = await fetchOrders(email);
       setMessage('');
-      showOrders(email, data.orders);
+      showOrders(email, data);
     } catch (err) {
       setMessage(err.message, true);
     }
