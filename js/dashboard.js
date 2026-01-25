@@ -139,6 +139,11 @@ function displayLatestOrders(orders) {
       items = order.items || [];
     }
     
+    // Ensure items is always an array
+    if (!Array.isArray(items)) {
+      items = [];
+    }
+    
     let credentialsHTML = '';
     items.forEach((item, index) => {
       // Debug: Check all possible product identifier fields
@@ -168,6 +173,90 @@ function displayLatestOrders(orders) {
             </div>
           </div>
         `;
+      } else if (productId === 'netflix' && item.plan === 'FA') {
+        // Netflix Full Access Instructions
+        credentialsHTML += `
+          <details style="margin-bottom: 1rem;">
+            <summary style="cursor: pointer; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-weight: 600; color: var(--accent); user-select: none;">
+              ▶ Product usage instructions
+            </summary>
+            <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 6px; margin-top: 0.5rem;">
+              <div style="margin-bottom: 1rem;">
+                <strong style="color: #fff; font-size: 0.95rem;">Mobile:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>Use exclusively through the official Netflix mobile app.</li>
+                </ul>
+              </div>
+              
+              <div style="margin-bottom: 1rem;">
+                <strong style="color: #fff; font-size: 0.95rem;">PC / Browser:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>Access via cookies only when using a web browser.</li>
+                  <li>Username and password are supported <strong style="color: #fff;">only in the official app</strong>, not in browsers.</li>
+                  <li>Browser access may work in some cases but is <strong style="color: #fff;">not guaranteed</strong>.</li>
+                </ul>
+              </div>
+              
+              <div style="margin-bottom: 1rem;">
+                <strong style="color: #fff; font-size: 0.95rem;">VPN:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>Not required.</li>
+                  <li>Recommended to connect from the account's region for best stability.</li>
+                </ul>
+              </div>
+              
+              <div>
+                <strong style="color: #fff; font-size: 0.95rem;">Help:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>If you have any issues, please <a href="https://discord.gg/plugmarket" target="_blank" style="color: #4da3ff; text-decoration: none;">open a ticket in Discord</a></li>
+                </ul>
+              </div>
+            </div>
+          </details>
+
+          <details style="margin-bottom: 1rem;">
+            <summary style="cursor: pointer; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-weight: 600; color: var(--accent); user-select: none;">
+              ▶ Full Access log in instructions
+            </summary>
+            <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 6px; margin-top: 0.5rem;">
+              <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">Option A — "Forgot password" (recommended)</strong>
+                <div style="padding-left: 1rem; color: #d7d9e0; font-size: 0.9rem; line-height: 1.7;">
+                  <p style="margin: 0.5rem 0;">On the Netflix login screen, select <strong style="color: #fff;">Forgot password?</strong></p>
+                  <p style="margin: 0.5rem 0;">Choose <strong style="color: #fff;">Email</strong> and enter the <strong style="color: #fff;">account email</strong> provided.</p>
+                  <p style="margin: 0.5rem 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided.</p>
+                  <p style="margin: 0.5rem 0;">Use the reset email from Netflix to <strong style="color: #fff;">set a new Netflix password</strong>.</p>
+                  <p style="margin: 0.5rem 0;">Log in to Netflix with the <strong style="color: #fff;">new password</strong>.</p>
+                </div>
+              </div>
+
+              <div>
+                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">Option B — "Sign in with code"</strong>
+                <div style="padding-left: 1rem; color: #d7d9e0; font-size: 0.9rem; line-height: 1.7;">
+                  <p style="margin: 0.5rem 0;">On the Netflix login screen, select <strong style="color: #fff;">Sign in with a code</strong>.</p>
+                  <p style="margin: 0.5rem 0;">Netflix will send a code to the account email.</p>
+                  <p style="margin: 0.5rem 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided and retrieve the code.</p>
+                  <p style="margin: 0.5rem 0;">Log in using the code.</p>
+                  <p style="margin: 0.5rem 0;">Go to <strong style="color: #fff;">Account Settings → Change password</strong> and set a new Netflix password.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+        `;
+        
+        const credentials = item.credentials || {};
+        Object.entries(credentials).forEach(([key, value]) => {
+          const safeValue = String(value).replace(/'/g, "\\\\'").replace(/"/g, '&quot;');
+          credentialsHTML += `
+            <div class="credential-item">
+              <div class="credential-info">
+                <div class="credential-label">${key}</div>
+                <div class="credential-value">${value}</div>
+              </div>
+              <button class="btn-copy" onclick="copyToClipboard('${safeValue}', this)">Copy</button>
+            </div>
+          `;
+        });
       } else {
         const credentials = item.credentials || {};
         Object.entries(credentials).forEach(([key, value]) => {
@@ -242,7 +331,11 @@ function getProductNames(items) {
   if (!items || !Array.isArray(items)) return 'Products';
   
   try {
-    const products = items.map(item => item.pid || item.name || 'Product');
+    const products = items.map(item => {
+      const pid = item.pid || item.name || 'Product';
+      const plan = item.plan || '';
+      return plan ? `${pid} - ${plan}` : pid;
+    });
     if (products.length === 0) return 'Products';
     if (products.length === 1) return products[0];
     return `${products[0]} & ${products.length - 1} more`;
@@ -281,6 +374,11 @@ function displayAllOrders(orders) {
       items = order.items || [];
     }
     
+    // Ensure items is always an array
+    if (!Array.isArray(items)) {
+      items = [];
+    }
+    
     let credentialsHTML = '';
     items.forEach((item, index) => {
       // Special handling for Discord Real Server Members
@@ -306,6 +404,90 @@ function displayAllOrders(orders) {
             </div>
           </div>
         `;
+      } else if (item.pid === 'netflix' && item.plan === 'FA') {
+        // Netflix Full Access Instructions
+        credentialsHTML += `
+          <details style="margin-bottom: 1rem;">
+            <summary style="cursor: pointer; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-weight: 600; color: var(--accent); user-select: none;">
+              ▶ Product usage instructions
+            </summary>
+            <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 6px; margin-top: 0.5rem;">
+              <div style="margin-bottom: 1rem;">
+                <strong style="color: #fff; font-size: 0.95rem;">Mobile:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>Use exclusively through the official Netflix mobile app.</li>
+                </ul>
+              </div>
+              
+              <div style="margin-bottom: 1rem;">
+                <strong style="color: #fff; font-size: 0.95rem;">PC / Browser:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>Access via cookies only when using a web browser.</li>
+                  <li>Username and password are supported <strong style="color: #fff;">only in the official app</strong>, not in browsers.</li>
+                  <li>Browser access may work in some cases but is <strong style="color: #fff;">not guaranteed</strong>.</li>
+                </ul>
+              </div>
+              
+              <div style="margin-bottom: 1rem;">
+                <strong style="color: #fff; font-size: 0.95rem;">VPN:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>Not required.</li>
+                  <li>Recommended to connect from the account's region for best stability.</li>
+                </ul>
+              </div>
+              
+              <div>
+                <strong style="color: #fff; font-size: 0.95rem;">Help:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                  <li>If you have any issues, please <a href="https://discord.gg/plugmarket" target="_blank" style="color: #4da3ff; text-decoration: none;">open a ticket in Discord</a></li>
+                </ul>
+              </div>
+            </div>
+          </details>
+
+          <details style="margin-bottom: 1rem;">
+            <summary style="cursor: pointer; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-weight: 600; color: var(--accent); user-select: none;">
+              ▶ Full Access log in instructions
+            </summary>
+            <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 6px; margin-top: 0.5rem;">
+              <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">Option A — "Forgot password" (recommended)</strong>
+                <div style="padding-left: 1rem; color: #d7d9e0; font-size: 0.9rem; line-height: 1.7;">
+                  <p style="margin: 0.5rem 0;">On the Netflix login screen, select <strong style="color: #fff;">Forgot password?</strong></p>
+                  <p style="margin: 0.5rem 0;">Choose <strong style="color: #fff;">Email</strong> and enter the <strong style="color: #fff;">account email</strong> provided.</p>
+                  <p style="margin: 0.5rem 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided.</p>
+                  <p style="margin: 0.5rem 0;">Use the reset email from Netflix to <strong style="color: #fff;">set a new Netflix password</strong>.</p>
+                  <p style="margin: 0.5rem 0;">Log in to Netflix with the <strong style="color: #fff;">new password</strong>.</p>
+                </div>
+              </div>
+
+              <div>
+                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">Option B — "Sign in with code"</strong>
+                <div style="padding-left: 1rem; color: #d7d9e0; font-size: 0.9rem; line-height: 1.7;">
+                  <p style="margin: 0.5rem 0;">On the Netflix login screen, select <strong style="color: #fff;">Sign in with a code</strong>.</p>
+                  <p style="margin: 0.5rem 0;">Netflix will send a code to the account email.</p>
+                  <p style="margin: 0.5rem 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided and retrieve the code.</p>
+                  <p style="margin: 0.5rem 0;">Log in using the code.</p>
+                  <p style="margin: 0.5rem 0;">Go to <strong style="color: #fff;">Account Settings → Change password</strong> and set a new Netflix password.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+        `;
+        
+        const credentials = item.credentials || {};
+        Object.entries(credentials).forEach(([key, value]) => {
+          const safeValue = String(value).replace(/'/g, "\\\\'").replace(/"/g, '&quot;');
+          credentialsHTML += `
+            <div class="credential-item">
+              <div class="credential-info">
+                <div class="credential-label">${key}</div>
+                <div class="credential-value">${value}</div>
+              </div>
+              <button class="btn-copy" onclick="copyToClipboard('${safeValue}', this)">Copy</button>
+            </div>
+          `;
+        });
       } else {
         const credentials = item.credentials || {};
         Object.entries(credentials).forEach(([key, value]) => {
