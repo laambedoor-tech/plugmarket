@@ -217,6 +217,107 @@ function showOrders(email, orders) {
                     ">${item.credentials.chatgptCode}</code>
                   </div>
                 ` : ''}
+              ` : (item.pid === 'netflix' && item.plan === 'FA') ? `
+                <!-- Netflix Full Access Instructions -->
+                <details style="margin-bottom: 1rem;">
+                  <summary style="cursor: pointer; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-weight: 600; color: var(--accent); user-select: none;">
+                    ▶ Product usage instructions
+                  </summary>
+                  <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 6px; margin-top: 0.5rem;">
+                    <div style="margin-bottom: 1rem;">
+                      <strong style="color: #fff; font-size: 0.95rem;">Mobile:</strong>
+                      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                        <li>Use exclusively through the official Netflix mobile app.</li>
+                      </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                      <strong style="color: #fff; font-size: 0.95rem;">PC / Browser:</strong>
+                      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                        <li>Access via cookies only when using a web browser.</li>
+                        <li>Username and password are supported <strong style="color: #fff;">only in the official app</strong>, not in browsers.</li>
+                        <li>Browser access may work in some cases but is <strong style="color: #fff;">not guaranteed</strong>.</li>
+                      </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                      <strong style="color: #fff; font-size: 0.95rem;">VPN:</strong>
+                      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                        <li>Not required.</li>
+                        <li>Recommended to connect from the account's region for best stability.</li>
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <strong style="color: #fff; font-size: 0.95rem;">Help:</strong>
+                      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
+                        <li>If you have any issues, please <a href="https://discord.gg/plugmarket" target="_blank" style="color: #4da3ff; text-decoration: none;">open a ticket in Discord</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </details>
+
+                <details style="margin-bottom: 1rem;">
+                  <summary style="cursor: pointer; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-weight: 600; color: var(--accent); user-select: none;">
+                    ▶ Full Access log in instructions
+                  </summary>
+                  <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 6px; margin-top: 0.5rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                      <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">Option A — "Forgot password" (recommended)</strong>
+                      <div style="padding-left: 1rem; color: #d7d9e0; font-size: 0.9rem; line-height: 1.7;">
+                        <p style="margin: 0.5rem 0;">On the Netflix login screen, select <strong style="color: #fff;">Forgot password?</strong></p>
+                        <p style="margin: 0.5rem 0;">Choose <strong style="color: #fff;">Email</strong> and enter the <strong style="color: #fff;">account email</strong> provided.</p>
+                        <p style="margin: 0.5rem 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided.</p>
+                        <p style="margin: 0.5rem 0;">Use the reset email from Netflix to <strong style="color: #fff;">set a new Netflix password</strong>.</p>
+                        <p style="margin: 0.5rem 0;">Log in to Netflix with the <strong style="color: #fff;">new password</strong>.</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">Option B — "Sign in with code"</strong>
+                      <div style="padding-left: 1rem; color: #d7d9e0; font-size: 0.9rem; line-height: 1.7;">
+                        <p style="margin: 0.5rem 0;">On the Netflix login screen, select <strong style="color: #fff;">Sign in with a code</strong>.</p>
+                        <p style="margin: 0.5rem 0;">Netflix will send a code to the account email.</p>
+                        <p style="margin: 0.5rem 0;">Open the inbox by logging into <strong style="color: #fff;">Outlook</strong> with the <strong style="color: #fff;">email and password</strong> provided and retrieve the code.</p>
+                        <p style="margin: 0.5rem 0;">Log in using the code.</p>
+                        <p style="margin: 0.5rem 0;">Go to <strong style="color: #fff;">Account Settings → Change password</strong> and set a new Netflix password.</p>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <div style="margin-bottom: 0.75rem;">
+                  <label style="font-size: 0.875rem; color: var(--accent); display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                    📦 Deliverables
+                  </label>
+                </div>
+
+                <div style="margin-bottom: 0.5rem;">
+                  <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    Email
+                  </label>
+                  <code style="
+                    display: block;
+                    padding: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                    user-select: all;
+                  ">${item.credentials.email}</code>
+                </div>
+                <div>
+                  <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+                    Contraseña
+                  </label>
+                  <code style="
+                    display: block;
+                    padding: 0.5rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                    user-select: all;
+                  ">${item.credentials.password}</code>
+                </div>
               ` : `
                 <div style="margin-bottom: 0.5rem;">
                   <label style="font-size: 0.875rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
