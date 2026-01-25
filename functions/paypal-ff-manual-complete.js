@@ -2,6 +2,7 @@
  * POST /api/paypal-ff/manual-complete
  * Body: { orderId: 'PPFF-xxx', txnId: '0LF511219A3181907' }
  * Marca una orden PayPal F&F como completada manualmente
+ * El cliente detectará automáticamente el cambio mediante polling
  */
 
 export default {
@@ -24,6 +25,14 @@ export default {
 
       if (!orderId) {
         return new Response(JSON.stringify({ error: 'Order ID required' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+
+      // Validar formato de orden PayPal FF
+      if (!orderId.startsWith('PPFF-')) {
+        return new Response(JSON.stringify({ error: 'Invalid PayPal FF order ID format' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
@@ -58,7 +67,22 @@ export default {
 
       const order = orders[0];
 
+      // Verificar si ya está completada
+      if (order.payment_intent_id.includes('_completed_')) {
+        return new Response(JSON.stringify({ 
+          success: true,
+          message: 'Order already completed',
+          orderId,
+          alreadyCompleted: true
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+
       // Marcar como completada
+      const completedId = `${orderId}_completed_${txnId || Date.now()}`;
+      
       const updateRes = await fetch(
         `${supabaseUrl}/rest/v1/orders?payment_intent_id=eq.${orderId}`,
         {
@@ -70,28 +94,33 @@ export default {
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify({
-            payment_intent_id: `${orderId}_completed_${txnId || Date.now()}`
+            payment_intent_id: completedId
           })
         }
       );
 
       if (!updateRes.ok) {
-        throw new Error('Failed to update order');
+        const errorText = await updateRes.text();
+        throw new Error(`Failed to update order: ${errorText}`);
       }
 
-      console.log(`Order ${orderId} manually completed`);
+      console.log(`✅ Order ${orderId} manually completed by admin (txn: ${txnId || 'none'})`);
 
       return new Response(JSON.stringify({ 
         success: true,
-        message: 'Order marked as completed',
-        orderId 
+        message: 'Order marked as completed - customer will be notified automatically',
+        orderId,
+        completedId,
+        amount: order.total_cents / 100,
+        customerEmail: order.customer_email,
+        timestamp: new Date().toISOString()
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
 
     } catch (err) {
-      console.error('Error completing order:', err);
+      console.error('❌ Error completing order:', err);
       return new Response(JSON.stringify({ error: err.message || 'Internal error' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }

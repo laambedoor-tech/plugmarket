@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin PayPal FF - PlugMarket</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .admin-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .admin-header {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .admin-header h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-header .muted {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .stat-card .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+    .stat-card .value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #62a0ff;
+    }
+    .orders-section {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .orders-section h2 {
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .order-card {
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+    .order-card:hover {
+      border-color: rgba(98,160,255,.4);
+      box-shadow: 0 4px 20px rgba(98,160,255,.15);
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .order-id {
+      font-size: 16px;
+      font-weight: 700;
+      color: #62a0ff;
+      font-family: 'Courier New', monospace;
+    }
+    .order-amount {
+      font-size: 24px;
+      font-weight: 800;
+      color: #2ed573;
+    }
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: rgba(0,0,0,.2);
+      border-radius: 8px;
+    }
+    .detail-item {
+      font-size: 13px;
+    }
+    .detail-label {
+      opacity: 0.6;
+      margin-bottom: 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .detail-value {
+      font-weight: 600;
+      color: #fff;
+    }
+    .order-items {
+      margin-bottom: 16px;
+    }
+    .order-items summary {
+      cursor: pointer;
+      font-weight: 600;
+      padding: 8px 0;
+      user-select: none;
+    }
+    .order-items summary:hover {
+      color: #62a0ff;
+    }
+    .items-list {
+      margin-top: 8px;
+      padding: 12px;
+      background: rgba(0,0,0,.2);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .items-list li {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .items-list li:last-child {
+      border-bottom: none;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-confirm {
+      background: linear-gradient(135deg, #2ed573, #1bae5c);
+      color: #fff;
+    }
+    .btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(46,213,115,.3);
+    }
+    .btn-copy {
+      background: rgba(98,160,255,.2);
+      color: #62a0ff;
+      border: 1px solid rgba(98,160,255,.3);
+    }
+    .btn-copy:hover {
+      background: rgba(98,160,255,.3);
+    }
+    .btn-refresh {
+      background: rgba(255,171,64,.2);
+      color: #ffab40;
+      border: 1px solid rgba(255,171,64,.3);
+    }
+    .btn-refresh:hover {
+      background: rgba(255,171,64,.3);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0.5;
+    }
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,.8);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 8px 40px rgba(0,0,0,.5);
+    }
+    .modal-header {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .modal-body {
+      margin-bottom: 24px;
+    }
+    .modal-input {
+      width: 100%;
+      padding: 12px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      margin-top: 8px;
+    }
+    .modal-input::placeholder {
+      color: rgba(255,255,255,.4);
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-modal-cancel {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      flex: 1;
+    }
+    .btn-modal-confirm {
+      background: linear-gradient(135deg, #2ed573, #1bae5c);
+      color: #fff;
+      flex: 1;
+    }
+    .loading {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #2ed573, #1bae5c);
+      color: #fff;
+      padding: 16px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.3);
+      z-index: 10001;
+      display: none;
+      animation: slideIn 0.3s;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-pending {
+      background: rgba(255,171,64,.2);
+      color: #ffab40;
+      border: 1px solid rgba(255,171,64,.3);
+    }
+    .time-ago {
+      opacity: 0.6;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>
+        <span>💰</span>
+        Administración PayPal F&F
+      </h1>
+      <div class="muted">Confirma manualmente los pagos recibidos y actualiza las órdenes en tiempo real</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Órdenes Pendientes</div>
+        <div class="value" id="stat-pending">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Total Pendiente</div>
+        <div class="value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Última Actualización</div>
+        <div class="value" style="font-size: 16px;" id="stat-updated">—</div>
+      </div>
+    </div>
+
+    <div class="orders-section">
+      <h2>
+        <span>📋</span>
+        Órdenes Pendientes
+        <button class="btn btn-refresh" onclick="loadOrders()" style="margin-left: auto; padding: 8px 16px; font-size: 13px;">
+          <span id="refresh-icon">🔄</span>
+          Actualizar
+        </button>
+      </h2>
+      <div id="orders-container">
+        <div class="empty-state">
+          <div class="empty-state-icon">⏳</div>
+          <div>Cargando órdenes...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div id="confirm-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>✅</span>
+        Confirmar Pago Recibido
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 16px; opacity: 0.9;">Confirma que has recibido el pago de PayPal para esta orden:</p>
+        <div style="padding: 12px; background: rgba(98,160,255,.1); border-radius: 8px; margin-bottom: 16px;">
+          <div style="font-size: 13px; opacity: 0.7; margin-bottom: 4px;">Order ID</div>
+          <div id="modal-order-id" style="font-weight: 700; color: #62a0ff; font-family: 'Courier New', monospace;">—</div>
+        </div>
+        <div style="margin-bottom: 8px; opacity: 0.8; font-size: 14px;">ID de Transacción PayPal (opcional):</div>
+        <input type="text" id="txn-id-input" class="modal-input" placeholder="Ej: 0LF511219A3181907">
+        <div style="margin-top: 8px; font-size: 12px; opacity: 0.6;">Puedes encontrar este ID en los detalles de la transacción en PayPal</div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn btn-modal-cancel" onclick="closeConfirmModal()">Cancelar</button>
+        <button class="btn btn-modal-confirm" onclick="confirmOrder()">
+          <span id="confirm-btn-text">Confirmar Pago</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const API_BASE = 'https://plugmarket.es';
+    let currentOrderId = null;
+    let autoRefreshInterval = null;
+
+    // Función para mostrar toast
+    function showToast(message, duration = 3000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, duration);
+    }
+
+    // Función para formatear tiempo relativo
+    function timeAgo(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const seconds = Math.floor((now - date) / 1000);
+      
+      if (seconds < 60) return 'hace ' + seconds + ' seg';
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return 'hace ' + minutes + ' min';
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return 'hace ' + hours + ' h';
+      const days = Math.floor(hours / 24);
+      return 'hace ' + days + ' días';
+    }
+
+    // Función para copiar al portapapeles
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('✅ Copiado al portapapeles');
+      });
+    }
+
+    // Abrir modal de confirmación
+    function openConfirmModal(orderId) {
+      currentOrderId = orderId;
+      document.getElementById('modal-order-id').textContent = orderId;
+      document.getElementById('txn-id-input').value = '';
+      document.getElementById('confirm-modal').style.display = 'flex';
+    }
+
+    // Cerrar modal
+    function closeConfirmModal() {
+      document.getElementById('confirm-modal').style.display = 'none';
+      currentOrderId = null;
+    }
+
+    // Confirmar orden
+    async function confirmOrder() {
+      if (!currentOrderId) return;
+
+      const txnId = document.getElementById('txn-id-input').value.trim();
+      const confirmBtn = document.querySelector('.btn-modal-confirm');
+      const confirmBtnText = document.getElementById('confirm-btn-text');
+      
+      confirmBtn.disabled = true;
+      confirmBtnText.innerHTML = '<span class="loading">⏳</span> Confirmando...';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/paypal-ff/manual-complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: currentOrderId,
+            txnId: txnId || undefined
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Error al confirmar orden');
+        }
+
+        showToast('✅ Orden confirmada exitosamente');
+        closeConfirmModal();
+        
+        // Recargar órdenes después de un momento
+        setTimeout(() => loadOrders(), 1000);
+
+      } catch (error) {
+        showToast('❌ Error: ' + error.message);
+        console.error('Error confirming order:', error);
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtnText.textContent = 'Confirmar Pago';
+      }
+    }
+
+    // Cargar órdenes pendientes
+    async function loadOrders() {
+      const container = document.getElementById('orders-container');
+      const refreshIcon = document.getElementById('refresh-icon');
+      
+      refreshIcon.classList.add('loading');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/get-orders`);
+        
+        if (!response.ok) {
+          throw new Error('Error al cargar órdenes');
+        }
+
+        const orders = await response.json();
+        
+        // Filtrar solo órdenes PayPal FF pendientes
+        const pendingPayPalOrders = orders.filter(order => 
+          order.payment_intent_id && 
+          order.payment_intent_id.startsWith('PPFF-') &&
+          !order.payment_intent_id.includes('_completed_')
+        );
+
+        // Actualizar estadísticas
+        document.getElementById('stat-pending').textContent = pendingPayPalOrders.length;
+        
+        const totalPending = pendingPayPalOrders.reduce((sum, order) => sum + (order.total_cents / 100), 0);
+        document.getElementById('stat-total').textContent = '€' + totalPending.toFixed(2);
+        
+        const now = new Date();
+        document.getElementById('stat-updated').textContent = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+        // Renderizar órdenes
+        if (pendingPayPalOrders.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">✨</div>
+              <div>No hay órdenes pendientes</div>
+              <div style="margin-top: 8px; opacity: 0.6; font-size: 14px;">Las nuevas órdenes aparecerán aquí automáticamente</div>
+            </div>
+          `;
+        } else {
+          container.innerHTML = pendingPayPalOrders.map(order => {
+            let items = [];
+            try {
+              items = JSON.parse(order.cart_items);
+            } catch {}
+
+            return `
+              <div class="order-card">
+                <div class="order-header">
+                  <div>
+                    <div class="order-id">${order.payment_intent_id}</div>
+                    <div class="time-ago">${timeAgo(order.created_at)}</div>
+                  </div>
+                  <div class="order-amount">€${(order.total_cents / 100).toFixed(2)}</div>
+                </div>
+
+                <div class="order-details">
+                  <div class="detail-item">
+                    <div class="detail-label">Email Cliente</div>
+                    <div class="detail-value">${order.customer_email || 'N/A'}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Items</div>
+                    <div class="detail-value">${items.length} productos</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Fecha Creación</div>
+                    <div class="detail-value">${new Date(order.created_at).toLocaleString('es-ES')}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Estado</div>
+                    <div class="detail-value"><span class="badge badge-pending">⏳ Pendiente</span></div>
+                  </div>
+                </div>
+
+                <details class="order-items">
+                  <summary>📦 Ver items del pedido (${items.length})</summary>
+                  <ul class="items-list">
+                    ${items.map(item => `
+                      <li>
+                        <strong>${item.pid}</strong> - ${item.plan} × ${item.qty}
+                      </li>
+                    `).join('')}
+                  </ul>
+                </details>
+
+                <div class="action-buttons">
+                  <button class="btn btn-confirm" onclick="openConfirmModal('${order.payment_intent_id}')">
+                    ✅ Confirmar Pago Recibido
+                  </button>
+                  <button class="btn btn-copy" onclick="copyToClipboard('${order.payment_intent_id}')">
+                    📋 Copiar ID
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+      } catch (error) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <div>Error al cargar órdenes</div>
+            <div style="margin-top: 8px; opacity: 0.6; font-size: 14px;">${error.message}</div>
+          </div>
+        `;
+        console.error('Error loading orders:', error);
+      } finally {
+        refreshIcon.classList.remove('loading');
+      }
+    }
+
+    // Auto-refresh cada 30 segundos
+    function startAutoRefresh() {
+      if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+      autoRefreshInterval = setInterval(() => {
+        loadOrders();
+      }, 30000); // 30 segundos
+    }
+
+    // Cerrar modal con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeConfirmModal();
+      }
+    });
+
+    // Confirmar con Enter en el input
+    document.getElementById('txn-id-input')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        confirmOrder();
+      }
+    });
+
+    // Cargar órdenes al inicio
+    loadOrders();
+    startAutoRefresh();
+
+    console.log('✅ Panel de administración PayPal FF cargado');
+  </script>
+</body>
+</html>
