@@ -128,19 +128,18 @@ function showOrders(email, orders) {
               <div style="color: var(--accent);">
                 ${itemPrice ? money(itemPrice) : '—'}
               </div>
-            </div>`;
-        }).join('') : `
-          <div style="padding: 1.5rem; text-align: center; background: rgba(255,171,64,0.1); border: 1px solid rgba(255,171,64,0.3); border-radius: 8px;">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
-            <div style="font-weight: 600; margin-bottom: 0.5rem;">Pedido en proceso</div>
-            <div style="font-size: 0.9rem; color: var(--text-muted);">
-              Tu pedido está siendo preparado. Recibirás las credenciales pronto.
             </div>
-          </div>
-        `}
-        ${items.length > 0 ? items.map((item, idx) => {
 
             <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px;">
+              ${!item.credentials ? `
+                <div style="padding: 1rem; text-align: center; background: rgba(255,171,64,0.1); border: 1px solid rgba(255,171,64,0.3); border-radius: 6px;">
+                  <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⏳</div>
+                  <div style="font-weight: 600; margin-bottom: 0.5rem;">Credenciales en preparación</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">
+                    Este producto está siendo procesado. Las credenciales estarán disponibles pronto.
+                  </div>
+                </div>
+              ` :
               ${item.pid === 'realmembers' ? `
                 <div style="margin-bottom: 0.75rem;">
                   <label style="font-size: 0.875rem; color: var(--accent); display: block; margin-bottom: 0.5rem; font-weight: 600;">
@@ -378,7 +377,16 @@ function showOrders(email, orders) {
               `}
             </div>
           </div>
-        `).join('')}
+        `;
+        }).join('') : `
+          <div style="padding: 1.5rem; text-align: center; background: rgba(255,171,64,0.1); border: 1px solid rgba(255,171,64,0.3); border-radius: 8px;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">Pedido en proceso</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">
+              Tu pedido está siendo preparado. Recibirás las credenciales pronto.
+            </div>
+          </div>
+        `}
       </div>
     </div>
   `;
