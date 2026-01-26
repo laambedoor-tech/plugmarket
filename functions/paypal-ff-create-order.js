@@ -141,7 +141,7 @@ export default {
         customer_email: email,
         payment_intent_id: orderId,
         total_cents: Math.round(total * 100),
-        items: JSON.stringify(items)
+        items: items
       };
 
       // Insert into Supabase

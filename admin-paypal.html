@@ -516,10 +516,18 @@
           container.innerHTML = pendingPayPalOrders.map(order => {
             let items = [];
             try {
-              // Soportar ambos: items y cart_items
-              items = JSON.parse(order.items || order.cart_items || '[]');
+              // Items puede ser un array directo (JSONB) o string
+              if (Array.isArray(order.items)) {
+                items = order.items;
+              } else if (typeof order.items === 'string') {
+                items = JSON.parse(order.items);
+              } else if (Array.isArray(order.cart_items)) {
+                items = order.cart_items;
+              } else if (typeof order.cart_items === 'string') {
+                items = JSON.parse(order.cart_items);
+              }
             } catch (e) {
-              console.warn('Error parsing items:', e);
+              console.warn('Error parsing items:', e, order);
               items = [];
             }
 

@@ -55,21 +55,37 @@ function showOrders(email, orders) {
   const list = document.getElementById('orders-list');
   const empty = document.getElementById('orders-empty');
 
-  if (!orders || orders.length === 0) {
+  // Filtrar órdenes PayPal F&F pendientes
+  const completedOrders = orders.filter(order => {
+    if (order.payment_intent_id && order.payment_intent_id.startsWith('PPFF-')) {
+      return order.payment_intent_id.includes('_completed_');
+    }
+    return true;
+  });
+
+  if (!completedOrders || completedOrders.length === 0) {
     empty.style.display = 'block';
     list.innerHTML = '';
     return;
   }
 
   empty.style.display = 'none';
-  list.innerHTML = orders.map(order => {
-    // Parse cart_items if it's a string
+  list.innerHTML = completedOrders.map(order => {
+    // Parse items - support both JSONB array and stringified JSON
     let items = [];
     try {
-      items = typeof order.cart_items === 'string' ? JSON.parse(order.cart_items) : (order.cart_items || order.items || []);
+      if (Array.isArray(order.items)) {
+        items = order.items;
+      } else if (typeof order.items === 'string') {
+        items = JSON.parse(order.items);
+      } else if (Array.isArray(order.cart_items)) {
+        items = order.cart_items;
+      } else if (typeof order.cart_items === 'string') {
+        items = JSON.parse(order.cart_items);
+      }
     } catch (e) {
-      console.error('Error parsing cart_items:', e);
-      items = order.items || [];
+      console.error('Error parsing items:', e, order);
+      items = [];
     }
     
     return `
@@ -92,7 +108,10 @@ function showOrders(email, orders) {
       </div>
 
       <div class="order-items">
-        ${items.map((item, idx) => `
+        ${items.length > 0 ? items.map((item, idx) => {
+          // Support both unitAmount (Stripe, in cents) and price (PayPal FF, in euros)
+          const itemPrice = item.unitAmount || (item.price ? item.price * 100 : 0);
+          return `
           <div class="order-item" style="
             padding: 1rem;
             border: 1px solid var(--border);
@@ -104,11 +123,22 @@ function showOrders(email, orders) {
               <div>
                 <strong style="text-transform: capitalize;">${item.pid.replace(/-/g, ' ')}</strong>
                 <span style="color: var(--text-muted); margin-left: 0.5rem;">— ${item.plan}</span>
+                ${item.qty > 1 ? `<span style="color: var(--text-muted); margin-left: 0.5rem;">× ${item.qty}</span>` : ''}
               </div>
               <div style="color: var(--accent);">
-                ${money(item.unitAmount)}
+                ${itemPrice ? money(itemPrice) : '—'}
               </div>
+            </div>`;
+        }).join('') : `
+          <div style="padding: 1.5rem; text-align: center; background: rgba(255,171,64,0.1); border: 1px solid rgba(255,171,64,0.3); border-radius: 8px;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">Pedido en proceso</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted);">
+              Tu pedido está siendo preparado. Recibirás las credenciales pronto.
             </div>
+          </div>
+        `}
+        ${items.length > 0 ? items.map((item, idx) => {
 
             <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px;">
               ${item.pid === 'realmembers' ? `
