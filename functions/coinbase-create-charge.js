@@ -3,9 +3,9 @@
 
 const PRICES_USD = {
   'boosts': { '3 Months': 5.25 },
-  'netflix': { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 1.10 },
+  'netflix': { '1 Month': 1.5, '3 Months': 3.5, '6 Months': 6.0, '12 Months': 11.0, 'Lifetime': 1.10, 'FA': 8.50 },
   'spotify': { '1 Month': 2.2, '3 Months': 3.8, '6 Months': 6.2, '12 Months': 11.88, 'Lifetime': 1.78 },
-  'youtube-premium': { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5, 'Lifetime': 2.27 },
+  'youtube-premium': { '1 Month': 1.6, '3 Months': 3.2, '6 Months': 5.5, '12 Months': 10.5, 'Lifetime': 2.27, 'fowner': 4.74 },
   'disney-plus': { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5, 'Lifetime': 0.89 },
   'disney': { '1 Month': 1.1, '3 Months': 2.7, '6 Months': 4.8, '12 Months': 9.5, 'Lifetime': 0.89 },
   'amazon-prime': { '1 Month': 1.8, '3 Months': 3.4, '6 Months': 5.8, '12 Months': 10.64, 'Lifetime': 14.0 },
