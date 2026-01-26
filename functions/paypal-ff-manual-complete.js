@@ -1,9 +1,65 @@
 /**
  * POST /api/paypal-ff/manual-complete
  * Body: { orderId: 'PPFF-xxx', txnId: '0LF511219A3181907' }
- * Marca una orden PayPal F&F como completada manualmente
- * El cliente detectará automáticamente el cambio mediante polling
+ * Marca una orden PayPal F&F como completada manualmente y asigna cuentas del stock
  */
+
+async function assignAccount(supabaseUrl, supabaseKey, productId, plan, customerEmail) {
+  console.log(`Assigning account: product_id="${productId}", plan="${plan}"`);
+
+  // Buscar cuenta disponible (FIFO: la más antigua primero)
+  const fetchRes = await fetch(
+    `${supabaseUrl}/rest/v1/accounts?product_id=eq.${productId}&plan=eq.${plan}&status=eq.available&order=created_at.asc,id.asc&limit=1`,
+    {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  if (!fetchRes.ok) {
+    throw new Error(`Failed to fetch account: ${await fetchRes.text()}`);
+  }
+
+  const accounts = await fetchRes.json();
+  if (!Array.isArray(accounts) || accounts.length === 0) {
+    throw new Error(`No available accounts for ${productId} - ${plan}`);
+  }
+
+  const account = accounts[0];
+
+  // Marcar como vendida
+  const updateRes = await fetch(
+    `${supabaseUrl}/rest/v1/accounts?id=eq.${account.id}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`
+      },
+      body: JSON.stringify({
+        status: 'sold',
+        sold_at: new Date().toISOString(),
+        customer_email: customerEmail
+      })
+    }
+  );
+
+  if (!updateRes.ok) {
+    throw new Error(`Failed to update account: ${await updateRes.text()}`);
+  }
+
+  const result = {
+    email: account.email,
+    password: account.password
+  };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
+}
 
 export default {
   async fetch(request, env) {
@@ -86,7 +142,46 @@ export default {
         });
       }
 
-      // Marcar como completada
+      // Parsear items del carrito
+      let cartItems = [];
+      if (order.items) {
+        cartItems = Array.isArray(order.items) ? order.items : JSON.parse(order.items);
+      }
+
+      if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        throw new Error('Order has no items');
+      }
+
+      console.log(`Processing ${cartItems.length} cart items for order ${orderId}`);
+
+      // Asignar cuentas del stock para cada item
+      const orderItems = [];
+      for (const item of cartItems) {
+        const qty = item.qty || 1;
+        for (let i = 0; i < qty; i++) {
+          try {
+            const credentials = await assignAccount(
+              supabaseUrl,
+              supabaseKey,
+              item.pid,
+              item.plan,
+              order.customer_email
+            );
+            orderItems.push({
+              pid: item.pid,
+              plan: item.plan,
+              price: item.price,
+              credentials
+            });
+            console.log(`Assigned account ${i + 1}/${qty} for ${item.pid}-${item.plan}`);
+          } catch (assignError) {
+            console.error(`Failed to assign account for ${item.pid}-${item.plan}:`, assignError);
+            throw new Error(`Sin stock disponible para ${item.pid} (${item.plan})`);
+          }
+        }
+      }
+
+      // Marcar como completada y guardar credenciales
       const completedId = `${orderId}_completed_${txnId || Date.now()}`;
       
       const updateRes = await fetch(
@@ -99,7 +194,8 @@ export default {
             'Authorization': `Bearer ${supabaseKey}`
           },
           body: JSON.stringify({
-            payment_intent_id: completedId
+            payment_intent_id: completedId,
+            items: orderItems
           })
         }
       );
@@ -110,7 +206,7 @@ export default {
         throw new Error(`Failed to update order: ${errorText}`);
       }
 
-      console.log(`✅ Order ${orderId} manually completed by admin (txn: ${txnId || 'none'})`);
+      console.log(`✅ Order ${orderId} manually completed by admin (txn: ${txnId || 'none'}) - ${orderItems.length} accounts assigned`);
 
       return new Response(JSON.stringify({ 
         success: true,
@@ -119,6 +215,7 @@ export default {
         completedId,
         amount: order.total_cents / 100,
         customerEmail: order.customer_email,
+        accountsAssigned: orderItems.length,
         timestamp: new Date().toISOString()
       }), {
         status: 200,
