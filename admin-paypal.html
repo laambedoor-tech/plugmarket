@@ -485,7 +485,7 @@
         }
 
         const data = await response.json();
-        const orders = data.orders || data; // Soportar ambos formatos
+        const orders = (Array.isArray(data) ? data : (data.orders || [])) || [];
         
         // Filtrar solo órdenes PayPal FF pendientes
         const pendingPayPalOrders = orders.filter(order => 
@@ -516,8 +516,12 @@
           container.innerHTML = pendingPayPalOrders.map(order => {
             let items = [];
             try {
-              items = JSON.parse(order.cart_items);
-            } catch {}
+              // Soportar ambos: items y cart_items
+              items = JSON.parse(order.items || order.cart_items || '[]');
+            } catch (e) {
+              console.warn('Error parsing items:', e);
+              items = [];
+            }
 
             return `
               <div class="order-card">

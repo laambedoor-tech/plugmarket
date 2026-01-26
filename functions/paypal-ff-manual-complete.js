@@ -41,24 +41,30 @@ export default {
       const supabaseUrl = env.SUPABASE_URL;
       const supabaseKey = env.SUPABASE_ANON_KEY;
 
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Missing Supabase credentials');
+      }
+
       // Buscar la orden
       const searchRes = await fetch(
         `${supabaseUrl}/rest/v1/orders?payment_intent_id=eq.${orderId}`,
         {
           headers: {
             'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
           }
         }
       );
 
       if (!searchRes.ok) {
-        throw new Error('Failed to find order');
+        const errorText = await searchRes.text();
+        throw new Error(`Failed to find order: ${errorText}`);
       }
 
       const orders = await searchRes.json();
       
-      if (orders.length === 0) {
+      if (!Array.isArray(orders) || orders.length === 0) {
         return new Response(JSON.stringify({ error: 'Order not found' }), {
           status: 404,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -68,7 +74,7 @@ export default {
       const order = orders[0];
 
       // Verificar si ya está completada
-      if (order.payment_intent_id.includes('_completed_')) {
+      if (order.payment_intent_id && order.payment_intent_id.includes('_completed_')) {
         return new Response(JSON.stringify({ 
           success: true,
           message: 'Order already completed',
@@ -90,8 +96,7 @@ export default {
           headers: {
             'Content-Type': 'application/json',
             'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`,
-            'Prefer': 'return=minimal'
+            'Authorization': `Bearer ${supabaseKey}`
           },
           body: JSON.stringify({
             payment_intent_id: completedId
@@ -101,6 +106,7 @@ export default {
 
       if (!updateRes.ok) {
         const errorText = await updateRes.text();
+        console.error('Supabase PATCH error response:', errorText);
         throw new Error(`Failed to update order: ${errorText}`);
       }
 
