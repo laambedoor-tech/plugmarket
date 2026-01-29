@@ -291,88 +291,112 @@
 
         <!-- Crypto container (NOWPayments) -->
         <div id="crypto-container" style="display:none;">
-          <div class="card" style="padding:0; max-width:720px; overflow:hidden;">
-            <div style="padding:24px; border-bottom:1px solid var(--border);">
-              <h3 style="margin:0 0 4px 0; font-size:20px;">💰 Crypto Payment</h3>
-              <p class="muted" style="margin:0;">Fast and secure. Your account will be delivered instantly.</p>
+          <div class="card" style="padding:0; max-width:720px; overflow:hidden; border:1px solid rgba(255,171,64,.2); background:linear-gradient(180deg, rgba(20,24,32,1), rgba(17,18,23,1));">
+            
+            <!-- Header -->
+            <div style="padding:28px 28px 24px; border-bottom:1px solid rgba(255,171,64,.15); background:linear-gradient(135deg, rgba(255,171,64,.08) 0%, rgba(255,171,64,.02) 100%);">
+              <div style="display:flex; align-items:center; gap:14px; margin-bottom:8px;">
+                <div style="width:48px; height:48px; background:linear-gradient(135deg, #f7931a, #ffab40); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 4px 16px rgba(247,147,26,.3);">₿</div>
+                <div>
+                  <h3 style="margin:0; font-size:22px; font-weight:700; background:linear-gradient(135deg, #fff 0%, #f0f0f0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Crypto Payment</h3>
+                  <p style="margin:4px 0 0; color:var(--text-500); font-size:13px;">Fast, secure & anonymous payments</p>
+                </div>
+              </div>
             </div>
             
             <!-- Form section -->
-            <div style="padding:24px; border-bottom:1px solid var(--border);">
-              <div style="display:grid; gap:12px;">
-              <label style="display:grid; gap:6px;">
-                  <span style="font-weight:600; font-size:14px;">Email Address</span>
-                <input id="crypto-email" type="email" placeholder="you@example.com" autocomplete="email" required
-                    style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:14px;">
-              </label>
-              <label style="display:grid; gap:6px;">
-                  <span style="font-weight:600; font-size:14px;">Select Currency</span>
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <img id="crypto-logo" src="./assets/crypto/usdc.svg" alt="Currency Logo" style="width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.08);" />
-                    <select id="crypto-currency" style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; font-size:14px;">
-                      <option value="usdcpoly">USDC (Polygon) - Instant ⚡⚡ (~10s)</option>
-                      <option value="ltc">Litecoin (LTC) - Standard (~7-15 min)</option>
-                      <option value="btc">Bitcoin (BTC) - Secure (~10-30 min)</option>
+            <div style="padding:24px 28px; border-bottom:1px solid var(--border);">
+              <div style="display:grid; gap:18px;">
+                <label style="display:grid; gap:8px;">
+                  <span style="font-weight:600; font-size:14px; color:var(--text-300);">📧 Email Address</span>
+                  <input id="crypto-email" type="email" placeholder="you@example.com" autocomplete="email" required
+                    style="padding:14px 16px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.03); color:var(--text-100); font-size:15px; transition:all .2s ease;">
+                </label>
+                <label style="display:grid; gap:8px;">
+                  <span style="font-weight:600; font-size:14px; color:var(--text-300);">💎 Select Currency</span>
+                  <div style="display:flex; align-items:center; gap:12px; padding:4px; background:rgba(255,255,255,.02); border-radius:14px; border:1px solid var(--border);">
+                    <img id="crypto-logo" src="./assets/crypto/ltc.svg" alt="Currency Logo" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.08); padding:4px; margin-left:8px;" />
+                    <select id="crypto-currency" style="flex:1; padding:12px 14px; border-radius:10px; border:none; background:transparent; color:var(--text-100); cursor:pointer; font-size:14px; font-weight:500;">
+                      <option value="ltc">🚀 Litecoin (LTC) - Fast (~7-15 min)</option>
+                      <option value="btc">🔒 Bitcoin (BTC) - Secure (~10-30 min)</option>
                     </select>
                   </div>
-              </label>
+                </label>
               </div>
             </div>
 
-            <!-- Payment details section -->
-            <div id="crypto-panel" style="display:none; padding:24px; background:linear-gradient(135deg, rgba(255,171,64,.08), rgba(255,171,64,.02));">
-              <div style="display:grid; gap:20px;">
-                <!-- QR Code -->
-                <div style="display:grid; gap:12px; align-items:center;">
-                  <div style="display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted);">
-                    <img id="crypto-logo-panel" src="./assets/crypto/usdc.svg" alt="Currency Logo" style="width:20px; height:20px; border-radius:50%;" />
-                    <span>Send Payment</span>
+            <!-- Payment details section (hidden until created) -->
+            <div id="crypto-panel" style="display:none; padding:28px; background:linear-gradient(180deg, rgba(46,213,115,.03) 0%, transparent 100%);">
+              <div style="display:grid; gap:24px;">
+                
+                <!-- Currency badge & QR Code -->
+                <div style="text-align:center;">
+                  <div style="display:inline-flex; align-items:center; gap:10px; padding:10px 20px; background:linear-gradient(135deg, rgba(255,171,64,.15), rgba(255,171,64,.05)); border:1px solid rgba(255,171,64,.25); border-radius:30px; margin-bottom:20px;">
+                    <img id="crypto-logo-panel" src="./assets/crypto/ltc.svg" alt="Currency Logo" style="width:24px; height:24px; border-radius:50%;" />
+                    <span id="crypto-currency-label" style="font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; color:#ffab40;">LTC</span>
                   </div>
-                  <div style="display:flex; justify-content:center;">
-                    <div style="padding:12px; background:white; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.1);">
-                      <img id="crypto-qr" alt="QR Code" width="260" height="260" style="display:block; border-radius:8px;" />
-                    </div>
+                  <div style="display:inline-block; padding:16px; background:white; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,.1);">
+                    <img id="crypto-qr" alt="QR Code" width="220" height="220" style="display:block; border-radius:8px;" />
                   </div>
                 </div>
 
                 <!-- Amount to send -->
-                <div style="padding:16px; background:rgba(46,213,115,.1); border-radius:10px; border:1px solid rgba(46,213,115,.2); text-align:center;">
-                  <div class="muted" style="font-size:12px; margin:0 0 6px 0; text-transform:uppercase; letter-spacing:0.5px;">Exact Amount</div>
-                  <div id="crypto-amount" style="font-weight:900; font-size:28px; color:#2ed573; letter-spacing:-0.5px; margin:0;">—</div>
+                <div style="padding:20px; background:linear-gradient(135deg, rgba(46,213,115,.12), rgba(46,213,115,.04)); border-radius:16px; border:1px solid rgba(46,213,115,.25); text-align:center; position:relative; overflow:hidden;">
+                  <div style="position:absolute; top:-20px; right:-20px; width:80px; height:80px; background:rgba(46,213,115,.1); border-radius:50%; filter:blur(20px);"></div>
+                  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:rgba(46,213,115,.8); margin-bottom:8px;">💰 Exact Amount to Send</div>
+                  <div id="crypto-amount" style="font-weight:900; font-size:36px; color:#2ed573; letter-spacing:-1px; text-shadow:0 0 30px rgba(46,213,115,.4);">—</div>
+                  <div style="font-size:12px; color:var(--text-500); margin-top:6px;">Send the exact amount shown above</div>
                 </div>
 
-                <!-- Address -->
-                <div style="padding:16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
-                  <div class="muted" style="font-size:12px; margin:0 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">Wallet Address</div>
-                  <div>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                      <input id="crypto-address" readonly 
-                        style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--border); background:rgba(255,255,255,.05); color:var(--text); font-family:monospace; font-size:12px; word-break:break-all;" />
-                      <button id="btn-copy-address" class="btn btn--primary btn--sm" type="button" style="white-space:nowrap; flex-shrink:0;" title="Copy address">📋 Copy</button>
-                    </div>
+                <!-- Wallet Address -->
+                <div style="padding:20px; background:rgba(255,255,255,.02); border-radius:16px; border:1px solid var(--border);">
+                  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--text-500); margin-bottom:12px;">📍 Wallet Address</div>
+                  <div style="display:flex; gap:10px; align-items:stretch;">
+                    <input id="crypto-address" readonly 
+                      style="flex:1; padding:14px 16px; border-radius:12px; border:1px solid var(--border); background:rgba(0,0,0,.3); color:var(--text-100); font-family:'Roboto Mono', monospace; font-size:12px; word-break:break-all; letter-spacing:0.5px;" />
+                    <button id="btn-copy-address" class="btn btn--primary" type="button" style="white-space:nowrap; flex-shrink:0; padding:14px 20px; font-weight:600;" title="Copy address">
+                      <span style="display:flex; align-items:center; gap:6px;">📋 Copy</span>
+                    </button>
                   </div>
                 </div>
 
-                <!-- Status -->
-                <div style="padding:16px; border-radius:10px; border:2px solid transparent;">
-                  <div class="muted" style="font-size:12px; margin:0 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">Payment Status</div>
-                  <div id="crypto-status" style="padding:10px; border-radius:8px; background:rgba(255,171,64,.2); color:#ffab40; font-weight:600; font-size:14px; text-align:center;">⏳ Waiting for payment...</div>
+                <!-- Status indicator -->
+                <div style="padding:20px; border-radius:16px; border:2px dashed rgba(255,171,64,.3); background:rgba(255,171,64,.05);">
+                  <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--text-500); margin-bottom:10px;">📡 Payment Status</div>
+                  <div id="crypto-status" style="padding:14px 20px; border-radius:12px; background:linear-gradient(135deg, rgba(255,171,64,.2), rgba(255,171,64,.1)); color:#ffab40; font-weight:700; font-size:15px; text-align:center; display:flex; align-items:center; justify-content:center; gap:10px;">
+                    <span class="status-spinner" style="width:18px; height:18px; border:2px solid rgba(255,171,64,.3); border-top-color:#ffab40; border-radius:50%; animation:spin 1s linear infinite;"></span>
+                    Waiting for payment...
+                  </div>
                 </div>
 
-                <div id="crypto-message" class="muted" style="display:none; padding:12px; border-radius:8px; background:rgba(255,39,67,.1); color:#ff2743; font-size:13px;"></div>
+                <div id="crypto-message" style="display:none; padding:16px 20px; border-radius:12px; background:rgba(255,39,67,.1); border:1px solid rgba(255,39,67,.25); color:#ff2743; font-size:14px; font-weight:500;"></div>
               </div>
             </div>
 
             <!-- Action buttons -->
-            <div style="padding:20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--border); background:rgba(255,255,255,.02);">
-              <button id="btn-create-crypto" class="btn btn--primary" type="button">Create Payment</button>
-              <button id="btn-cancel-crypto" class="btn btn--ghost" type="button" style="display:none;">Cancel</button>
+            <div style="padding:20px 28px; display:flex; gap:12px; justify-content:flex-end; border-top:1px solid var(--border); background:rgba(0,0,0,.2);">
+              <button id="btn-create-crypto" class="btn btn--primary" type="button" style="padding:14px 28px; font-size:15px; font-weight:600; background:linear-gradient(135deg, #f7931a, #ffab40); box-shadow:0 4px 20px rgba(247,147,26,.3);">
+                <span style="display:flex; align-items:center; gap:8px;">🚀 Create Payment</span>
+              </button>
+              <button id="btn-cancel-crypto" class="btn btn--ghost" type="button" style="display:none; padding:14px 24px;">Cancel</button>
             </div>
 
-            <div style="padding:12px 24px; background:rgba(98,160,255,.05); border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
-              <strong>💡 Note:</strong> Your account will be delivered within seconds after your transaction is detected on the blockchain.
+            <!-- Footer note -->
+            <div style="padding:16px 28px; background:linear-gradient(135deg, rgba(98,160,255,.08), rgba(98,160,255,.02)); border-top:1px solid rgba(98,160,255,.15); font-size:13px; color:var(--text-500); line-height:1.6; display:flex; align-items:flex-start; gap:12px;">
+              <span style="font-size:18px;">💡</span>
+              <div>
+                <strong style="color:var(--text-300);">Instant Delivery:</strong> Your account will be delivered within seconds after your transaction is detected on the blockchain.
+              </div>
             </div>
           </div>
+          
+          <style>
+            @keyframes spin { to { transform: rotate(360deg); } }
+            #crypto-email:focus, #crypto-currency:focus { outline:none; border-color:rgba(255,171,64,.5); box-shadow:0 0 0 3px rgba(255,171,64,.15); }
+            #crypto-currency option { background:var(--surface); color:var(--text-100); padding:12px; }
+            #btn-copy-address:active { transform:scale(0.95); }
+            .crypto-success #crypto-status { background:linear-gradient(135deg, rgba(46,213,115,.2), rgba(46,213,115,.1)) !important; color:#2ed573 !important; }
+          </style>
         </div>
       </div>
     </section>

@@ -425,11 +425,15 @@ if (document.readyState === 'loading') {
 }
 function updateCryptoLogos(cur){
   const map = { ltc: 'ltc', btc: 'btc', usdcpoly: 'usdc' };
-  const key = map[cur] || 'usdc';
+  const labelMap = { ltc: 'LTC', btc: 'BTC', usdcpoly: 'USDC' };
+  const key = map[cur] || 'ltc';
+  const label = labelMap[cur] || 'LTC';
   const selLogo = document.getElementById('crypto-logo');
   const panelLogo = document.getElementById('crypto-logo-panel');
+  const currencyLabel = document.getElementById('crypto-currency-label');
   if (selLogo) selLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
   if (panelLogo) panelLogo.setAttribute('src', `./assets/crypto/${key}.svg`);
+  if (currencyLabel) currencyLabel.textContent = label;
 }
 function setCryptoMessage(msg){
   const el = document.getElementById('crypto-message');
