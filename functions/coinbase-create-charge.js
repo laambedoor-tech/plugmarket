@@ -35,7 +35,8 @@ const PRICES_USD = {
   'rockstar': { 'Activation Code': 0.25 },
   'minecraft': { 'NFA Lifetime': 1.00, 'FA Lifetime': 4.50 },
   'stake': { 'Level 2 Verified': 0.60 },
-  'xbox': { 'Game Pass Lifetime': 0.60 }
+  'xbox': { 'Game Pass Lifetime': 0.60 },
+  'gemini': { '1 Month': 1.75, '6 Months': 7.30 }
 };
 
 function normalizePlan(p) {

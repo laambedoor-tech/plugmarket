@@ -19,6 +19,7 @@ const PRICES_USD = {
   realmembers: { '[500]': 2.25, '[1000]': 4.25, '[2000]': 7.88, '[3000]': 11.63, '[4000]': 12.24, '[5000]': 15.61 },
   'chatgpt-plus': { '1 Month': 3.2, '3 Months': 7.8, '6 Months': 11.88, '12 Months': 8.5 },
   'chatgpt-pro': { '1 Month': 3.15, '3 Months': 6.0 },
+  gemini: { '1 Month': 1.75, '6 Months': 7.30 },
   capcut: { '1 Month': 1.2, '3 Months': 2.5, '6 Months': 4.2, '12 Months': 8.0, 'Lifetime': 2.35 },
   geoguessr: { '1 Month': 2.0, '3 Months': 5.0, '12 Months': 10.0, 'Lifetime': 0.81 },
   filmora: { '1 Month': 2.5, '3 Months': 6.0, '6 Months': 10.5, '12 Months': 16.0, 'Lifetime': 7.29 },
