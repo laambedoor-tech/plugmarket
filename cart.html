@@ -23,6 +23,9 @@
 </head>
 
 <body>
+  <!-- Skip link para accesibilidad -->
+  <a href="#cart-items" class="skip-link">Skip to cart</a>
+  
   <canvas id="bg-particles" aria-hidden="true"></canvas>
   <header class="nav">
     <a href="./index.html" class="brand">
@@ -121,68 +124,127 @@
 
         <!-- PayPal F&F payment container -->
         <div id="paypal-container" style="display:none;">
-          <div class="card" style="padding:0; max-width:720px; overflow:hidden;">
-            <div style="padding:24px; border-bottom:1px solid var(--border);">
-              <h3 style="margin:0 0 4px 0; font-size:20px;">💳 PayPal Friends & Family</h3>
-              <p class="muted" style="margin:0;">Fast, secure, and low fees. Instant delivery.</p>
+          <div class="card" style="padding:0; max-width:520px; overflow:hidden; border-radius:20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);">
+            
+            <!-- Header with PayPal branding -->
+            <div style="padding:28px 28px 24px; background: linear-gradient(135deg, #003087 0%, #001f5c 100%); position:relative; overflow:hidden;">
+              <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:rgba(255,255,255,0.05); border-radius:50%;"></div>
+              <div style="position:absolute; bottom:-30px; left:-30px; width:100px; height:100px; background:rgba(255,255,255,0.03); border-radius:50%;"></div>
+              <div style="display:flex; align-items:center; gap:12px; position:relative;">
+                <div style="width:48px; height:48px; background:white; border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="#003087">
+                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 style="margin:0; font-size:22px; font-weight:700; color:white;">PayPal</h3>
+                  <p style="margin:4px 0 0 0; font-size:13px; color:rgba(255,255,255,0.7);">Friends & Family • Instant Delivery</p>
+                </div>
+              </div>
             </div>
             
-            <!-- Form section -->
-            <div style="padding:24px; border-bottom:1px solid var(--border);">
-              <label style="display:grid; gap:6px;">
-                <span style="font-weight:600; font-size:14px;">Email Address</span>
-                <input id="paypal-email" type="email" placeholder="you@example.com" autocomplete="email" required
-                  style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:14px;">
+            <!-- Email input section -->
+            <div style="padding:24px 28px; border-bottom:1px solid rgba(255,255,255,0.06);">
+              <label style="display:block;">
+                <span style="font-weight:600; font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:10px;">Your Email</span>
+                <input id="paypal-email" type="email" placeholder="your@email.com" autocomplete="email" required
+                  style="width:100%; padding:14px 16px; border-radius:12px; border:2px solid var(--border); background:var(--card); color:var(--text); font-size:15px; transition: all 0.2s ease; box-sizing:border-box;"
+                  onfocus="this.style.borderColor='#003087'; this.style.boxShadow='0 0 0 4px rgba(0,48,135,0.1)';"
+                  onblur="this.style.borderColor='var(--border)'; this.style.boxShadow='none';">
               </label>
             </div>
 
-            <!-- Payment instructions panel -->
-            <div id="paypal-panel" style="display:none; padding:24px; background:linear-gradient(135deg, rgba(98,160,255,.08), rgba(98,160,255,.02));">
-              <div style="display:grid; gap:20px;">
-                <!-- Order ID -->
-                <div style="padding:16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
-                  <div class="muted" style="font-size:12px; margin:0 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">Order ID</div>
-                  <div id="paypal-order-id" style="font-weight:700; font-size:18px; font-family:monospace;">—</div>
+            <!-- Payment details panel (hidden initially) -->
+            <div id="paypal-panel" style="display:none;">
+              
+              <!-- Amount display -->
+              <div style="padding:32px 28px; background: linear-gradient(135deg, rgba(0,48,135,0.08) 0%, rgba(0,48,135,0.02) 100%); text-align:center; border-bottom:1px solid rgba(255,255,255,0.06);">
+                <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Total Amount</div>
+                <div id="paypal-amount" style="font-size:48px; font-weight:800; color:#fff; letter-spacing:-2px; line-height:1;">—</div>
+                <div id="paypal-order-id" style="font-size:12px; color:var(--text-muted); margin-top:12px; font-family:monospace; background:rgba(255,255,255,0.05); display:inline-block; padding:6px 12px; border-radius:6px;">—</div>
+              </div>
+
+              <!-- Payment steps -->
+              <div style="padding:28px;">
+                <div style="font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px; font-weight:600;">Payment Steps</div>
+                
+                <div style="display:grid; gap:12px;">
+                  <!-- Step 1 -->
+                  <div style="display:flex; gap:14px; align-items:flex-start; padding:14px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+                    <div style="width:28px; height:28px; background:linear-gradient(135deg, #003087, #0070ba); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0;">1</div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Open PayPal</div>
+                      <div style="font-size:13px; color:var(--text-muted);">App or <a href="https://www.paypal.com/myaccount/transfer/homepage/send" target="_blank" style="color:#0070ba; text-decoration:none;">paypal.com</a></div>
+                    </div>
+                  </div>
+                  
+                  <!-- Step 2 - Email con botón copiar -->
+                  <div style="display:flex; gap:14px; align-items:flex-start; padding:14px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+                    <div style="width:28px; height:28px; background:linear-gradient(135deg, #003087, #0070ba); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0;">2</div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Send to this email</div>
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <div id="paypal-receiver-email" style="font-size:14px; color:#2ed573; font-weight:600; font-family:monospace; background:rgba(46,213,115,0.1); padding:8px 12px; border-radius:8px; flex:1;">—</div>
+                        <button type="button" onclick="copyPayPalEmail()" style="padding:8px 12px; background:rgba(46,213,115,0.2); border:none; border-radius:8px; color:#2ed573; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;" onmouseover="this.style.background='rgba(46,213,115,0.3)'" onmouseout="this.style.background='rgba(46,213,115,0.2)'">📋 Copy</button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Step 3 - Friends & Family warning -->
+                  <div style="display:flex; gap:14px; align-items:flex-start; padding:14px; background:rgba(255,171,64,0.08); border-radius:12px; border:1px solid rgba(255,171,64,0.2);">
+                    <div style="width:28px; height:28px; background:linear-gradient(135deg, #ff9500, #ffab40); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0;">!</div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600; font-size:14px; margin-bottom:2px; color:#ffab40;">Select Friends & Family</div>
+                      <div style="font-size:13px; color:var(--text-muted);">Important: Don't select "Goods & Services"</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Step 4 - Note con botón copiar -->
+                  <div style="display:flex; gap:14px; align-items:flex-start; padding:14px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+                    <div style="width:28px; height:28px; background:linear-gradient(135deg, #003087, #0070ba); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0;">3</div>
+                    <div style="flex:1;">
+                      <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Add this note (optional)</div>
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <div id="paypal-note" style="font-size:14px; color:#62a0ff; font-weight:600; font-family:monospace; background:rgba(98,160,255,0.1); padding:8px 12px; border-radius:8px; flex:1;">—</div>
+                        <button type="button" onclick="copyPayPalNote()" style="padding:8px 12px; background:rgba(98,160,255,0.2); border:none; border-radius:8px; color:#62a0ff; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;" onmouseover="this.style.background='rgba(98,160,255,0.3)'" onmouseout="this.style.background='rgba(98,160,255,0.2)'">📋 Copy</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <!-- Amount to send -->
-                <div style="padding:16px; background:rgba(98,160,255,.1); border-radius:10px; border:1px solid rgba(98,160,255,.2); text-align:center;">
-                  <div class="muted" style="font-size:12px; margin:0 0 6px 0; text-transform:uppercase; letter-spacing:0.5px;">Amount to Send</div>
-                  <div id="paypal-amount" style="font-weight:900; font-size:28px; color:#62a0ff; letter-spacing:-0.5px; margin:0;">—</div>
+                <!-- Status indicator -->
+                <div style="margin-top:20px; padding:20px; border-radius:16px; background:linear-gradient(135deg, rgba(255,171,64,0.1) 0%, rgba(255,171,64,0.02) 100%); border:1px solid rgba(255,171,64,0.2);">
+                  <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <div style="width:40px; height:40px; border-radius:50%; background:rgba(255,171,64,0.2); display:flex; align-items:center; justify-content:center;">
+                      <div id="paypal-spinner" style="width:20px; height:20px; border:3px solid rgba(255,171,64,0.3); border-top-color:#ffab40; border-radius:50%; animation: spin 1s linear infinite;"></div>
+                    </div>
+                    <div style="flex:1;">
+                      <div id="paypal-status-text" style="font-weight:600; font-size:15px; color:#ffab40;">Waiting for payment...</div>
+                      <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">We'll detect it automatically</div>
+                    </div>
+                  </div>
+                  <div style="background:rgba(0,0,0,0.2); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--text-muted); line-height:1.5;">
+                    💡 Once you complete the payment in PayPal, your credentials will appear here automatically within 1-2 minutes.
+                  </div>
                 </div>
 
-                <!-- Instructions -->
-                <div style="padding:20px; background:rgba(46,213,115,.05); border-radius:10px; border:1px solid rgba(46,213,115,.2);">
-                  <div style="font-weight:600; margin-bottom:12px; font-size:14px;">📱 Payment Instructions:</div>
-                  <ol style="margin:0; padding-left:20px; line-height:1.8; font-size:14px;">
-                    <li>Open your PayPal app or go to <a href="https://www.paypal.com" target="_blank" style="color:#62a0ff;">paypal.com</a></li>
-                    <li>Click <strong>Send</strong> money</li>
-                    <li>Send to: <strong id="paypal-receiver-email" style="color:#2ed573;">—</strong></li>
-                    <li>Select <strong style="color:#ffab40;">Friends & Family</strong> option</li>
-                    <li>Add note: <strong id="paypal-note" style="color:#62a0ff;">—</strong></li>
-                    <li>Complete the payment</li>
-                  </ol>
-                </div>
+                <!-- Credentials section (hidden initially, shown when payment detected) -->
+                <div id="paypal-credentials" style="display:none; margin-top:20px;"></div>
 
-                <!-- Status -->
-                <div style="padding:16px; border-radius:10px; border:2px solid transparent;">
-                  <div class="muted" style="font-size:12px; margin:0 0 8px 0; text-transform:uppercase; letter-spacing:0.5px;">Payment Status</div>
-                  <div id="paypal-status" style="padding:10px; border-radius:8px; background:rgba(255,171,64,.2); color:#ffab40; font-weight:600; font-size:14px; text-align:center;">⏳ Waiting for payment...</div>
-                </div>
-
-                <div id="paypal-message" class="muted" style="display:none; padding:12px; border-radius:8px; background:rgba(255,39,67,.1); color:#ff2743; font-size:13px;"></div>
+                <div id="paypal-message" style="display:none; padding:14px; border-radius:10px; background:rgba(255,39,67,.1); color:#ff2743; font-size:13px; margin-top:12px; text-align:center;"></div>
               </div>
             </div>
 
             <!-- Action buttons -->
-            <div style="padding:20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--border); background:rgba(255,255,255,.02);">
-              <button id="btn-create-paypal" class="btn btn--primary" type="button">Create Order</button>
-              <button id="btn-cancel-paypal" class="btn btn--ghost" type="button" style="display:none;">Cancel</button>
+            <div style="padding:20px 28px; display:flex; gap:12px; border-top:1px solid rgba(255,255,255,0.06); background:rgba(0,0,0,0.2);">
+              <button id="btn-create-paypal" class="btn" type="button" style="flex:1; padding:16px; font-size:15px; font-weight:600; background:linear-gradient(135deg, #003087 0%, #0070ba 100%); border:none; border-radius:12px; color:white; cursor:pointer; transition: all 0.2s ease;"
+                onmouseover="this.style.opacity='0.9';"
+                onmouseout="this.style.opacity='1';">
+                Continue to Payment
+              </button>
+              <button id="btn-cancel-paypal" class="btn btn--ghost" type="button" style="display:none; padding:16px 24px; font-size:15px; border-radius:12px;">Cancel</button>
             </div>
 
-            <div style="padding:12px 24px; background:rgba(98,160,255,.05); border-top:1px solid var(--border); font-size:12px; color:var(--text-muted); line-height:1.5;">
-              <strong>💡 Note:</strong> Your order will be verified automatically within 2-5 minutes after payment. You'll receive your account credentials via email.
-            </div>
           </div>
         </div>
 
@@ -383,26 +445,80 @@
         transform: translateY(0);
       }
     }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    #paypal-container input:focus {
+      outline: none;
+    }
   </style>
 
   <footer class="footer" id="contact">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <img src="./assets/logo.svg" alt="Plug Market" />
-        <p class="muted">Plug Market © 2025</p>
+    <div class="footer__container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a href="./index.html" class="footer__logo">
+            <img src="./assets/logo.svg" alt="Plug Market" />
+            <span>Plug Market</span>
+          </a>
+          <p class="footer__tagline">Your trusted digital marketplace for premium accounts and services.</p>
+          <div class="footer__social">
+            <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener" aria-label="Discord" class="footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 71 55" fill="currentColor">
+                <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978Z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer__links-grid">
+          <div class="footer__col">
+            <h4>Products</h4>
+            <a href="./index.html#products">All Products</a>
+            <a href="./product-netflix.html">Netflix</a>
+            <a href="./product-spotify.html">Spotify</a>
+          </div>
+          <div class="footer__col">
+            <h4>Support</h4>
+            <a href="https://discord.gg/plugmarket" target="_blank">Discord</a>
+            <a href="./index.html#faq">FAQ</a>
+            <a href="./reviews.html">Reviews</a>
+          </div>
+          <div class="footer__col">
+            <h4>Legal</h4>
+            <a href="./terms.html">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+          </div>
+        </div>
       </div>
-      <nav class="footer__links">
-        <a href="./terms.html">Terms</a>
-        <a href="#">Privacy</a>
-        <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener">Discord</a>
-        <a href="#">Telegram</a>
-      </nav>
+      <div class="footer__bottom">
+        <p>© 2025 Plug Market. All rights reserved.</p>
+        <div class="footer__payment">
+          <span>We accept:</span>
+          <div class="footer__payment-icons">
+            <span title="Card">💳</span>
+            <span title="Crypto">₿</span>
+            <span title="PayPal">🅿️</span>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
   <script src="https://js.stripe.com/v3" defer></script>
-  <script src="./js/main.js?v=20251227" type="module"></script>
-  <script src="./js/cart.js?v=20251227" type="module"></script>
+  <script src="./js/main.js?v=20260127b" type="module"></script>
+  <script src="./js/cart.js?v=20260127e" type="module"></script>
 </body>
 
 <script>

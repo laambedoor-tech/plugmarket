@@ -364,6 +364,15 @@
 </head>
 
 <body>
+  <!-- Skip link para accesibilidad -->
+  <a href="#products" class="skip-link">Skip to products</a>
+  
+  <!-- Notificación del carrito -->
+  <div class="cart-notification" id="cart-notification">
+    <div class="cart-notification__icon">✓</div>
+    <span id="cart-notification-text">Product added to cart!</span>
+  </div>
+  
   <canvas id="bg-particles" aria-hidden="true"></canvas>
 
   <header class="nav">
@@ -446,15 +455,49 @@
         <p class="hero__subtitle">
           Fast delivery, trusted service, and premium quality products for your digital needs
         </p>
-        <div class="hero__actions">
-          <a class="btn btn--primary" href="#products">Browse Products</a>
-          <a class="btn btn--ghost" href="https://discord.gg/plugmarket" target="_blank" rel="noopener noreferrer">Join Discord</a>
+        <div class="hero__actions" style="display: flex !important; visibility: visible !important; opacity: 1 !important; margin-top: 30px;">
+          <a class="btn btn--primary" href="#products" style="display: inline-flex !important; visibility: visible !important; padding: 14px 28px; font-size: 15px; background: linear-gradient(135deg, #ff2743, #ff2750); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;">Browse Products</a>
+          <a class="btn btn--ghost" href="https://discord.gg/plugmarket" target="_blank" rel="noopener noreferrer" style="display: inline-flex !important; visibility: visible !important; padding: 14px 28px; font-size: 15px; background: rgba(0,0,0,0.5); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 500; border: 1px solid rgba(255,255,255,0.15);">Join Discord</a>
         </div>
         <div class="scroll-indicator" aria-hidden="true">
           <div class="scroll-indicator__mouse">
             <div class="scroll-indicator__wheel"></div>
           </div>
           <span class="scroll-indicator__label">Scroll</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Badges Section -->
+    <section class="trust-badges" aria-label="Trust indicators">
+      <div class="trust-badges__container">
+        <div class="trust-badge">
+          <div class="trust-badge__icon">⚡</div>
+          <div class="trust-badge__text">
+            <strong>Instant Delivery</strong>
+            <span>Get your products in seconds</span>
+          </div>
+        </div>
+        <div class="trust-badge">
+          <div class="trust-badge__icon">🛡️</div>
+          <div class="trust-badge__text">
+            <strong>Secure Payment</strong>
+            <span>Stripe & Crypto accepted</span>
+          </div>
+        </div>
+        <div class="trust-badge">
+          <div class="trust-badge__icon">💬</div>
+          <div class="trust-badge__text">
+            <strong>24/7 Support</strong>
+            <span>Always here to help</span>
+          </div>
+        </div>
+        <div class="trust-badge">
+          <div class="trust-badge__icon">✅</div>
+          <div class="trust-badge__text">
+            <strong>Verified Reviews</strong>
+            <span>4.9★ from real customers</span>
+          </div>
         </div>
       </div>
     </section>
@@ -701,17 +744,55 @@
   </div>
 
   <footer class="footer anchor-offset" id="contact">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <img src="./assets/logo.svg" alt="Plug Market" />
-        <p class="muted">Plug Market © 2025</p>
+    <div class="footer__container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <a href="#home" class="footer__logo">
+            <img src="./assets/logo.svg" alt="Plug Market" />
+            <span>Plug Market</span>
+          </a>
+          <p class="footer__tagline">Your trusted digital marketplace for premium accounts and services.</p>
+          <div class="footer__social">
+            <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener" aria-label="Discord" class="footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 71 55" fill="currentColor">
+                <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978Z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer__links-grid">
+          <div class="footer__col">
+            <h4>Products</h4>
+            <a href="#products">All Products</a>
+            <a href="./product-netflix.html">Netflix</a>
+            <a href="./product-spotify.html">Spotify</a>
+            <a href="./product-disney.html">Disney+</a>
+          </div>
+          <div class="footer__col">
+            <h4>Support</h4>
+            <a href="https://discord.gg/plugmarket" target="_blank">Discord</a>
+            <a href="#faq">FAQ</a>
+            <a href="./reviews.html">Reviews</a>
+          </div>
+          <div class="footer__col">
+            <h4>Legal</h4>
+            <a href="./terms.html">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Refund Policy</a>
+          </div>
+        </div>
       </div>
-      <nav class="footer__links">
-        <a href="./terms.html">Terms</a>
-        <a href="#">Privacy</a>
-        <a href="https://discord.gg/plugmarket" target="_blank" rel="noopener">Discord</a>
-        <a href="#">Telegram</a>
-      </nav>
+      <div class="footer__bottom">
+        <p>© 2025 Plug Market. All rights reserved.</p>
+        <div class="footer__payment">
+          <span>We accept:</span>
+          <div class="footer__payment-icons">
+            <span title="Card">💳</span>
+            <span title="Crypto">₿</span>
+            <span title="PayPal">🅿️</span>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 

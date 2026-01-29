@@ -24,6 +24,7 @@ import paypalFFCreateOrder from './paypal-ff-create-order.js';
 import paypalFFWebhook from './paypal-ff-webhook.js';
 import paypalFFCheckOrder from './paypal-ff-check-order.js';
 import paypalFFManualComplete from './paypal-ff-manual-complete.js';
+import paypalFFConfirm from './paypal-ff-confirm.js';
 import searchOrders from './search-orders.js';
 import findMissingOrders from './find-missing-orders.js';
 import recoverStripeOrder from './recover-stripe-order.js';
@@ -63,6 +64,7 @@ export default {
     if (path === '/api/paypal-ff/webhook') return paypalFFWebhook.fetch(request, env, ctx);
     if (path === '/api/paypal-ff/check-order') return paypalFFCheckOrder.fetch(request, env, ctx);
     if (path === '/api/paypal-ff/manual-complete') return paypalFFManualComplete.fetch(request, env, ctx);
+    if (path === '/api/paypal-ff/confirm') return paypalFFConfirm.fetch(request, env, ctx);
 
     // NOWPayments crypto routes
     if (path === '/api/crypto/now/create') return cryptoNowCreate.fetch(request, env, ctx);

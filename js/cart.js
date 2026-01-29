@@ -325,13 +325,12 @@ function initCheckout() {
   document.getElementById('btn-cancel-paypal')?.addEventListener('click', () => {
     showCheckout(false);
     setPayPalMessage('');
-    setPayPalStatus('waiting');
+    resetPayPalStatus();
     const panel = document.getElementById('paypal-panel'); if (panel) panel.style.display = 'none';
     document.getElementById('btn-create-paypal').style.display = 'inline-block';
     document.getElementById('btn-cancel-paypal').style.display = 'none';
     try { if (paypalPoll) clearInterval(paypalPoll); } catch {}
   });
-
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
     showCheckout(false);
     setMessage('');
@@ -685,29 +684,22 @@ function setPayPalMessage(msg){
   el.style.display = 'block';
 }
 
-function setPayPalStatus(status){
-  const el = document.getElementById('paypal-status');
-  if (!el) return;
-  const msgs = {
-    'waiting': '⏳ Waiting for payment...',
-    'verifying': '🔍 Verifying payment...',
-    'confirmed': '✅ Payment confirmed!',
-    'failed': '❌ Payment failed',
-  };
-  const text = msgs[status] || msgs['waiting'];
-  const colors = {
-    'waiting': 'rgba(255,171,64,.2); color:#ffab40',
-    'verifying': 'rgba(98,160,255,.2); color:#62a0ff',
-    'confirmed': 'rgba(46,213,115,.2); color:#2ed573',
-    'failed': 'rgba(255,39,67,.2); color:#ff2743',
-  };
-  const color = colors[status] || colors['waiting'];
-  el.style.background = color.split(';')[0];
-  el.style.color = color.split(';')[1].replace('color:', '');
-  el.textContent = text;
+function resetPayPalStatus(){
+  const spinner = document.getElementById('paypal-spinner');
+  const statusText = document.getElementById('paypal-status-text');
+  if (spinner) spinner.style.display = 'inline-block';
+  if (statusText) {
+    statusText.textContent = 'Waiting for payment...';
+    statusText.style.color = '#fff';
+  }
+  // Hide credentials if shown
+  const credsContainer = document.getElementById('paypal-credentials-inline');
+  if (credsContainer) credsContainer.style.display = 'none';
 }
 
 let paypalPoll = null;
+let currentPayPalOrderId = null;
+
 async function startPayPalCheckout(){
   const emailEl = document.getElementById('paypal-email');
   const customerEmail = emailEl ? emailEl.value.trim() : '';
@@ -724,7 +716,7 @@ async function startPayPalCheckout(){
   }
   
   setPayPalMessage('');
-  setPayPalStatus('waiting');
+  resetPayPalStatus();
   
   const panel = document.getElementById('paypal-panel'); 
   if (panel) panel.style.display = 'block';
@@ -753,6 +745,9 @@ async function startPayPalCheckout(){
 
     const { orderId, email, amount, note } = data;
     
+    // Save orderId for confirmation button
+    currentPayPalOrderId = orderId;
+    
     // Display payment information
     const orderIdEl = document.getElementById('paypal-order-id');
     if (orderIdEl) orderIdEl.textContent = orderId;
@@ -766,7 +761,7 @@ async function startPayPalCheckout(){
     const noteEl = document.getElementById('paypal-note');
     if (noteEl) noteEl.textContent = note;
 
-    // Start polling for payment confirmation
+    // Start polling for automatic payment detection
     try { if (paypalPoll) clearInterval(paypalPoll); } catch {}
     
     paypalPoll = setInterval(async () => {
@@ -782,33 +777,41 @@ async function startPayPalCheckout(){
         const orderStatus = statusData.status;
         
         if (orderStatus === 'completed') {
-          setPayPalStatus('confirmed');
+          // Payment detected! Show success
           clearInterval(paypalPoll);
           
-          // Clear cart and show success
+          // Update status UI
+          const spinner = document.getElementById('paypal-spinner');
+          if (spinner) spinner.style.display = 'none';
+          
+          const statusText = document.getElementById('paypal-status-text');
+          if (statusText) {
+            statusText.textContent = '✓ Payment received!';
+            statusText.style.color = '#2ed573';
+          }
+          
+          // Clear cart
           try { setCart([]); } catch {}
           
-          setTimeout(() => {
-            const modal = document.getElementById('success-modal'); 
-            if (modal) modal.style.display = 'flex';
-            
-            const createBtn2 = document.getElementById('btn-create-paypal'); 
-            if (createBtn2) createBtn2.style.display = 'inline-block';
-            
-            const cancelBtn2 = document.getElementById('btn-cancel-paypal'); 
-            if (cancelBtn2) cancelBtn2.style.display = 'none';
-          }, 1000);
-        } else if (orderStatus === 'pending_payment') {
-          setPayPalStatus('waiting');
+          // Check if we have credentials to display
+          if (statusData.items && statusData.items.length > 0) {
+            // Show credentials in the PayPal panel
+            showPayPalCredentials(statusData.items);
+          }
+          
+          const createBtn2 = document.getElementById('btn-create-paypal'); 
+          if (createBtn2) createBtn2.style.display = 'inline-block';
+          
+          const cancelBtn2 = document.getElementById('btn-cancel-paypal'); 
+          if (cancelBtn2) cancelBtn2.style.display = 'none';
         }
       } catch (err) {
         console.warn('PayPal poll error:', err?.message || err);
       }
-    }, 5000); // Check every 5 seconds
+    }, 3000); // Check every 3 seconds for fast detection
 
   } catch (err) {
     setPayPalMessage(err.message || 'Failed to create PayPal order');
-    setPayPalStatus('failed');
     
     const createBtn = document.getElementById('btn-create-paypal'); 
     if (createBtn) createBtn.style.display = 'inline-block';
@@ -817,3 +820,284 @@ async function startPayPalCheckout(){
     if (cancelBtn) cancelBtn.style.display = 'none';
   }
 }
+
+// Show credentials in a modal
+function showCredentialsModal(items) {
+  // Create or get credentials modal
+  let modal = document.getElementById('credentials-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'credentials-modal';
+    modal.style.cssText = `
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 20px;
+    `;
+    document.body.appendChild(modal);
+  }
+  
+  // Build credentials HTML
+  let credentialsHTML = '';
+  items.forEach((item, index) => {
+    const creds = item.credentials || {};
+    credentialsHTML += `
+      <div style="background: rgba(46,213,115,.1); border: 1px solid rgba(46,213,115,.3); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+        <div style="font-weight: 600; color: #2ed573; margin-bottom: 8px; font-size: 14px;">
+          ${item.product.toUpperCase()} - ${item.plan}
+        </div>
+        <div style="font-family: monospace; font-size: 13px; line-height: 1.8;">
+          ${creds.email ? `<div><span style="color: var(--text-muted);">Email:</span> <strong>${creds.email}</strong></div>` : ''}
+          ${creds.password ? `<div><span style="color: var(--text-muted);">Password:</span> <strong>${creds.password}</strong></div>` : ''}
+          ${creds.chatgptPassword ? `<div><span style="color: var(--text-muted);">ChatGPT Password:</span> <strong>${creds.chatgptPassword}</strong></div>` : ''}
+          ${creds.chatgptCode ? `<div><span style="color: var(--text-muted);">Code:</span> <strong>${creds.chatgptCode}</strong></div>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  
+  modal.innerHTML = `
+    <div class="card" style="
+      max-width: 600px;
+      width: 100%;
+      margin: auto;
+      text-align: center;
+      padding: 2rem;
+      animation: slideUp 0.3s ease-out;
+    ">
+      <div style="
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(46,213,115,.3), rgba(46,213,115,.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+      ">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2ed573" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      
+      <h2 style="margin: 0 0 0.5rem 0; font-size: 1.75rem;">Payment Successful!</h2>
+      <p style="color: var(--text-muted); margin: 0 0 1.5rem 0; font-size: 1rem;">
+        Your credentials are ready. Please save them now!
+      </p>
+      
+      <div style="text-align: left; margin-bottom: 1.5rem; max-height: 400px; overflow-y: auto;">
+        ${credentialsHTML}
+      </div>
+      
+      <div style="background: rgba(255,171,64,.1); border: 1px solid rgba(255,171,64,.3); border-radius: 8px; padding: 12px; margin-bottom: 1.5rem; text-align: left;">
+        <strong style="color: #ffab40;">⚠️ Important:</strong>
+        <span style="color: var(--text-muted); font-size: 14px;"> Copy and save these credentials now. You can also view them anytime in your Dashboard.</span>
+      </div>
+      
+      <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+        <button onclick="copyAllCredentials()" class="btn btn--primary" style="min-width: 150px;">
+          📋 Copy All
+        </button>
+        <a href="./dashboard.html" class="btn btn--ghost" style="min-width: 150px;">
+          Go to Dashboard
+        </a>
+        <button onclick="closeCredentialsModal()" class="btn btn--ghost" style="min-width: 100px;">
+          Close
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // Store credentials for copy function
+  window._lastCredentials = items;
+  
+  modal.style.display = 'flex';
+}
+
+function closeCredentialsModal() {
+  const modal = document.getElementById('credentials-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function copyAllCredentials() {
+  const items = window._lastCredentials || [];
+  let text = '🔐 Your PlugMarket Credentials\n';
+  text += '================================\n\n';
+  
+  items.forEach((item, index) => {
+    const creds = item.credentials || {};
+    text += `📦 ${item.product.toUpperCase()} - ${item.plan}\n`;
+    if (creds.email) text += `   Email: ${creds.email}\n`;
+    if (creds.password) text += `   Password: ${creds.password}\n`;
+    if (creds.chatgptPassword) text += `   ChatGPT Password: ${creds.chatgptPassword}\n`;
+    if (creds.chatgptCode) text += `   Code: ${creds.chatgptCode}\n`;
+    text += '\n';
+  });
+  
+  text += '================================\n';
+  text += 'Thank you for shopping at PlugMarket!\n';
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ Credentials copied to clipboard!');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    // Fallback: show in prompt
+    prompt('Copy these credentials:', text);
+  });
+}
+
+// Copy functions for PayPal
+function copyPayPalEmail() {
+  const el = document.getElementById('paypal-receiver-email');
+  if (el && el.textContent && el.textContent !== '—') {
+    navigator.clipboard.writeText(el.textContent).then(() => {
+      showCopyFeedback(el, 'Email copied!');
+    }).catch(() => {
+      prompt('Copy email:', el.textContent);
+    });
+  }
+}
+
+function copyPayPalNote() {
+  const el = document.getElementById('paypal-note');
+  if (el && el.textContent && el.textContent !== '—') {
+    navigator.clipboard.writeText(el.textContent).then(() => {
+      showCopyFeedback(el, 'Note copied!');
+    }).catch(() => {
+      prompt('Copy note:', el.textContent);
+    });
+  }
+}
+
+function showCopyFeedback(el, message) {
+  const original = el.textContent;
+  el.textContent = '✓ ' + message;
+  el.style.background = 'rgba(46,213,115,0.3)';
+  setTimeout(() => {
+    el.textContent = original;
+    el.style.background = '';
+  }, 1500);
+}
+
+// Show credentials in PayPal panel
+function showPayPalCredentials(items) {
+  const container = document.getElementById('paypal-credentials');
+  if (!container) return;
+  
+  let html = `
+    <div style="background: linear-gradient(135deg, rgba(46,213,115,0.15) 0%, rgba(46,213,115,0.05) 100%); border: 2px solid rgba(46,213,115,0.3); border-radius:16px; padding:24px; animation: slideUp 0.3s ease-out;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="width:48px; height:48px; background:linear-gradient(135deg, #2ed573, #26b862); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size:20px; font-weight:700; color:#2ed573;">Payment Successful!</div>
+          <div style="font-size:13px; color:var(--text-muted);">Here are your credentials</div>
+        </div>
+      </div>
+  `;
+  
+  items.forEach((item, index) => {
+    const creds = item.credentials || {};
+    html += `
+      <div style="background:rgba(0,0,0,0.3); border-radius:12px; padding:16px; margin-bottom:${index < items.length - 1 ? '12px' : '0'};">
+        <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">${item.product.toUpperCase()} - ${item.plan}</div>
+        <div style="display:grid; gap:8px;">
+    `;
+    
+    if (creds.email) {
+      html += `
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="color:var(--text-muted); font-size:13px; min-width:70px;">Email:</span>
+          <code style="flex:1; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; font-size:13px; color:#fff; word-break:break-all;">${creds.email}</code>
+          <button onclick="copyToClipboard('${creds.email.replace(/'/g, "\\'")}')" style="padding:6px 10px; background:rgba(98,160,255,0.2); border:none; border-radius:6px; color:#62a0ff; cursor:pointer; font-size:11px;">Copy</button>
+        </div>
+      `;
+    }
+    if (creds.password) {
+      html += `
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="color:var(--text-muted); font-size:13px; min-width:70px;">Password:</span>
+          <code style="flex:1; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; font-size:13px; color:#fff;">${creds.password}</code>
+          <button onclick="copyToClipboard('${creds.password.replace(/'/g, "\\'")}')" style="padding:6px 10px; background:rgba(98,160,255,0.2); border:none; border-radius:6px; color:#62a0ff; cursor:pointer; font-size:11px;">Copy</button>
+        </div>
+      `;
+    }
+    if (creds.chatgptPassword) {
+      html += `
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="color:var(--text-muted); font-size:13px; min-width:70px;">ChatGPT:</span>
+          <code style="flex:1; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; font-size:13px; color:#fff;">${creds.chatgptPassword}</code>
+          <button onclick="copyToClipboard('${creds.chatgptPassword.replace(/'/g, "\\'")}')" style="padding:6px 10px; background:rgba(98,160,255,0.2); border:none; border-radius:6px; color:#62a0ff; cursor:pointer; font-size:11px;">Copy</button>
+        </div>
+      `;
+    }
+    
+    html += `</div></div>`;
+  });
+  
+  html += `
+      <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button onclick="copyAllPayPalCredentials()" style="flex:1; padding:14px; background:linear-gradient(135deg, #003087, #0070ba); border:none; border-radius:10px; color:white; font-weight:600; cursor:pointer; font-size:14px;">📋 Copy All</button>
+        <a href="./dashboard.html" style="flex:1; padding:14px; background:rgba(255,255,255,0.1); border:none; border-radius:10px; color:white; font-weight:600; text-decoration:none; text-align:center; font-size:14px;">Go to Dashboard</a>
+      </div>
+      <div style="margin-top:12px; padding:12px; background:rgba(255,171,64,0.1); border-radius:8px; font-size:12px; color:#ffab40; text-align:center;">
+        ⚠️ Save these credentials now! You can also view them in your Dashboard.
+      </div>
+    </div>
+  `;
+  
+  container.innerHTML = html;
+  container.style.display = 'block';
+  
+  // Store for copy all function
+  window._paypalCredentials = items;
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    // Visual feedback could be added here
+  }).catch(() => {
+    prompt('Copy:', text);
+  });
+}
+
+function copyAllPayPalCredentials() {
+  const items = window._paypalCredentials || [];
+  let text = '🔐 Your PlugMarket Credentials\n';
+  text += '================================\n\n';
+  
+  items.forEach((item) => {
+    const creds = item.credentials || {};
+    text += `📦 ${item.product.toUpperCase()} - ${item.plan}\n`;
+    if (creds.email) text += `   Email: ${creds.email}\n`;
+    if (creds.password) text += `   Password: ${creds.password}\n`;
+    if (creds.chatgptPassword) text += `   ChatGPT: ${creds.chatgptPassword}\n`;
+    text += '\n';
+  });
+  
+  text += '================================\n';
+  text += 'Thank you for shopping at PlugMarket!\n';
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ All credentials copied to clipboard!');
+  }).catch(() => {
+    prompt('Copy these credentials:', text);
+  });
+}
+
+// Make functions global for onclick handlers
+window.copyPayPalEmail = copyPayPalEmail;
+window.copyPayPalNote = copyPayPalNote;
+window.copyToClipboard = copyToClipboard;
+window.copyAllPayPalCredentials = copyAllPayPalCredentials;

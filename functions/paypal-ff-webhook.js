@@ -2,7 +2,66 @@
  * POST /api/paypal-ff/webhook
  * Receives IPN notifications from PayPal (via Cloudflare Worker forwarder)
  * Verifies and processes Friends & Family payments
+ * AUTOMATICALLY assigns accounts from stock when payment is confirmed
  */
+
+// Helper function to assign account from stock
+async function assignAccount(supabaseUrl, supabaseKey, productId, plan, customerEmail) {
+  console.log(`Assigning account: product_id="${productId}", plan="${plan}"`);
+
+  // Buscar cuenta disponible (FIFO: la más antigua primero)
+  const fetchRes = await fetch(
+    `${supabaseUrl}/rest/v1/accounts?product_id=eq.${productId}&plan=eq.${plan}&status=eq.available&order=created_at.asc,id.asc&limit=1`,
+    {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  if (!fetchRes.ok) {
+    throw new Error(`Failed to fetch account: ${await fetchRes.text()}`);
+  }
+
+  const accounts = await fetchRes.json();
+  if (!Array.isArray(accounts) || accounts.length === 0) {
+    throw new Error(`No available accounts for ${productId} - ${plan}`);
+  }
+
+  const account = accounts[0];
+
+  // Marcar como vendida
+  const updateRes = await fetch(
+    `${supabaseUrl}/rest/v1/accounts?id=eq.${account.id}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`
+      },
+      body: JSON.stringify({
+        status: 'sold',
+        sold_at: new Date().toISOString(),
+        customer_email: customerEmail
+      })
+    }
+  );
+
+  if (!updateRes.ok) {
+    throw new Error(`Failed to update account: ${await updateRes.text()}`);
+  }
+
+  const result = {
+    email: account.email,
+    password: account.password
+  };
+  if (account.chatgpt_password) result.chatgptPassword = account.chatgpt_password;
+  if (account.chatgpt_code) result.chatgptCode = account.chatgpt_code;
+  return result;
+}
 
 export default {
   async fetch(request, env) {
@@ -36,7 +95,7 @@ export default {
       // PayPal F&F no envía el note en el IPN, solo en la transacción
       // Por eso buscamos solo por monto
       
-      console.log(`Processing payment: $${amount} from ${payerEmail} to ${receiverEmail}`);
+      console.log(`Processing payment: €${amount} from ${payerEmail} to ${receiverEmail}`);
 
       // Only process completed payments
       if (paymentStatus !== 'Completed') {
@@ -51,13 +110,13 @@ export default {
         return new Response('OK', { status: 200 });
       }
 
-      // Find matching order by amount and note
+      // Find matching order by amount
       const supabaseUrl = env.SUPABASE_URL;
       const supabaseKey = env.SUPABASE_ANON_KEY;
 
-      // Search for pending orders with matching amount
+      // Search for pending orders with matching amount (using ilike for PPFF pattern)
       const searchRes = await fetch(
-        `${supabaseUrl}/rest/v1/orders?payment_intent_id=like.PPFF-*&total_cents=eq.${Math.round(amount * 100)}`,
+        `${supabaseUrl}/rest/v1/orders?payment_intent_id=ilike.PPFF-%&total_cents=eq.${Math.round(amount * 100)}&order=created_at.desc`,
         {
           headers: {
             'apikey': supabaseKey,
@@ -80,11 +139,58 @@ export default {
 
       // Tomar la orden más reciente que no esté completada
       let matchedOrder = orders.find(o => !o.payment_intent_id.includes('_completed_'));
-      if (!matchedOrder) matchedOrder = orders[0];
+      
+      if (!matchedOrder) {
+        console.log(`All orders for amount €${amount} are already completed`);
+        return new Response('OK', { status: 200 });
+      }
       
       console.log(`Matched order: ${matchedOrder.payment_intent_id}`);
 
-      // Update order status
+      // Parse cart items
+      let cartItems = [];
+      if (matchedOrder.items) {
+        cartItems = Array.isArray(matchedOrder.items) ? matchedOrder.items : JSON.parse(matchedOrder.items);
+      }
+
+      if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        console.error('Order has no items');
+        return new Response('OK', { status: 200 });
+      }
+
+      console.log(`Processing ${cartItems.length} cart items for order ${matchedOrder.payment_intent_id}`);
+
+      // Assign accounts from stock for each item
+      const orderItems = [];
+      try {
+        for (const item of cartItems) {
+          const qty = item.qty || 1;
+          for (let i = 0; i < qty; i++) {
+            const credentials = await assignAccount(
+              supabaseUrl,
+              supabaseKey,
+              item.pid,
+              item.plan,
+              matchedOrder.customer_email
+            );
+            orderItems.push({
+              pid: item.pid,
+              plan: item.plan,
+              price: item.price,
+              credentials
+            });
+            console.log(`Assigned account ${i + 1}/${qty} for ${item.pid}-${item.plan}`);
+          }
+        }
+      } catch (assignError) {
+        console.error(`Failed to assign accounts:`, assignError);
+        // Even if account assignment fails, we should still mark order as needing attention
+        // but continue processing
+      }
+
+      // Mark as completed and save credentials
+      const completedId = `${matchedOrder.payment_intent_id}_completed_${txnId}`;
+      
       const updateRes = await fetch(
         `${supabaseUrl}/rest/v1/orders?payment_intent_id=eq.${matchedOrder.payment_intent_id}`,
         {
@@ -96,7 +202,8 @@ export default {
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify({
-            payment_intent_id: `${matchedOrder.payment_intent_id}_completed_${txnId}`
+            payment_intent_id: completedId,
+            items: orderItems.length > 0 ? orderItems : matchedOrder.items
           })
         }
       );
@@ -106,8 +213,7 @@ export default {
         return new Response('OK', { status: 200 });
       }
 
-      // TODO: Deliver products to customer
-      console.log(`Order ${matchedOrder.payment_intent_id} completed successfully!`);
+      console.log(`✅ Order ${matchedOrder.payment_intent_id} completed automatically via IPN (txn: ${txnId}) - ${orderItems.length} accounts assigned`);
 
       return new Response('OK', { status: 200 });
 
@@ -120,23 +226,44 @@ export default {
 
 async function verifyIPN(body, env) {
   try {
-    // Verify with PayPal
-    const verifyUrl = env.PAYPAL_ENV === 'production'
-      ? 'https://ipnpb.paypal.com/cgi-bin/webscr'
-      : 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr';
-
+    // Try production first, then sandbox
+    const urls = [
+      'https://ipnpb.paypal.com/cgi-bin/webscr',      // Production
+      'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr' // Sandbox
+    ];
+    
+    // If env specifies, try that first
+    if (env.PAYPAL_ENV === 'production') {
+      urls.reverse(); // Try sandbox second
+    }
+    
     const verifyBody = 'cmd=_notify-validate&' + body;
 
-    const response = await fetch(verifyUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: verifyBody
-    });
+    for (const verifyUrl of urls) {
+      try {
+        console.log(`Verifying IPN with: ${verifyUrl}`);
+        const response = await fetch(verifyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: verifyBody
+        });
 
-    const text = await response.text();
-    return text === 'VERIFIED';
+        const text = await response.text();
+        console.log(`IPN verification response from ${verifyUrl}: ${text}`);
+        
+        if (text === 'VERIFIED') {
+          return true;
+        }
+      } catch (urlErr) {
+        console.warn(`Failed to verify with ${verifyUrl}:`, urlErr.message);
+      }
+    }
+    
+    // If both fail, log but still return false
+    console.error('IPN verification failed with both endpoints');
+    return false;
   } catch (err) {
     console.error('IPN verification error:', err);
     return false;

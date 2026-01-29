@@ -1,11 +1,28 @@
 // Plug Market — JS: partículas, productos demo y contadores
 
-// 0) Mobile Menu Toggle
+// 0) Mobile Menu Toggle + Navbar Scroll Effect
 (() => {
   const toggle = document.getElementById('mobile-menu-toggle');
   const sidebar = document.getElementById('mobile-sidebar');
   const close = document.getElementById('mobile-sidebar-close');
   const overlay = document.getElementById('mobile-sidebar-overlay');
+  const nav = document.querySelector('.nav');
+
+  // Navbar scroll effect
+  if (nav) {
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      
+      if (currentScroll > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+      
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
 
   if (!toggle || !sidebar) return;
 
@@ -29,6 +46,34 @@
       setTimeout(closeSidebar, 200);
     });
   });
+})();
+
+// 0.5) Scroll Reveal Animation
+(() => {
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  const revealElements = document.querySelectorAll('.reveal, .product-card, .card, .feature, .review, .faq-item');
+  
+  if (!revealElements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        // Añadir delay escalonado para efecto cascada
+        setTimeout(() => {
+          entry.target.classList.add('active');
+          entry.target.style.setProperty('--index', index % 8);
+        }, (index % 8) * 50);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  revealElements.forEach(el => observer.observe(el));
 })();
 
 // 1) Partículas en canvas con glow rojo (optimizado rendimiento)
@@ -624,7 +669,39 @@ function addToCart({ pid, plan, price }) {
   if (idx >= 0) { items[idx].qty += 1; }
   else { items.push({ key, pid, title: product.title, tone: product.tone, plan, price, qty: 1 }); }
   setCart(items);
+  
+  // Mostrar notificación y animación del carrito
+  showCartNotification(product.title);
+  animateCartBadge();
 }
+
+// Notificación de producto añadido al carrito
+function showCartNotification(productName) {
+  const notification = document.getElementById('cart-notification');
+  const text = document.getElementById('cart-notification-text');
+  
+  if (!notification) return;
+  
+  text.textContent = `${productName} added to cart!`;
+  notification.classList.add('show');
+  
+  // Ocultar después de 3 segundos
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
+// Animación del badge del carrito
+function animateCartBadge() {
+  const badge = document.getElementById('cart-count');
+  if (!badge) return;
+  
+  badge.classList.remove('bump');
+  // Forzar reflow para reiniciar la animación
+  void badge.offsetWidth;
+  badge.classList.add('bump');
+}
+
 function cartCount() { return getCart().reduce((a, b) => a + b.qty, 0); }
 function renderCartCount() {
   const el = document.getElementById('cart-count');
