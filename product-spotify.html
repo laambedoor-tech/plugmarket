@@ -681,8 +681,8 @@
   <script src="./js/auth.js"></script>
   <script src="./js/cart.js"></script>
   <script>
-    // API Base
-    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168') || window.location.hostname.includes('.local')
+    // API Base (using existing from cart.js if available)
+    const SPOTIFY_API_BASE = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168') || window.location.hostname.includes('.local')
       ? 'http://localhost:8788'
       : 'https://plugmarket.es';
 
@@ -730,8 +730,8 @@
     // Fetch stock
     async function fetchStock() {
       try {
-        console.log('Fetching stock from:', `${API_BASE}/api/get-stock`);
-        const res = await fetch(`${API_BASE}/api/get-stock`);
+        console.log('Fetching stock from:', `${SPOTIFY_API_BASE}/api/get-stock`);
+        const res = await fetch(`${SPOTIFY_API_BASE}/api/get-stock`);
         console.log('Stock response status:', res.status);
         
         if (res.ok) {
