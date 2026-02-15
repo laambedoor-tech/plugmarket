@@ -575,8 +575,8 @@
             </div>
           </div>
 
-          <!-- Description -->
-          <div class="product-description">
+          <!-- Description - Lifetime -->
+          <div class="product-description" id="desc-lifetime">
             <div class="description-header">
               <h2>
                 <span style="font-size: 20px;">🇺🇸</span>
@@ -593,6 +593,28 @@
                 <li><strong>High Quality & Easy to Resell</strong> – Perfect for personal use or resale.</li>
                 <li><strong>Auto-Renew Enabled</strong> – Enjoy uninterrupted premium access.</li>
                 <li><strong>Support & Replacement</strong> – Free replacements in case of issues.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Description - Keys -->
+          <div class="product-description" id="desc-keys" style="display: none;">
+            <div class="description-header">
+              <h2>
+                <span style="font-size: 20px;">🔑</span>
+                Spotify Premium Keys [LIFETIME]
+              </h2>
+            </div>
+            <div class="description-content">
+              <ul class="description-list">
+                <li><strong>Spotify Premium on Your Own Account</strong> – Activate Premium on any account you choose, including your personal account.</li>
+                <li><strong>100% Lifetime Access</strong> – Spotify Premium is permanent and does not expire.</li>
+                <li><strong>Lifetime Warranty</strong> – Your guarantee is permanent and never expires.</li>
+                <li><strong>Fast & Easy Activation</strong> – Activate Premium in just 2 minutes with 3 simple steps.</li>
+                <li><strong>Worldwide Compatibility</strong> – Works in all countries without restrictions.</li>
+                <li><strong>Reusable Key Guarantee</strong> – If Premium stops working in the account, you can reuse the same key to renew it for free & instant & automatic.</li>
+                <li><strong>Free & Instant Renewal</strong> – Automatic and immediate replacement at no extra cost.</li>
+                <li><strong>Secure & Reliable Service</strong> – Stable, safe, and fully guaranteed Premium access.</li>
               </ul>
             </div>
           </div>
@@ -669,7 +691,8 @@
     const productTitle = 'Spotify Premium';
     
     const variants = [
-      { id: 'Lifetime', name: 'Spotify Premium — Lifetime', stock: 0, price: 1.78, oldPrice: null }
+      { id: 'Lifetime', name: 'Spotify Premium — Lifetime', stock: 0, price: 1.78, oldPrice: null },
+      { id: 'Keys', name: 'Spotify Premium Keys [LIFETIME]', stock: 0, price: 9.15, oldPrice: null }
     ];
 
     let selectedVariant = variants[0];
@@ -769,6 +792,17 @@
       quantityInput.value = 1;
       updatePrice();
       updateStockBadge();
+      
+      // Toggle descriptions based on variant
+      const descLifetime = document.getElementById('desc-lifetime');
+      const descKeys = document.getElementById('desc-keys');
+      if (variantId === 'Keys') {
+        descLifetime.style.display = 'none';
+        descKeys.style.display = 'block';
+      } else {
+        descLifetime.style.display = 'block';
+        descKeys.style.display = 'none';
+      }
       
       // Disable add to cart button if out of stock
       const stock = getStockForVariant(selectedVariant.id);

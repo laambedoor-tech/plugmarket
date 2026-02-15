@@ -222,7 +222,7 @@ const subscriptions = {
   netflix: { '1 Month': 1.35, '3 Months': 3.15, '6 Months': 5.4, '12 Months': 9.9, 'Lifetime': 1.10 },
 
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
-  spotify: { '1 Month': 1.98, '3 Months': 3.42, '6 Months': 5.58, '12 Months': 10.69, 'Lifetime': 1.78 },
+  spotify: { '1 Month': 1.98, '3 Months': 3.42, '6 Months': 5.58, '12 Months': 10.69, 'Lifetime': 1.78, 'Keys': 9.15 },
   'youtube-premium': { '1 Month': 2.52, '3 Months': 3.89, '12 Months': 11.25, 'Lifetime': 2.27, 'fowner': 4.74 },
   disney: { '1 Month': 0.89, '3 Months': 2.43, '6 Months': 4.32, '12 Months': 8.55 },
   prime: { '1 Month': 1.62, '3 Months': 3.06, '6 Months': 5.22, '12 Months': 9.58 },
