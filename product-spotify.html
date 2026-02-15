@@ -686,6 +686,47 @@
       ? 'http://localhost:8788'
       : 'https://plugmarket.es';
 
+    // Cart constants and functions
+    const SPOTIFY_CART_KEY = 'plugmarket_cart';
+    
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem(SPOTIFY_CART_KEY)) || []; } catch { return []; }
+    }
+    function setCart(items) {
+      localStorage.setItem(SPOTIFY_CART_KEY, JSON.stringify(items));
+      renderCartCount();
+    }
+    function addToCart({ pid, plan, price, qty }) {
+      const items = getCart();
+      const key = pid + '|' + plan;
+      const idx = items.findIndex(i => i.key === key);
+      if (idx >= 0) { 
+        items[idx].qty += qty; 
+      } else { 
+        items.push({ 
+          key, 
+          pid, 
+          title: productTitle, 
+          tone: 'green',
+          plan, 
+          price, 
+          qty 
+        }); 
+      }
+      setCart(items);
+    }
+    function cartCount() { 
+      return getCart().reduce((a, b) => a + b.qty, 0); 
+    }
+    function renderCartCount() {
+      const el = document.getElementById('cart-count');
+      if (el) {
+        const count = cartCount();
+        el.textContent = String(count);
+        el.style.display = count > 0 ? 'flex' : 'none';
+      }
+    }
+
     // Product Data
     const productId = 'spotify';
     const productTitle = 'Spotify Premium';
@@ -996,19 +1037,21 @@
 
     // Add to cart
     document.getElementById('add-to-cart-btn').addEventListener('click', () => {
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stockCount = stockData[stockKey] || 0;
-      
-      if (stockCount === 0) {
+      // Check stock before adding
+      const stock = getStockForVariant(selectedVariant.id);
+      if (stock <= 0) {
         alert('This item is currently out of stock.');
         return;
       }
 
-      for (let i = 0; i < quantity; i++) {
-        addToCart(productId, selectedVariant.id, selectedVariant.price, productTitle);
-      }
+      addToCart({
+        pid: productId,
+        plan: selectedVariant.id,
+        price: selectedVariant.price,
+        qty: quantity
+      });
       
-      updateCartCount();
+      renderCartCount();
       alert(`Added ${quantity}x ${selectedVariant.name} to cart!`);
     });
 
@@ -1017,34 +1060,19 @@
       // Check stock before buying
       const stock = getStockForVariant(selectedVariant.id);
       if (stock <= 0) {
-        return; // Don't proceed if out of stock
-      }
-      
-      const stockKey = `${productId}:${selectedVariant.id}`;
-      const stockCount = stockData[stockKey] || 0;
-      
-      if (stockCount === 0) {
         alert('This item is currently out of stock.');
         return;
       }
 
-      for (let i = 0; i < quantity; i++) {
-        addToCart(productId, selectedVariant.id, selectedVariant.price, productTitle);
-      }
+      addToCart({
+        pid: productId,
+        plan: selectedVariant.id,
+        price: selectedVariant.price,
+        qty: quantity
+      });
       
       window.location.href = './cart.html';
     });
-
-    // Update cart count
-    function updateCartCount() {
-      const cart = getCart();
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const countEl = document.getElementById('cart-count');
-      if (countEl) {
-        countEl.textContent = count;
-        countEl.style.display = count > 0 ? 'flex' : 'none';
-      }
-    }
 
     // Particles animation
     (() => {
@@ -1132,7 +1160,7 @@
 
     // Initialize
     fetchStock();
-    updateCartCount();
+    renderCartCount();
     updateDiscountDisplay();
   </script>
 </body>
