@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -138,7 +138,7 @@
     }
 
     .description-list li::before {
-      content: '☑';
+      content: '?';
       color: #2ed573;
       font-weight: bold;
       font-size: 16px;
@@ -199,7 +199,7 @@
     }
 
     .variant-option.selected::after {
-      content: '✓';
+      content: '?';
       position: absolute;
       right: 15px;
       top: 50%;
@@ -636,20 +636,20 @@
           <div class="product-description">
             <div class="description-header">
               <h2>
-                <span style="font-size: 20px;">📋</span>
+                <span style="font-size: 20px;">??</span>
                 Product Description - English
               </h2>
             </div>
             <div class="description-content" id="desc-content">
               <ul class="description-list">
-                <li><strong>Real Discord Members</strong> ✓ 100% genuine and active users.</li>
-                <li><strong>No Bots or Tokens</strong> ✓ Only real people, no fake activity.</li>
-                <li><strong>Guaranteed Quantity</strong> ✓ You receive exactly what you purchase.</li>
-                <li><strong>Freshly Grown Members</strong> ✓ Newly cultivated users obtained organically.</li>
-                <li><strong>Private & Secure</strong> ✓ Safe, transparent, and fully reliable service.</li>
-                <li><strong>Fast & Secure Delivery</strong> ✓ Immediate growth without risking your server.</li>
-                <li><strong>Exclusive Join System</strong> ✓ Custom access method with unique keys.</li>
-                <li><strong>No Watermark</strong> ✓ This dont have any watermark, so you can resell the keys to your customers and they will not have NebulaMarket contact.</li>
+                <li><strong>Real Discord Members</strong> ? 100% genuine and active users.</li>
+                <li><strong>No Bots or Tokens</strong> ? Only real people, no fake activity.</li>
+                <li><strong>Guaranteed Quantity</strong> ? You receive exactly what you purchase.</li>
+                <li><strong>Freshly Grown Members</strong> ? Newly cultivated users obtained organically.</li>
+                <li><strong>Private & Secure</strong> ? Safe, transparent, and fully reliable service.</li>
+                <li><strong>Fast & Secure Delivery</strong> ? Immediate growth without risking your server.</li>
+                <li><strong>Exclusive Join System</strong> ? Custom access method with unique keys.</li>
+                <li><strong>No Watermark</strong> ? This dont have any watermark, so you can resell the keys to your customers and they will not have NebulaMarket contact.</li>
               </ul>
             </div>
           </div>
@@ -659,7 +659,7 @@
         <div class="product-info-section">
           <h1>Discord Real Server Members</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€2.03</p>
+            <p class="product-price" id="display-price">�2.03</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -673,15 +673,15 @@
           <div class="quantity-selector">
             <label>Quantity</label>
             <div class="quantity-controls" style="position: relative;">
-              <button class="quantity-btn" id="qty-decrease">−</button>
+              <button class="quantity-btn" id="qty-decrease">-</button>
               <input type="number" class="quantity-display" id="quantity-display" value="1" min="1">
               <button class="quantity-btn" id="qty-increase">+</button>
-              <div class="quantity-error" id="quantity-error">⚠️ Minimum quantity required</div>
+              <div class="quantity-error" id="quantity-error">?? Minimum quantity required</div>
             </div>
                         
             <!-- Dynamic Bulk Discounts -->
             <div class="bulk-discounts">
-              <div class="discount-icon" id="discount-icon">✓</div>
+              <div class="discount-icon" id="discount-icon">?</div>
               <div class="discount-content">
                 <div class="discount-progress">
                   <div class="progress-bar">
@@ -780,8 +780,8 @@
               </div>
             </div>
             <div class="variant-prices">
-              <div class="variant-price">€${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
+              <div class="variant-price">�${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">�${variant.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
         `;
@@ -830,7 +830,7 @@
     // Update price display
     function updatePrice() {
       const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
+      document.getElementById('display-price').textContent = `�${total.toFixed(2)}`;
     }
 
     // Update stock badge
@@ -925,7 +925,7 @@
           // Show error but don't force change yet
           if (inputValue < minQty && !isNaN(inputValue)) {
             const minText = minQty > 1 ? `${minQty} units` : '1 unit';
-            showError(`⚠️ Minimum: ${minText}`);
+            showError(`?? Minimum: ${minText}`);
           }
           return;
         }
@@ -948,7 +948,7 @@
           
           if (inputValue < minQty && !isNaN(inputValue)) {
             const minText = minQty > 1 ? `${minQty} units` : '1 unit';
-            showError(`⚠️ Quantity set to minimum: ${minText}`);
+            showError(`?? Quantity set to minimum: ${minText}`);
           }
         }
       });
@@ -1177,6 +1177,9 @@
       });
     }
   </script>
+
+  <!-- Chat Widget -->
+  <script src="./js/chat-widget.js"></script>
 </body>
 
 </html>

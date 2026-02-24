@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>🤖 NEW! AI Support Chat | Plug Market</title>
+  <meta name="description" content="Introducing our new AI-powered support chat! Get instant answers 24/7. Available in English and Spanish." />
+  
+  <!-- Open Graph for Discord/Social -->
+  <meta property="og:title" content="🤖 NEW! AI Support Chat - Plug Market" />
+  <meta property="og:description" content="Get instant answers 24/7! Our new AI assistant helps with accounts, orders, payments & more." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://plugmarket.pages.dev/announcement-chat.html" />
+  <meta property="og:image" content="https://plugmarket.pages.dev/assets/logonuevo.png" />
+  <meta name="theme-color" content="#ff2743" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0b;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Main Container */
+    .announcement-container {
+      display: flex;
+      gap: 60px;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero {
+      flex: 1;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(255, 39, 67, 0.2), rgba(255, 95, 109, 0.1));
+      border: 1px solid rgba(255, 39, 67, 0.3);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ff4757;
+      margin-bottom: 24px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #ff2743, #ff5f6d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #a0a0a0;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    /* Chat Preview */
+    .chat-preview {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .chat-window-preview {
+      background: #0f1115;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 100px rgba(255, 39, 67, 0.1);
+    }
+
+    .chat-header-preview {
+      background: linear-gradient(135deg, #ff2743, #ff0a54);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar-preview {
+      width: 36px;
+      height: 36px;
+      background: #0f1115;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .chat-avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .chat-header-preview h4 {
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .chat-header-preview span {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 11px;
+    }
+
+    .chat-messages-preview {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message-preview {
+      display: flex;
+      gap: 8px;
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .message-preview:nth-child(1) { animation-delay: 0.3s; }
+    .message-preview:nth-child(2) { animation-delay: 0.8s; }
+    .message-preview:nth-child(3) { animation-delay: 1.3s; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-avatar-preview {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #1a1d24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .message-content-preview {
+      background: #1a1d24;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border-top-left-radius: 4px;
+      font-size: 13px;
+      color: #e0e0e0;
+      max-width: 260px;
+    }
+
+    .message-preview.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-preview.user .message-content-preview {
+      background: linear-gradient(135deg, #ff2743, #ff5f6d);
+      color: white;
+      border-radius: 14px;
+      border-top-right-radius: 4px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 2px;
+      background: linear-gradient(180deg, transparent, rgba(255, 39, 67, 0.3), transparent);
+      align-self: stretch;
+      margin: 40px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .announcement-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        padding: 40px 20px;
+      }
+
+      .divider {
+        width: 80%;
+        height: 2px;
+        margin: 20px 0;
+      }
+
+      .hero {
+        padding-top: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="announcement-container">
+    <!-- ENGLISH VERSION -->
+    <div class="hero">
+      <div class="badge">
+        ✨ NEW FEATURE
+      </div>
+      
+      <h1>
+        Meet Our<br>
+        <span>AI Support Chat</span>
+      </h1>
+      
+      <p>
+        Get instant answers 24/7! Our new AI assistant helps with accounts, orders, payments & more.
+      </p>
+
+      <!-- Chat Preview EN -->
+      <div class="chat-preview">
+        <div class="chat-window-preview">
+          <div class="chat-header-preview">
+            <div class="chat-avatar-preview">
+              <img src="./assets/logo.svg" alt="Bot" />
+            </div>
+            <div>
+              <h4>Plug Market Support</h4>
+              <span>🟢 Online</span>
+            </div>
+          </div>
+          <div class="chat-messages-preview">
+            <div class="message-preview">
+              <div class="message-avatar-preview">🤖</div>
+              <div class="message-content-preview">
+                👋 Hi! I'm the Plug Market assistant. How can I help?
+              </div>
+            </div>
+            <div class="message-preview user">
+              <div class="message-avatar-preview">👤</div>
+              <div class="message-content-preview">
+                My account is not working
+              </div>
+            </div>
+            <div class="message-preview">
+              <div class="message-avatar-preview">🤖</div>
+              <div class="message-content-preview">
+                😔 Let me help! First, make sure you're using the exact credentials we sent.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- SPANISH VERSION -->
+    <div class="hero">
+      <div class="badge">
+        ✨ NUEVA FUNCIÓN
+      </div>
+      
+      <h1>
+        Conoce Nuestro<br>
+        <span>Chat de Soporte IA</span>
+      </h1>
+      
+      <p>
+        ¡Respuestas instantáneas 24/7! Nuestro asistente IA te ayuda con cuentas, pedidos, pagos y más.
+      </p>
+
+      <!-- Chat Preview ES -->
+      <div class="chat-preview">
+        <div class="chat-window-preview">
+          <div class="chat-header-preview">
+            <div class="chat-avatar-preview">
+              <img src="./assets/logo.svg" alt="Bot" />
+            </div>
+            <div>
+              <h4>Soporte Plug Market</h4>
+              <span>🟢 En línea</span>
+            </div>
+          </div>
+          <div class="chat-messages-preview">
+            <div class="message-preview">
+              <div class="message-avatar-preview">🤖</div>
+              <div class="message-content-preview">
+                👋 ¡Hola! Soy el asistente de Plug Market. ¿En qué puedo ayudarte?
+              </div>
+            </div>
+            <div class="message-preview user">
+              <div class="message-avatar-preview">👤</div>
+              <div class="message-content-preview">
+                Mi cuenta no funciona
+              </div>
+            </div>
+            <div class="message-preview">
+              <div class="message-avatar-preview">🤖</div>
+              <div class="message-content-preview">
+                😔 ¡Déjame ayudarte! Primero, asegúrate de usar las credenciales exactas que te enviamos.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
