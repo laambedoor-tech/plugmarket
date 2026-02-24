@@ -214,6 +214,22 @@
         message: '😊 You\'re welcome! Happy to help!\n\nIf you have any other questions, feel free to ask.\n\n⭐ Enjoy your premium account!',
         buttons: ['View products', 'Open Discord']
       },
+      'where credentials': {
+        message: '🔑 **Where to find your credentials:**\n\n1. Go to **My Dashboard** (top menu)\n2. Enter your purchase email\n3. Your credentials appear there directly!\n\n📧 They were also sent to your email after purchase. Check SPAM if not found.',
+        buttons: ['My dashboard', 'Open Discord']
+      },
+      'how to login': {
+        message: '🔓 **How to log in:**\n\n1. Go to the official app/website of the service\n2. Click "Log in" or "Sign in"\n3. Enter the email and password we sent you\n4. **Copy & paste** for best results!\n\n⚠️ Don\'t use "Sign in with Google/Facebook"',
+        buttons: ['My dashboard', 'Open Discord']
+      },
+      'kicked out': {
+        message: '😰 **Getting kicked out?**\n\nIf you\'re being logged out frequently:\n\n1. **Shared accounts**: This can happen, just log in again\n2. **FA accounts**: Open a ticket, this shouldn\'t happen\n3. Check you\'re not on too many devices\n\n📩 If it persists, contact us on Discord.',
+        buttons: ['Open Discord', 'View my orders']
+      },
+      'session expired': {
+        message: '⏰ **Session Expired?**\n\nThis is normal! Just:\n\n1. Log in again with your credentials\n2. Don\'t worry, your account still works\n3. For FA accounts, you have full control\n\n🔑 Find your credentials in the dashboard.',
+        buttons: ['My dashboard', 'Open Discord']
+      },
 
       'default': {
         message: '🤖 I\'m not sure how to help with that specifically.\n\n📩 I recommend **opening a ticket on Discord** where our team can assist you personally.\n\nIs there anything else I can help with?',
@@ -405,6 +421,22 @@
         message: '😊 ¡De nada! ¡Encantado de ayudar!\n\nSi tienes más preguntas, no dudes en preguntar.\n\n⭐ ¡Disfruta tu cuenta premium!',
         buttons: ['Ver productos', 'Abrir Discord']
       },
+      'donde credenciales': {
+        message: '🔑 **Dónde encontrar tus credenciales:**\n\n1. Ve a **Mi Dashboard** (menú superior)\n2. Ingresa tu email de compra\n3. ¡Tus credenciales aparecen ahí directamente!\n\n📧 También fueron enviadas a tu email después de la compra. Revisa SPAM si no las encuentras.',
+        buttons: ['Mi dashboard', 'Abrir Discord']
+      },
+      'como iniciar sesion': {
+        message: '🔓 **Cómo iniciar sesión:**\n\n1. Ve a la app/web oficial del servicio\n2. Haz clic en "Iniciar sesión"\n3. Ingresa el email y contraseña que te enviamos\n4. **¡Copia y pega** para mejores resultados!\n\n⚠️ No uses "Iniciar con Google/Facebook"',
+        buttons: ['Mi dashboard', 'Abrir Discord']
+      },
+      'me desconecta': {
+        message: '😰 **¿Te desconecta?**\n\nSi te cierra sesión frecuentemente:\n\n1. **Cuentas compartidas**: Puede pasar, solo vuelve a entrar\n2. **Cuentas FA**: Abre ticket, esto no debería pasar\n3. Verifica que no estés en muchos dispositivos\n\n📩 Si persiste, contáctanos en Discord.',
+        buttons: ['Abrir Discord', 'Ver mis pedidos']
+      },
+      'sesion expirada': {
+        message: '⏰ **¿Sesión Expirada?**\n\n¡Es normal! Solo:\n\n1. Vuelve a iniciar sesión con tus credenciales\n2. No te preocupes, tu cuenta sigue funcionando\n3. Para cuentas FA, tienes control total\n\n🔑 Encuentra tus credenciales en el dashboard.',
+        buttons: ['Mi dashboard', 'Abrir Discord']
+      },
 
       'default': {
         message: '🤖 No estoy seguro de cómo ayudarte con eso específicamente.\n\n📩 Te recomiendo **abrir un ticket en Discord** donde nuestro equipo podrá asistirte personalmente.\n\n¿Hay algo más en lo que pueda ayudarte?',
@@ -414,19 +446,31 @@
     }
   };
 
-  // Patrones de detección de intención (regex patterns)
+  // Patrones de detección de intención (regex patterns) - ORDENADOS POR PRIORIDAD
   const intentPatterns = {
     en: [
-      // Account issues
-      { pattern: /private|shared|only\s*(me|mine)|my\s*own|exclusive|personal|just\s*(for\s*)?me/i, response: 'shared or private' },
-      { pattern: /what\s*(is|does)\s*fa\b|fa\s*(mean|account)|full\s*access/i, response: 'what is fa' },
+      // HIGH PRIORITY - Specific questions first
+      { pattern: /where\s*(are|is|can\s*i\s*(find|see|get))\s*(my\s*)?(credentials?|login|password|email\s*and\s*pass)/i, response: 'where credentials' },
+      { pattern: /how\s*(do\s*i|to|can\s*i)?\s*(log\s*in|login|sign\s*in|enter|access)/i, response: 'how to login' },
+      { pattern: /(kick|log)\s*(me\s*)?(out|off)|disconnect|keeps?\s*(logging|kicking)\s*(me\s*)?out/i, response: 'kicked out' },
+      { pattern: /session\s*(expired|ended|timeout)|expired\s*session/i, response: 'session expired' },
+      
+      // Account type questions - BEFORE generic account issues
+      { pattern: /(is\s*(my|the|this)\s*(account\s*)?)?private|shared|only\s*(me|mine)|my\s*own|exclusive|personal|just\s*(for\s*)?me|solo\s*yo/i, response: 'shared or private' },
+      { pattern: /what\s*(is|does)\s*fa\b|fa\s*(mean|account)|full\s*access|que\s*(es|significa)\s*fa/i, response: 'what is fa' },
       { pattern: /what\s*(is|does)\s*(a\s*)?slot|slot\s*(mean)?|screen\s*(mean)?/i, response: 'what is slot' },
-      { pattern: /change\s*(the\s*)?(password|pass|email)|modify\s*(password|credentials)|can\s*i\s*change/i, response: 'can change password' },
+      
+      // Password issues
+      { pattern: /can\s*i\s*change|change\s*(the\s*)?(password|pass|email)|modify\s*(password|credentials)/i, response: 'can change password' },
       { pattern: /password\s*(was\s*)?(changed|different|new)|someone\s*changed|they\s*changed/i, response: 'password changed' },
+      
+      // Auth issues
       { pattern: /2fa|two\s*factor|verification\s*(code|required)|authenticator|otp/i, response: '2fa problem' },
       { pattern: /banned|suspended|terminated|blocked|deactivated/i, response: 'account banned' },
       { pattern: /wrong\s*(password|credentials|login)|incorrect|doesn'?t\s*match|invalid/i, response: 'wrong credentials' },
-      { pattern: /(not|doesn'?t?|won'?t?|can'?t?)\s*(work|login|enter|access|connect)|problem|issue|error/i, response: 'account not working' },
+      
+      // Generic account issues - LOWER PRIORITY
+      { pattern: /(not|doesn'?t?|won'?t?|can'?t?)\s*(work|login|enter|access|connect)|problem|issue|error|no\s*(funciona|entra|sirve)/i, response: 'account not working' },
       
       // Orders
       { pattern: /where\s*(is)?\s*(my)?\s*order|track|didn'?t\s*receive|no\s*email|find\s*order/i, response: 'where is my order' },
@@ -473,16 +517,30 @@
       { pattern: /(thank|thanks|thx|ty|appreciate|gracias)/i, response: 'thanks' }
     ],
     es: [
-      // Problemas de cuenta
-      { pattern: /privad[ao]|compartid[ao]|solo\s*(yo|mio|para\s*mi)|exclusiv[ao]|personal|mia?\s*(sola?)?/i, response: 'compartida o privada' },
+      // ALTA PRIORIDAD - Preguntas específicas primero
+      { pattern: /d[oó]nde\s*(est[aá]n?|veo|encuentro|consigo|saco|miro|busco).*(credenciales?|datos?|login|contrase[nñ]a|email|usuario)/i, response: 'donde credenciales' },
+      { pattern: /(ver|encontrar|buscar|conseguir|sacar|obtener)\s*(las?|mis?)?\s*(credenciales?|datos?|login|contrase[nñ]a)/i, response: 'donde credenciales' },
+      { pattern: /(mis?\s*)?(credenciales?|datos?\s*(de\s*acceso)?|login|usuario\s*y\s*contrase[nñ]a)/i, response: 'donde credenciales' },
+      { pattern: /como\s*(inicio|entro|accedo|hago\s*(para)?\s*(entrar|iniciar)|me\s*conecto|uso\s*(la|mi)\s*cuenta)/i, response: 'como iniciar sesion' },
+      { pattern: /me\s*(desconecta|echa|saca|cierra|expulsa)|desconectando|cierra\s*sesi[oó]n/i, response: 'me desconecta' },
+      { pattern: /sesi[oó]n\s*(expirad[ao]|caducad[ao]|terminad[ao])/i, response: 'sesion expirada' },
+      
+      // Tipo de cuenta - ANTES de problemas genéricos
+      { pattern: /(mi\s*cuenta\s*(es\s*)?)?(privad[ao]|compartid[ao])|solo\s*(para\s*)?(yo|mi)|exclusiv[ao]/i, response: 'compartida o privada' },
       { pattern: /que\s*(es|significa)\s*fa\b|fa\s*(significa|quiere\s*decir)|full\s*access|acceso\s*completo/i, response: 'que es fa' },
       { pattern: /que\s*(es|significa)\s*(un\s*)?(slot|pantalla)|slot\s*(significa)?/i, response: 'que es slot' },
-      { pattern: /cambiar\s*(la\s*)?(contraseña|clave|password|email)|modificar\s*(contraseña|credenciales)|puedo\s*cambiar/i, response: 'cambiar contrasena' },
-      { pattern: /(contraseña|clave)\s*(fue\s*)?(cambiad[ao]|diferente|nuev[ao])|alguien\s*cambi|cambiaron/i, response: 'cambiaron contrasena' },
-      { pattern: /2fa|verificaci[oó]n|c[oó]digo|autenticador|doble\s*factor/i, response: 'problema 2fa' },
+      
+      // Problemas de contraseña
+      { pattern: /puedo\s*cambiar|cambiar\s*(la\s*)?(contrase[nñ]a|clave|password|email)|modificar\s*(contrase[nñ]a|credenciales)/i, response: 'cambiar contrasena' },
+      { pattern: /(contrase[nñ]a|clave)\s*(fue\s*)?(cambiad[ao]|diferente|nuev[ao])|alguien\s*cambi[oó]|cambiaron/i, response: 'cambiaron contrasena' },
+      
+      // Problemas de autenticación
+      { pattern: /2fa|verificaci[oó]n\s*(en)?\s*(dos)?|c[oó]digo\s*(de)?\s*(verificaci[oó]n)?|autenticador|doble\s*factor/i, response: 'problema 2fa' },
       { pattern: /banead[ao]|suspendid[ao]|terminad[ao]|bloquead[ao]|desactivad[ao]/i, response: 'cuenta baneada' },
-      { pattern: /(contraseña|credenciales?)\s*(incorrecta|mal|erronea)|no\s*coincide|inv[aá]lid[ao]/i, response: 'credenciales incorrectas' },
-      { pattern: /(no|sin)\s*(funciona|entra|acceso|puedo|conecta)|problema|error|falla|mal/i, response: 'cuenta no funciona' },
+      { pattern: /(contrase[nñ]a|credenciales?)\s*(incorrecta|mal|err[oó]nea)|no\s*coincide|inv[aá]lid[ao]/i, response: 'credenciales incorrectas' },
+      
+      // Problemas genéricos de cuenta - MENOR PRIORIDAD  
+      { pattern: /(no|sin)\s*(me\s*)?(funciona|entra|acceso|puedo|conecta|sirve|deja)|problema|error|falla|mal/i, response: 'cuenta no funciona' },
       
       // Pedidos
       { pattern: /d[oó]nde\s*(est[aá])?\s*(mi)?\s*pedido|seguimiento|no\s*(lleg[oó]|recib[ií])|encontrar\s*pedido/i, response: 'donde esta mi pedido' },
@@ -545,12 +603,26 @@
     return spanishCount >= 1 ? 'es' : 'en';
   }
 
-  // Detectar intención del mensaje
+  // Detectar intención del mensaje - MEJORADO
   function detectIntent(text, lang) {
-    const patterns = intentPatterns[lang] || intentPatterns.en;
+    // Normalizar texto: quitar acentos para mejor matching
+    const normalizedText = text.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar acentos
+      .replace(/[¿¡]/g, ''); // quitar signos invertidos
     
-    for (const { pattern, response } of patterns) {
-      if (pattern.test(text)) {
+    // Primero buscar en el idioma detectado
+    const primaryPatterns = intentPatterns[lang] || intentPatterns.en;
+    for (const { pattern, response } of primaryPatterns) {
+      if (pattern.test(text) || pattern.test(normalizedText)) {
+        return response;
+      }
+    }
+    
+    // Si no encuentra, buscar en el otro idioma (fallback)
+    const fallbackLang = lang === 'es' ? 'en' : 'es';
+    const fallbackPatterns = intentPatterns[fallbackLang];
+    for (const { pattern, response } of fallbackPatterns) {
+      if (pattern.test(text) || pattern.test(normalizedText)) {
         return response;
       }
     }
@@ -564,17 +636,19 @@
   // Opciones rápidas en ambos idiomas  
   const quickOptionsLang = {
     en: [
-      { text: '❓ My account not working', query: 'account not working' },
+      { text: '❓ My account not working', query: 'my account is not working' },
+      { text: '🔑 Where are my credentials?', query: 'where are my credentials' },
       { text: '📦 Where is my order?', query: 'where is my order' },
-      { text: '💳 Payment methods', query: 'payment methods' },
-      { text: '🛡️ Warranty', query: 'warranty' },
+      { text: '💳 Payment methods', query: 'what payment methods' },
+      { text: '🛡️ Warranty info', query: 'warranty info' },
       { text: '📞 Contact support', query: 'contact support' }
     ],
     es: [
-      { text: '❓ Mi cuenta no funciona', query: 'cuenta no funciona' },
+      { text: '❓ Mi cuenta no funciona', query: 'mi cuenta no funciona' },
+      { text: '🔑 ¿Dónde veo mis credenciales?', query: 'donde veo mis credenciales' },
       { text: '📦 ¿Dónde está mi pedido?', query: 'donde esta mi pedido' },
       { text: '💳 Métodos de pago', query: 'metodos de pago' },
-      { text: '🛡️ Garantía', query: 'garantia' },
+      { text: '🛡️ Info de garantía', query: 'info de garantia' },
       { text: '📞 Contactar soporte', query: 'contactar soporte' }
     ]
   };
@@ -586,7 +660,8 @@
   const actionLinks = {
     // English
     'Open Discord': 'https://discord.gg/plugmarket',
-    'View my orders': './orders.html',
+    'View my orders': './dashboard.html',
+    'My dashboard': './dashboard.html',
     'View products': './index.html#categories',
     'View offers': './index.html',
     'View terms': './terms.html',
@@ -595,7 +670,8 @@
     'Contact support': 'https://discord.gg/plugmarket',
     // Spanish  
     'Abrir Discord': 'https://discord.gg/plugmarket',
-    'Ver mis pedidos': './orders.html',
+    'Ver mis pedidos': './dashboard.html',
+    'Mi dashboard': './dashboard.html',
     'Ver productos': './index.html#categories',
     'Ver ofertas': './index.html',
     'Ver términos': './terms.html',
