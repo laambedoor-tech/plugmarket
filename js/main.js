@@ -429,6 +429,7 @@ const toneToGradient = (tone) => {
         'minecraft': 'product-minecraft.html',
         'stake': 'product-stake.html',
         'xbox': 'product-xbox.html',
+        'xboxcodes': 'product-xboxcodes.html',
         'roblox': 'product-roblox.html'
       };
       
