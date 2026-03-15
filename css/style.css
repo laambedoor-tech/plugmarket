@@ -2506,6 +2506,106 @@ main {
   }
 }
 
+/* ===== CART & CHECKOUT RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .cart-item {
+    grid-template-columns: 60px 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .cart-item__image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cart-item__actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .cart-item__title {
+    font-size: 14px;
+  }
+
+  .cart-item__variant {
+    font-size: 12px;
+  }
+
+  /* Checkout panel responsive */
+  .checkout-progress {
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .checkout-progress__line {
+    width: 24px;
+  }
+
+  .checkout-progress__step {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cart-item__image {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+  }
+}
+
+/* ===== EXTRA SMALL DEVICES ===== */
+@media (max-width: 360px) {
+  .nav {
+    padding: 10px 12px;
+  }
+
+  .brand__name {
+    font-size: 14px;
+  }
+
+  .brand__logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .products__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .product-card__media {
+    height: 200px;
+  }
+
+  .hero__title {
+    font-size: 22px;
+  }
+
+  .hero__subtitle {
+    font-size: 13px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .btn {
+    font-size: 13px;
+    --pad-x: 10px;
+    --pad-y: 6px;
+  }
+}
+
 /* Christmas Snow Effect */
 .snowflakes {
   position: fixed;

@@ -20,6 +20,37 @@
   <link rel="icon" type="image/svg+xml" sizes="any" href="./assets/logo.svg" />
   <link rel="shortcut icon" href="./assets/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./css/style.css">
+  <style>
+    @media (max-width: 768px) {
+      .cart section {
+        padding: 20px 12px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cart section {
+        padding: 16px 8px !important;
+      }
+
+      .section-title {
+        font-size: 22px !important;
+      }
+
+      .card {
+        word-break: break-word;
+      }
+
+      #orders-panel .card[style*="display: flex"] {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+
+      #orders-panel .card h2 {
+        font-size: 1rem !important;
+      }
+    }
+  </style>
 </head>
 
 <body>

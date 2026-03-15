@@ -504,28 +504,123 @@
     }
 
     @media (max-width: 968px) {
+      /* Mobile collapsible description */
+      .description-header {
+        cursor: pointer;
+        user-select: none;
+      }
+      .description-header::after {
+        content: '\25BC';
+        font-size: 12px;
+        color: #9aa0ad;
+        transition: transform 0.3s ease;
+        transform: rotate(-90deg);
+      }
+      .description-header.desc-open::after {
+        transform: rotate(0deg);
+      }
+      .description-content {
+        max-height: 0 !important;
+        overflow: hidden !important;
+        transition: max-height 0.4s ease;
+      }
+      .description-content.desc-open {
+        max-height: 2000px !important;
+      }
       .product-layout {
         grid-template-columns: 1fr;
         gap: 30px;
+        padding: 0 16px;
       }
 
       .product-left {
         gap: 20px;
       }
 
+      .product-image-section {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .product-description {
+        width: 100%;
+        margin-left: 0;
+      }
+
       .product-info-section h1 {
-        font-size: 36px;
+        font-size: 32px;
       }
 
       .product-price {
-        font-size: 32px;
+        font-size: 28px;
       }
 
       .action-buttons {
         flex-direction: column;
       }
+
+      .variant-option {
+        padding: 10px 12px;
+      }
+
+      .bulk-discounts {
+        flex-wrap: wrap;
+      }
     }
 
+    @media (max-width: 480px) {
+      .product-layout {
+        padding: 0 8px;
+      }
+
+      .product-info-section h1 {
+        font-size: 24px;
+      }
+
+      .product-price {
+        font-size: 22px;
+      }
+
+      .action-buttons .btn {
+        padding: 14px 20px;
+        font-size: 14px;
+      }
+
+      .back-button {
+        margin-bottom: 20px;
+      }
+
+      .description-list li {
+        font-size: 13px;
+      }
+
+      .description-list {
+        padding: 14px;
+      }
+
+      .description-note {
+        padding: 12px 14px;
+        font-size: 12px;
+      }
+
+      .product-page {
+        padding-top: 30px;
+        padding-bottom: 30px;
+      }
+
+      .quantity-selector {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .variant-info h4 {
+        font-size: 12px;
+      }
+
+      .variant-price {
+        font-size: 14px;
+      }
+    }
     /* Cart animation */
     .fly-to-cart {
       position: fixed;
@@ -659,7 +754,7 @@
         <div class="product-info-section">
           <h1>Discord Real Server Members</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <p class="product-price" id="display-price">€2.03</p>
+            <p class="product-price" id="display-price">ï¿½2.03</p>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -780,8 +875,8 @@
               </div>
             </div>
             <div class="variant-prices">
-              <div class="variant-price">€${variant.price.toFixed(2)}</div>
-              ${variant.oldPrice ? `<div class="variant-price-old">€${variant.oldPrice.toFixed(2)}</div>` : ''}
+              <div class="variant-price">ï¿½${variant.price.toFixed(2)}</div>
+              ${variant.oldPrice ? `<div class="variant-price-old">ï¿½${variant.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
         `;
@@ -830,7 +925,7 @@
     // Update price display
     function updatePrice() {
       const total = selectedVariant.price * quantity;
-      document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
+      document.getElementById('display-price').textContent = `ï¿½${total.toFixed(2)}`;
     }
 
     // Update stock badge
@@ -1180,6 +1275,33 @@
 
   <!-- Chat Widget -->
   <script src="./js/chat-widget.js"></script>
+<script>
+// Mobile collapsible description
+(function() {
+  if (window.innerWidth > 968) return;
+  document.querySelectorAll('.description-header').forEach(function(header) {
+    header.addEventListener('click', function() {
+      this.classList.toggle('desc-open');
+      var content = this.nextElementSibling;
+      if (content && content.classList.contains('description-content')) {
+        content.classList.toggle('desc-open');
+      }
+    });
+  });
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 968) {
+      document.querySelectorAll('.description-content').forEach(function(el) {
+        el.classList.remove('desc-open');
+        el.style.maxHeight = '';
+        el.style.overflow = '';
+      });
+      document.querySelectorAll('.description-header').forEach(function(el) {
+        el.classList.remove('desc-open');
+      });
+    }
+  });
+})();
+</script>
 </body>
 
 </html>
