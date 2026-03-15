@@ -185,7 +185,7 @@ const API_BASE = window.location.hostname === 'localhost' || window.location.hos
 
 const products = [
   { id: 'netflix', title: 'Netflix', price: 'From €0.49', tone: 'red' },
-  { id: 'spotify', title: 'Spotify Premium', price: 'From €1.78', tone: 'green' },
+  { id: 'spotify', title: 'Spotify Premium', price: 'From €2.70', tone: 'green' },
   { id: 'youtube-premium', title: 'YouTube Premium', price: 'From €2.27', tone: 'orange' },
   { id: 'disney', title: 'Disney+ ', price: 'From €0.89', tone: 'blue' },
   { id: 'prime', title: 'Prime Video', price: 'From €1.05', tone: 'blue' },
@@ -223,7 +223,7 @@ const subscriptions = {
   netflix: { '1 Month': 1.35, '3 Months': 3.15, '6 Months': 5.4, '12 Months': 9.9, 'Lifetime': 1.10 },
 
   // Ajustados tomando como guía las capturas (valores diferenciados y sin Lifetime)
-  spotify: { '1 Month': 1.98, '3 Months': 3.42, '6 Months': 5.58, '12 Months': 10.69, 'Lifetime': 1.78, 'Keys': 9.15 },
+  spotify: { '1 Month': 1.98, '3 Months': 3.42, '6 Months': 5.58, '12 Months': 10.69, 'Lifetime': 2.70, 'Keys': 9.15 },
   'youtube-premium': { '1 Month': 2.52, '3 Months': 3.89, '12 Months': 11.25, 'Lifetime': 2.27, 'fowner': 4.74 },
   disney: { '1 Month': 0.89, '3 Months': 2.43, '6 Months': 4.32, '12 Months': 8.55 },
   prime: { '1 Month': 1.14, '3 Months': 2.15, '6 Months': 3.68, '12 Months': 6.75 },

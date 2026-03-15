@@ -23,7 +23,7 @@ async function insertOrder(env, payload){
 const PRICES_USD = {
   boosts: { '3 Months': 5.25 },
   netflix: { '1 mes': 1.5, '1 Month':1.5, '3 meses': 3.5, '3 Months':3.5, '6 meses': 6.0, '6 Months':6.0, '12 meses': 11.0, '12 Months':11.0, 'Lifetime': 1.10, 'FA': 8.50 },
-  spotify: { '1 mes': 2.2, '1 Month':2.2, '6 meses': 6.2, '6 Months':6.2, '12 meses': 11.88, '12 Months':11.88, 'Lifetime': 1.78 },
+  spotify: { '1 mes': 2.2, '1 Month':2.2, '6 meses': 6.2, '6 Months':6.2, '12 meses': 11.88, '12 Months':11.88, 'Lifetime': 2.70 },
   disney: { '1 mes': 1.1, '1 Month':1.1, '6 meses': 4.8, '6 Months':4.8, '12 meses': 9.5, '12 Months':9.5, 'Lifetime': 0.89 },
   'youtube-premium': { 'Lifetime': 2.27, 'fowner': 4.74 },
   hbo: { '1 mes': 1.4, '1 Month':1.4, '6 meses': 4.7, '6 Months':4.7, '12 meses': 9.8, '12 Months':9.8, 'Lifetime': 13.0 },
