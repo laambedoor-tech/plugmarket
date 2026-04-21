@@ -1,4 +1,4 @@
-// Chat Widget - Plug Market Support Bot
+﻿// Chat Widget - Plug Market Support Bot
 (function() {
   'use strict';
 
@@ -659,7 +659,7 @@
   // Enlaces de acciones (EN + ES)
   const actionLinks = {
     // English
-    'Open Discord': 'https://discord.gg/plugmarket',
+    'Open Discord': 'https://discord.gg/yx63NfvYmT',
     'View my orders': './dashboard.html',
     'My dashboard': './dashboard.html',
     'View products': './index.html#categories',
@@ -667,9 +667,9 @@
     'View terms': './terms.html',
     'View warranty': './terms.html',
     'View FAQ': '#faq',
-    'Contact support': 'https://discord.gg/plugmarket',
+    'Contact support': 'https://discord.gg/yx63NfvYmT',
     // Spanish  
-    'Abrir Discord': 'https://discord.gg/plugmarket',
+    'Abrir Discord': 'https://discord.gg/yx63NfvYmT',
     'Ver mis pedidos': './dashboard.html',
     'Mi dashboard': './dashboard.html',
     'Ver productos': './index.html#categories',
@@ -677,7 +677,7 @@
     'Ver términos': './terms.html',
     'Ver garantía': './terms.html',
     'Ver FAQ': '#faq',
-    'Contactar soporte': 'https://discord.gg/plugmarket'
+    'Contactar soporte': 'https://discord.gg/yx63NfvYmT'
   };
 
   // ===== HISTORIAL DEL CHAT =====

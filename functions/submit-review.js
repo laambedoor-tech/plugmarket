@@ -1,4 +1,4 @@
-export default {
+﻿export default {
   async fetch(request, env, ctx) {
     // CORS headers
     const corsHeaders = {

@@ -1,4 +1,4 @@
-function stripCfConnectingIPHeader(input, init) {
+﻿function stripCfConnectingIPHeader(input, init) {
 	const request = new Request(input, init);
 	request.headers.delete("CF-Connecting-IP");
 	return request;

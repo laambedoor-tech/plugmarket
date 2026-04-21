@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Update Stripe Payment Intent with customer email
  * This updates the metadata after the payment intent is created
  */

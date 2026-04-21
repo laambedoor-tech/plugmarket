@@ -1,4 +1,4 @@
-// Cart page rendering and interactions
+﻿// Cart page rendering and interactions
 const CART_KEY = 'plugmarket_cart';
 const API_BASE = 'https://plugmarket.es';
 const USD_TO_EUR_RATE_CART = 0.92; // Exchange rate USD to EUR

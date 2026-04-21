@@ -1,4 +1,4 @@
-export default {
+﻿export default {
   async fetch(request, env) {
     // Multi-token/network config
     const networks = [

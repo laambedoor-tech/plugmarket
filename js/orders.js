@@ -1,4 +1,4 @@
-// Orders page - View order history and credentials
+﻿// Orders page - View order history and credentials
 const API_BASE = 'https://plugmarket.es';
 const STORAGE_KEY = 'plugmarket_orders_email';
 
@@ -153,7 +153,7 @@ function showOrders(email, orders) {
                   </div>
                 </div>
                 <div style="text-align: center; margin-top: 1rem;">
-                  <a href="https://discord.gg/plugmarket" target="_blank" style="
+                  <a href="https://discord.gg/yx63NfvYmT" target="_blank" style="
                     display: inline-block;
                     padding: 0.75rem 1.5rem;
                     background: linear-gradient(135deg, #2ed573, #26c65e);
@@ -280,7 +280,7 @@ function showOrders(email, orders) {
                     <div>
                       <strong style="color: #fff; font-size: 0.95rem;">Help:</strong>
                       <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0; color: #d7d9e0; font-size: 0.9rem;">
-                        <li>If you have any issues, please <a href="https://discord.gg/plugmarket" target="_blank" style="color: #4da3ff; text-decoration: none;">open a ticket in Discord</a></li>
+                        <li>If you have any issues, please <a href="https://discord.gg/yx63NfvYmT" target="_blank" style="color: #4da3ff; text-decoration: none;">open a ticket in Discord</a></li>
                       </ul>
                     </div>
                   </div>

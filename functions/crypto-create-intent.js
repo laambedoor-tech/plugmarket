@@ -1,4 +1,4 @@
-// Create a crypto payment intent: compute amount owed; if stablecoin keep 1:1 USD, if volatile fetch price
+﻿// Create a crypto payment intent: compute amount owed; if stablecoin keep 1:1 USD, if volatile fetch price
 
 // Central prices (TODO unify with Stripe/PayPal): accept both '1 mes' and '1 Month'
 const PRICES_USD = {

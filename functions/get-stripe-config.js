@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cloudflare Workers: Get Stripe Publishable Key
  * Routes: GET /api/get-stripe-config
  */

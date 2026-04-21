@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cloudflare Workers: Get Stock Status
  * Routes: GET /api/get-stock
  * Returns stock availability for all products/plans

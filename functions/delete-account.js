@@ -1,4 +1,4 @@
-// Delete user account and all associated data
+﻿// Delete user account and all associated data
 
 export default {
   async fetch(request, env, ctx) {

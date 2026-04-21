@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Debug endpoint to check Netflix accounts in database
  */
 

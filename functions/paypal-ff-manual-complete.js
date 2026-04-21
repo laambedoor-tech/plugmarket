@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/paypal-ff/manual-complete
  * Body: { orderId: 'PPFF-xxx', txnId: '0LF511219A3181907' }
  * Marca una orden PayPal F&F como completada manualmente y asigna cuentas del stock

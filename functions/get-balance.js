@@ -1,4 +1,4 @@
-// Get user balance
+﻿// Get user balance
 export default async function handler(request, env) {
   if (request.method !== 'GET') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {

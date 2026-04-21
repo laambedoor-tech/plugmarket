@@ -1,4 +1,4 @@
-export default {
+﻿export default {
   async fetch(request, env, ctx) {
     // Only allow GET requests
     if (request.method !== 'GET') {

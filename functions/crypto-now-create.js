@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/crypto/now/create
  * Body: { cart: [{ pid, plan, qty }], customerEmail, payCurrency }
  * Creates a NOWPayments payment with unique address and exact amount.

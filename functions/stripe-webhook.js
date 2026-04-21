@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cloudflare Workers: Stripe Webhook Handler
  * Routes: POST /api/stripe-webhook
  * Receives payment_intent.succeeded events and assigns inventory in Supabase

@@ -1,4 +1,4 @@
-// Coinbase Commerce: Get charge details (polling for addresses)
+﻿// Coinbase Commerce: Get charge details (polling for addresses)
 // Queries Coinbase API to get the latest charge status including addresses
 
 export default async function handleCoinbaseGetCharge(request, env) {

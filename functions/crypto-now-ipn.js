@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/crypto/now/ipn
  * NOWPayments IPN webhook: verify signature, fulfill order, save to Supabase.
  */

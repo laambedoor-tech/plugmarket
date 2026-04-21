@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GET /api/crypto/now/status?paymentId=XXX
  * Get real-time payment status from NOWPayments
  */

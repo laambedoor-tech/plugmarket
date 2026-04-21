@@ -1,4 +1,4 @@
-// Auth functions for email verification system
+﻿// Auth functions for email verification system
 const API_BASE = 'https://plugmarket.es';
 
 // Auto-redirect to dashboard if already logged in

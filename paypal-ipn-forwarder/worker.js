@@ -1,4 +1,4 @@
-/**
+﻿/**
  * PayPal IPN Forwarder for Cloudflare Workers
  * 
  * Este Worker recibe notificaciones IPN de PayPal y las reenvía

@@ -1,4 +1,4 @@
-// Verify the code entered by user and generate JWT token
+﻿// Verify the code entered by user and generate JWT token
 
 export default {
   async fetch(request, env, ctx) {

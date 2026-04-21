@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GET /api/paypal-ff/check-order?orderId=PPFF-xxx
  * Checks the status of a PayPal F&F order
  * Returns credentials when order is completed

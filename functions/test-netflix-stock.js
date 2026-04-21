@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Test Script: Check Netflix Stock in Database
  * Route: GET /api/test-netflix-stock
  */

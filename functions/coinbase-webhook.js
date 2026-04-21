@@ -1,4 +1,4 @@
-// Coinbase Commerce Webhook Handler
+﻿// Coinbase Commerce Webhook Handler
 // Verifies signature and assigns accounts on charge:confirmed
 
 import { createClient } from '@supabase/supabase-js';

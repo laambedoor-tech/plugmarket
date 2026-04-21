@@ -1,4 +1,4 @@
-// Record a pending crypto payment for manual verification
+﻿// Record a pending crypto payment for manual verification
 
 async function insertOrder(env, payload){
   const url = `${env.SUPABASE_URL}/rest/v1/orders`;

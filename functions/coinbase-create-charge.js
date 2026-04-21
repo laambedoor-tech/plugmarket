@@ -1,4 +1,4 @@
-// Coinbase Commerce: Create charge endpoint
+﻿// Coinbase Commerce: Create charge endpoint
 // Generates a unique payment address for LTC or BTC
 
 const PRICES_USD = {

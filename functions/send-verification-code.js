@@ -1,4 +1,4 @@
-// Send verification code to user email
+﻿// Send verification code to user email
 // Stores code in Supabase database with expiration
 
 export default {

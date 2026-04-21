@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Test database connection
  */
 

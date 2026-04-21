@@ -1,4 +1,4 @@
-// Create Stripe payment intent for balance top-up
+﻿// Create Stripe payment intent for balance top-up
 export default async function handler(request, env) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/paypal-ff/webhook
  * Receives IPN notifications from PayPal (via Cloudflare Worker forwarder)
  * Verifies and processes Friends & Family payments

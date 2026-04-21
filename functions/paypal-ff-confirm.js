@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/paypal-ff/confirm
  * Body: { orderId: 'PPFF-xxx' }
  * Cliente confirma que ya pagó - procesa la orden automáticamente

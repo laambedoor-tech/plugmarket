@@ -1,4 +1,4 @@
-import getStripeConfig from './get-stripe-config.js';
+﻿import getStripeConfig from './get-stripe-config.js';
 import createPaymentIntent from './create-payment-intent.js';
 import stripeWebhook from './stripe-webhook.js';
 import getOrders from './get-orders.js';

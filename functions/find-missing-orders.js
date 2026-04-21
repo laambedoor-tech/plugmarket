@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Find payments that didn't create orders
  * Searches balance transactions and payment intents
  */

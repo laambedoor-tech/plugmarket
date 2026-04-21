@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cloudflare Workers: Get Orders
  * Routes: GET /api/get-orders?email=user@example.com
  *         GET /api/get-orders (returns all orders for admin)

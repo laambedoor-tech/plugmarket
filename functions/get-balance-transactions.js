@@ -1,4 +1,4 @@
-// Get balance transaction history
+﻿// Get balance transaction history
 export default async function handler(request, env) {
   if (request.method !== 'GET') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {

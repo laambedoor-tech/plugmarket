@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Manually process a Stripe payment that didn't create an order
  * POST /api/recover-stripe-order
  * Body: { payment_intent_id: "pi_xxx" }

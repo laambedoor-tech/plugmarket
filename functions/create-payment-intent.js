@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cloudflare Workers: Create Stripe Payment Intent
  * Routes: POST /api/create-payment-intent
  * Body: { cart: [ { pid, plan, unitAmount, qty }, ... ] }

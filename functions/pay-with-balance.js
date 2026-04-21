@@ -1,4 +1,4 @@
-// Use balance to pay for order
+﻿// Use balance to pay for order
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabase(env) {

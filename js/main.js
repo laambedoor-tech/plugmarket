@@ -1,4 +1,4 @@
-// Plug Market — JS: partículas, productos demo y contadores
+﻿// Plug Market — JS: partículas, productos demo y contadores
 
 // 0) Mobile Menu Toggle + Navbar Scroll Effect
 (() => {
@@ -492,7 +492,7 @@ const toneToGradient = (tone) => {
         <div class="card" style="margin:10px; padding:20px; text-align:center;">
           <h3 style="margin-bottom:15px;">🎮 Purchase via Discord</h3>
           <p style="margin-bottom:20px;">To purchase this product, please visit our Discord server where our team will assist you.</p>
-          <a href="https://discord.gg/plugmarket" target="_blank" class="btn btn--primary" style="display:inline-block; text-decoration:none;">Join Discord Server</a>
+          <a href="https://discord.gg/yx63NfvYmT" target="_blank" class="btn btn--primary" style="display:inline-block; text-decoration:none;">Join Discord Server</a>
         </div>
       `;
     } else if (pid === 'discordpromocode') {
