@@ -118,9 +118,8 @@
 
         <!-- Method tabs -->
         <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap: wrap;">
-          <button id="tab-card" class="btn btn--primary" type="button" style="display: none;">Card</button>
-          <button id="tab-paypal" class="btn btn--primary" type="button">PayPal</button>
-          <!-- <button id="tab-crypto" class="btn btn--ghost" type="button">Crypto</button> -->
+          <button id="tab-card" class="btn btn--primary" type="button">Card</button>
+          <button id="tab-paypal" class="btn btn--ghost" type="button">PayPal</button>
           <button id="tab-balance" class="btn btn--ghost" type="button" style="display: none;">Balance</button>
         </div>
 
@@ -280,7 +279,7 @@
           </div>
         </div>
 
-        <!-- Card (Stripe) form -->
+        <!-- Card (Square) form -->
         <form id="payment-form" style="display:none;">
           <div style="display:grid; gap:10px; max-width:520px;">
             <label style="display:grid; gap:6px;">
@@ -295,7 +294,7 @@
             <button id="btn-pay" class="btn btn--primary" type="submit">Pay now</button>
             <button id="btn-cancel-checkout" class="btn btn--ghost" type="button">Cancel</button>
           </div>
-          <p class="muted" style="margin-top:8px;">Payments processed by Stripe.</p>
+          <p class="muted" style="margin-top:8px;">Payments processed by Square.</p>
         </form>
 
         <!-- Crypto container (NOWPayments) -->
@@ -630,7 +629,7 @@
     </div>
   </footer>
 
-  <script src="https://js.stripe.com/v3" defer></script>
+  <script src="https://web.squarecdn.com/v1/square.js" defer></script>
   <script src="./js/main.js?v=20260127b" type="module"></script>
   <script src="./js/cart.js?v=20260127e" type="module"></script>
 </body>

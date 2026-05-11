@@ -8,7 +8,8 @@ let allOrders = []; // Store orders globally
 
 // Balance management
 let selectedAmount = 0;
-let stripe, cardElement;
+let squarePayments = null;
+let cardElement = null;
 
 // Make switchPanel globally accessible
 window.switchPanel = switchPanel;
@@ -822,7 +823,7 @@ function setupBalanceUI() {
       console.error('Modal content (.modal) not found');
     }
     
-    setTimeout(() => initializeStripe(), 100);
+    setTimeout(() => initializeSquare(), 100);
   });
   
   // Close modal
@@ -877,44 +878,34 @@ function setupBalanceUI() {
   submitBtnCrypto?.addEventListener('click', handleTopupSubmitCrypto);
 }
 
-async function initializeStripe() {
-  if (stripe) return;
-  
+async function initializeSquare() {
+  if (squarePayments) return;
+
   try {
-    // Get Stripe publishable key
-    const configResponse = await fetch(`${API_BASE}/api/get-stripe-config`);
+    const configResponse = await fetch(`${API_BASE}/api/get-square-config`);
     const config = await configResponse.json();
-    
-    stripe = Stripe(config.publishableKey);
-    const elements = stripe.elements();
-    
-    cardElement = elements.create('card', {
+    if (!config.applicationId || !config.locationId) {
+      throw new Error('Missing Square configuration');
+    }
+
+    squarePayments = window.Square.payments(config.applicationId, config.locationId);
+    cardElement = await squarePayments.card({
       style: {
-        base: {
-          color: '#fff',
+        input: {
+          color: '#ffffff',
           fontSize: '16px',
-          '::placeholder': {
-            color: '#9aa0ad'
-          }
+          placeholderColor: '#9aa0ad',
+          backgroundColor: 'transparent'
         },
-        invalid: {
+        error: {
           color: '#ff2743'
         }
       }
     });
-    
-    cardElement.mount('#card-element');
-    
-    cardElement.on('change', (event) => {
-      const errorEl = document.getElementById('card-errors');
-      if (event.error) {
-        errorEl.textContent = event.error.message;
-      } else {
-        errorEl.textContent = '';
-      }
-    });
+
+    await cardElement.attach('#card-element');
   } catch (error) {
-    console.error('Error initializing Stripe:', error);
+    console.error('Error initializing Square:', error);
   }
 }
 
@@ -923,48 +914,39 @@ async function handleTopupSubmitCard() {
     alert('Please select or enter an amount of at least $5');
     return;
   }
-  
+
   const submitBtn = document.getElementById('submit-topup-card');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Processing...';
-  
+
   try {
-    // Create payment intent
-    const response = await fetch(`${API_BASE}/api/create-topup-intent`, {
+    await initializeSquare();
+    const result = await cardElement.tokenize();
+    if (result.status !== 'OK') {
+      const message = result.errors?.[0]?.detail || result.errors?.[0]?.message || 'Card tokenization failed';
+      throw new Error(message);
+    }
+
+    const response = await fetch(`${API_BASE}/api/create-square-topup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${auth.token}`
       },
-      body: JSON.stringify({ amount: selectedAmount })
+      body: JSON.stringify({ amount: selectedAmount, sourceId: result.token })
     });
-    
+
+    const data = await response.json();
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to create payment intent');
+      throw new Error(data.error || 'Failed to create payment');
     }
-    
-    const { clientSecret } = await response.json();
-    
-    // Confirm payment
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardElement
-      }
-    });
-    
-    if (error) {
-      throw new Error(error.message);
-    }
-    
-    if (paymentIntent.status === 'succeeded') {
-      alert('Funds added successfully!');
-      document.getElementById('topup-modal').classList.remove('active');
-      document.getElementById('topup-modal').style.display = 'none';
-      resetTopupForm();
-      await loadBalance();
-      await loadTransactions();
-    }
+
+    alert('Funds added successfully!');
+    document.getElementById('topup-modal').classList.remove('active');
+    document.getElementById('topup-modal').style.display = 'none';
+    resetTopupForm();
+    await loadBalance();
+    await loadTransactions();
   } catch (error) {
     console.error('Error processing topup:', error);
     alert(error.message || 'Failed to process payment');

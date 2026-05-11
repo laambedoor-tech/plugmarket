@@ -3,14 +3,17 @@ const CART_KEY = 'plugmarket_cart';
 const API_BASE = 'https://plugmarket.es';
 const USD_TO_EUR_RATE_CART = 0.92; // Exchange rate USD to EUR
 
-// Stripe Elements state
-let stripe = null;
-let elements = null;
-let paymentElement = null;
-let clientSecret = null;
+// Square payment state
+let squarePayments = null;
+let squareCard = null;
 
-async function fetchJSON(url, opts){
-  const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
+async function fetchJSON(url, opts = {}){
+  const headers = Object.assign({}, opts.headers || {});
+  const method = opts.method ? opts.method.toUpperCase() : 'GET';
+  if (method !== 'GET' && !headers['Content-Type'] && !headers['content-type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+  const res = await fetch(url, Object.assign({}, opts, { headers }));
   if (!res.ok) {
     let msg = 'Request failed';
     try { const j = await res.json(); msg = j.error || JSON.stringify(j); } catch {}
@@ -24,33 +27,44 @@ function showCheckout(show){
   panel.style.display = show ? 'block' : 'none';
 }
 
-async function initStripe(){
-  if (stripe) return stripe;
-  // @ts-ignore Stripe is loaded via global script
-  if (!window.Stripe) throw new Error('Stripe.js not loaded');
-  const cfg = await fetchJSON(`${API_BASE}/api/get-stripe-config`);
-  stripe = window.Stripe(cfg.publishableKey);
-  return stripe;
+async function initSquare(){
+  if (squarePayments) return squarePayments;
+  if (!window.Square) throw new Error('Square.js not loaded');
+  const cfg = await fetchJSON(`${API_BASE}/api/get-square-config`);
+  squarePayments = window.Square.payments(cfg.applicationId, cfg.locationId);
+  return squarePayments;
 }
 
-async function createPaymentIntent(customerEmail){
+async function mountSquareCard(){
+  await initSquare();
+  if (squareCard) return squareCard;
+  squareCard = await squarePayments.card();
+  await squareCard.attach('#payment-element');
+  return squareCard;
+}
+
+async function tokenizeSquareCard(){
+  if (!squareCard) {
+    await mountSquareCard();
+  }
+  const result = await squareCard.tokenize();
+  if (result.status !== 'OK') {
+    const message = result.errors?.[0]?.detail || result.errors?.[0]?.message || 'Card tokenization failed';
+    throw new Error(message);
+  }
+  return result.token;
+}
+
+async function processSquarePayment(sourceId, customerEmail){
   const items = getCart();
-  const data = await fetchJSON(`${API_BASE}/api/create-payment-intent`, {
+  return await fetchJSON(`${API_BASE}/api/create-square-payment`, {
     method: 'POST',
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
-      customerEmail: customerEmail || '' 
+      sourceId,
+      customerEmail: customerEmail || ''
     })
   });
-  return data.clientSecret;
-}
-
-async function mountElements(customerEmail){
-  await initStripe();
-  clientSecret = await createPaymentIntent(customerEmail);
-  elements = stripe.elements({ clientSecret });
-  paymentElement = elements.create('payment');
-  paymentElement.mount('#payment-element');
 }
 
 function setMessage(msg){
@@ -230,14 +244,14 @@ addEventListener('click', (e) => {
 function initCheckout() {
   document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
   
-  // Auto-mount Stripe Elements when valid email is entered
+  // Auto-mount Square card field when valid email is entered
   document.getElementById('checkout-email')?.addEventListener('blur', async (e) => {
     const email = e.target.value.trim();
-    if (email && email.includes('@') && !stripe) {
+    if (email && email.includes('@') && !squareCard) {
       try {
-        await mountElements(email);
+        await mountSquareCard();
       } catch (err) {
-        console.warn('Failed to pre-mount Elements:', err);
+        console.warn('Failed to pre-mount Square card element:', err);
       }
     }
   });
@@ -247,6 +261,12 @@ function initCheckout() {
     if (!items.length) return;
     try {
       showCheckout(true);
+      const tabCard = document.getElementById('tab-card');
+      if (tabCard) {
+        tabCard.click();
+      } else {
+        document.getElementById('tab-paypal')?.click();
+      }
       document.getElementById('checkout-email')?.focus();
     } catch (e) {
       setMessage(e.message || 'Checkout unavailable');
@@ -331,12 +351,22 @@ function initCheckout() {
     document.getElementById('btn-cancel-paypal').style.display = 'none';
     try { if (paypalPoll) clearInterval(paypalPoll); } catch {}
   });
-  document.getElementById('btn-cancel-checkout')?.addEventListener('click', () => {
+  document.getElementById('btn-cancel-checkout')?.addEventListener('click', async () => {
     showCheckout(false);
     setMessage('');
-    // Optionally unmount elements to allow re-creating intents
-    try { paymentElement && paymentElement.unmount(); } catch {}
-    paymentElement = null; elements = null; clientSecret = null;
+    try {
+      if (squareCard) {
+        if (typeof squareCard.destroy === 'function') {
+          await squareCard.destroy();
+        } else if (typeof squareCard.detach === 'function') {
+          await squareCard.detach();
+        }
+      }
+    } catch (err) {
+      console.warn('Unable to remove Square card element:', err);
+    }
+    squareCard = null;
+    squarePayments = null;
   });
   
   // Balance payment buttons
@@ -358,54 +388,30 @@ function initCheckout() {
 
   document.getElementById('payment-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // Get email from form first
+
     const emailEl = document.getElementById('checkout-email');
     const customerEmail = emailEl ? emailEl.value.trim() : '';
     if (!customerEmail) {
       setMessage('Please enter your email');
       return;
     }
-    
+
     setMessage('');
     const btn = document.getElementById('btn-pay');
     btn && (btn.disabled = true);
-    
-    // Ensure Elements are mounted (should already be from blur event)
-    if (!stripe || !elements) {
-      try { 
-        await mountElements(customerEmail); 
-        // Give Elements time to fully mount before confirming
-        await new Promise(resolve => setTimeout(resolve, 500));
-      } catch (err){ 
-        btn && (btn.disabled = false);
-        return setMessage(err.message || 'Unable to start payment'); 
-      }
-    }
-    
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: { 
-        return_url: window.location.origin + '/cart.html',
-        receipt_email: customerEmail
-      },
-      redirect: 'if_required',
-    });
-    
-    btn && (btn.disabled = false);
-    if (error) {
-      setMessage(error.message || 'Payment failed. Please try again.');
-      return;
-    }
-    if (paymentIntent && paymentIntent.status === 'succeeded') {
-      // Show success modal
+
+    try {
+      await mountSquareCard();
+      const sourceId = await tokenizeSquareCard();
+      await processSquarePayment(sourceId, customerEmail);
       setCart([]);
       showCheckout(false);
       const modal = document.getElementById('success-modal');
       if (modal) modal.style.display = 'flex';
-    } else {
-      // For some methods, Stripe may redirect instead. We'll rely on return_url.
-      setMessage('Follow the instructions to complete the payment.');
+    } catch (err) {
+      setMessage(err.message || 'Payment failed. Please try again.');
+    } finally {
+      btn && (btn.disabled = false);
     }
   });
 

@@ -16,6 +16,10 @@ PAYPAL_CLIENT_ID = "AWBRnqorT1clCplKPaT8CetNSktYELNA-YaU0PFe1IdYVDRHtkRaSY9tEWL6
 PAYPAL_ENV = "production"
 PAYPAL_CURRENCY = "USD"
 PAYPAL_MANUAL_EMAIL = "soyalexesp123@gmail.com"
+SQUARE_APPLICATION_ID = "sq0idp-eKCNOIfYJAkTrdGkFwdKPQ"
+SQUARE_LOCATION_ID = "LSGY11JJEX3AD"
+
+# SQUARE_ACCESS_TOKEN should be configured as a secret in Cloudflare Dashboard or with `wrangler secret put SQUARE_ACCESS_TOKEN`
 
 # Crypto integration removed; users will be directed to Discord for manual crypto payments.
 
