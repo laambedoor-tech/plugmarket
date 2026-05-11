@@ -384,6 +384,165 @@
         padding: 20px 16px;
       }
     }
+
+    .promo-popup {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      z-index: 1200;
+      transition: opacity 0.24s ease, visibility 0.24s ease;
+    }
+
+    .promo-popup.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .promo-popup__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 9, 18, 0.40);
+      backdrop-filter: blur(6px);
+    }
+
+    .promo-popup__panel {
+      position: relative;
+      max-width: 980px;
+      width: min(92vw, 980px);
+      margin: 24px;
+      background: rgba(12, 18, 35, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 24px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.26);
+      overflow: hidden;
+    }
+
+    .promo-popup__inner {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 0;
+      align-items: stretch;
+      min-height: 320px;
+    }
+
+    .promo-popup__media {
+      position: relative;
+      overflow: hidden;
+      min-height: 320px;
+      background: linear-gradient(135deg, rgba(171, 71, 188, 0.14), rgba(255, 39, 67, 0.06));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .promo-popup__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.94;
+      filter: saturate(1.1) brightness(1.05);
+    }
+
+    .promo-popup__content {
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      color: #f4f6fb;
+    }
+
+    .promo-popup__badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 39, 67, 0.14);
+      border: 1px solid rgba(255, 39, 67, 0.2);
+      color: #ff8a9a;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      max-width: fit-content;
+    }
+
+    .promo-popup__title {
+      margin: 0;
+      font-size: clamp(1.9rem, 2.4vw, 2.8rem);
+      line-height: 1.05;
+      color: #ffffff;
+    }
+
+    .promo-popup__body {
+      margin: 0;
+      color: #d0d4df;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .promo-popup__body strong {
+      color: #ffffff;
+    }
+
+    .promo-popup__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .promo-popup__close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+      background: rgba(15, 20, 35, 0.9);
+      color: #ffffff;
+      font-size: 24px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .promo-popup__close:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 860px) {
+      .promo-popup__inner {
+        grid-template-columns: 1fr;
+      }
+      .promo-popup__content {
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .promo-popup__panel {
+        margin: 12px;
+        border-radius: 20px;
+      }
+      .promo-popup__content {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 
@@ -822,8 +981,45 @@
     </div>
   </footer>
 
+  <div class="promo-popup" id="promo-popup" aria-hidden="true">
+    <div class="promo-popup__overlay" data-close></div>
+    <div class="promo-popup__panel" role="dialog" aria-modal="true" aria-labelledby="promo-popup-title">
+      <button class="promo-popup__close" type="button" data-close aria-label="Close promotion">×</button>
+      <div class="promo-popup__inner">
+        <div class="promo-popup__media">
+          <img src="./assets/products/regularshow.jpg" alt="Regular Show HBO Max discount" loading="eager" decoding="async" />
+        </div>
+        <div class="promo-popup__content">
+          <span class="promo-popup__badge">Season return offer</span>
+          <h2 class="promo-popup__title" id="promo-popup-title">Regular Show The Lost Tapes is back — HBO Max 20% off!</h2>
+          <p class="promo-popup__body">Celebrate the return of <strong>Regular Show The Lost Tapes</strong> with our exclusive HBO Max discount. Lifetime plan now <strong>€0.86</strong> instead of <s>€1.08</s>.</p>
+          <div class="promo-popup__actions">
+            <a href="./product-hbomax.html" class="btn btn--primary">Get HBO Max now</a>
+            <button class="btn btn--ghost" type="button" data-close>Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="./js/main.js" type="module"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const promoPopup = document.getElementById('promo-popup');
+      if (!promoPopup) return;
+
+      const closeButtons = promoPopup.querySelectorAll('[data-close]');
+      closeButtons.forEach(button => button.addEventListener('click', () => {
+        promoPopup.classList.remove('active');
+        promoPopup.setAttribute('aria-hidden', 'true');
+      }));
+
+      setTimeout(() => {
+        promoPopup.classList.add('active');
+        promoPopup.setAttribute('aria-hidden', 'false');
+      }, 250);
+    });
+
     // Typing Animation
     const texts = [
       'Discord.',

@@ -11,7 +11,7 @@ const PRICES_EUR = {
   'youtube-premium': { '1 Month': 2.27, '6 Months': 6.80, '12 Months': 10.13, 'Lifetime': 2.27, 'fowner': 4.74 },
   disney: { '1 Month': 0.89, '3 Months': 2.19, '6 Months': 3.89, '12 Months': 7.70, 'Lifetime': 0.89 },
   prime: { '1 Month': 0.65, '3 Months': 1.78, '12 Months': 5.99, 'Lifetime': 0.65 },
-  hbomax: { 'Lifetime': 1.08 },
+  hbomax: { 'Lifetime': 0.86 },
   nordvpn: { '1 Month': 1.46, '3 Months': 2.75, '6 Months': 4.70, '12 Months': 8.62, 'Lifetime': 1.46 },
   crunchy: { '1 Month': 1.05, '3 Months': 2.67, '6 Months': 4.70, '12 Months': 8.42, 'Lifetime': 1.05 },
   nitro: { 'Boost 1m': 4.00, 'Boost 1 Year': 12.29, 'Basic 1m': 1.10 },

@@ -117,6 +117,14 @@ function updateCount(){ const el = document.getElementById('cart-count'); if (el
 
 function money(n){ return '€' + n.toFixed(2); }
 
+function getCurrentItemPrice(item) {
+  if (!item || !item.pid || !item.plan) return item.price || 0;
+  if (item.pid === 'hbomax' && item.plan === 'Lifetime') {
+    return 0.86;
+  }
+  return item.price || 0;
+}
+
 // Calcular descuento por volumen
 function getVolumeDiscount(totalQty) {
   if (totalQty >= 100) return 0.12; // 12% de descuento con 100+ items
@@ -166,6 +174,9 @@ function render(){
   const banner = getDiscountBanner(totalQty);
 
   const itemsHTML = items.map((it, idx) => {
+    const unitPrice = getCurrentItemPrice(it);
+    const originalPrice = (it.pid === 'hbomax' && it.plan === 'Lifetime') ? 1.08 : Number(it.price || 0);
+    const showOldPrice = originalPrice > unitPrice;
     // Mapeo de IDs a nombres de archivos de imágenes redimensionadas
     const imageMap = {
       'netflix': 'resized/nflx84px.png',
@@ -196,10 +207,10 @@ function render(){
       </div>
       <div>
         <h4 class="variant__title">${it.title} — ${it.plan}</h4>
-        <div class="variant__meta">Unit price: ${money(it.price)}</div>
+        <div class="variant__meta">Unit price: ${money(unitPrice)}${showOldPrice ? ` <span style="font-size: 0.9em; color: #999; text-decoration: line-through; margin-left: 8px;">${money(originalPrice)}</span>` : ''}</div>
       </div>
       <div class="variant__actions">
-        <div class="variant__price" style="min-width:70px; text-align:right;">${money(it.price * it.qty)}</div>
+        <div class="variant__price" style="min-width:70px; text-align:right;">${money(unitPrice * it.qty)}</div>
         <div style="display:flex; gap:6px; align-items:center;">
           <button class="btn btn--ghost btn--sm js-dec" data-i="${idx}">-</button>
           <span style="min-width:24px; text-align:center;">${it.qty}</span>
@@ -213,7 +224,7 @@ function render(){
 
   list.innerHTML = banner + itemsHTML;
 
-  const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+  const subtotal = items.reduce((sum, it) => sum + getCurrentItemPrice(it) * it.qty, 0);
   const finalTotal = subtotal * (1 - discount);
   
   if (discount > 0) {

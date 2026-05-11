@@ -189,7 +189,7 @@ const products = [
   { id: 'youtube-premium', title: 'YouTube Premium', price: 'From €2.27', tone: 'orange' },
   { id: 'disney', title: 'Disney+ ', price: 'From €0.89', tone: 'blue' },
   { id: 'prime', title: 'Prime Video', price: 'From €1.05', tone: 'blue' },
-  { id: 'hbomax', title: 'HBO Max', price: 'From €1.08', tone: 'purple' },
+  { id: 'hbomax', title: 'HBO Max', price: 'From €0.86', tone: 'purple' },
   { id: 'nordvpn', title: 'NordVPN', price: 'From €1.46', tone: 'cyan' },
   { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: 'From €2.03', tone: 'green' },
   { id: 'nitro', title: 'Discord Nitro', price: 'From €1.10', tone: 'purple' },

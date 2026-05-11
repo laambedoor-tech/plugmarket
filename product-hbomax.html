@@ -798,7 +798,10 @@
         <div class="product-info-section">
           <h1>HBO Max</h1>
           <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-            <p class="product-price" id="display-price">€1.08</p>
+            <div>
+              <p class="product-price" id="display-price">€0.86</p>
+              <p id="display-old-price" style="margin: 4px 0 0; color: rgba(255,255,255,0.65); font-size: 0.95rem; text-decoration: line-through;">€1.08</p>
+            </div>
             <span class="stock-badge stock-badge--out" id="stock-badge">Out of Stock</span>
           </div>
 
@@ -863,7 +866,7 @@
     const productId = 'hbomax';
     const productTitle = 'HBO Max';
     const productPlan = 'Lifetime';
-    const productPrice = 1.08;
+    const productPrice = 0.86;
     
     let quantity = 1;
     let stockData = {};
@@ -915,7 +918,12 @@
     // Update price display
     function updatePrice() {
       const total = productPrice * quantity;
+      const oldTotal = 1.08 * quantity;
       document.getElementById('display-price').textContent = `€${total.toFixed(2)}`;
+      const oldPriceEl = document.getElementById('display-old-price');
+      if (oldPriceEl) {
+        oldPriceEl.textContent = `€${oldTotal.toFixed(2)}`;
+      }
     }
 
     // Update stock badge

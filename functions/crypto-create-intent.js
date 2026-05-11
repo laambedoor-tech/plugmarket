@@ -7,7 +7,7 @@ const PRICES_USD = {
   spotify: { '1 mes': 2.2, '1 Month':2.2, '6 meses': 6.2, '6 Months':6.2, '12 meses': 11.88, '12 Months':11.88, 'Lifetime': 2.70 },
   disney: { '1 mes': 1.1, '1 Month':1.1, '6 meses': 4.8, '6 Months':4.8, '12 meses': 9.5, '12 Months':9.5, 'Lifetime': 0.89 },
   'youtube-premium': { 'Lifetime': 2.27, 'fowner': 4.74 },
-  hbo: { '1 mes': 1.4, '1 Month':1.4, '6 meses': 4.7, '6 Months':4.7, '12 meses': 9.8, '12 Months':9.8, 'Lifetime': 13.0 },
+  hbo: { '1 mes': 1.4, '1 Month':1.4, '6 meses': 4.7, '6 Months':4.7, '12 meses': 9.8, '12 Months':9.8, 'Lifetime': 10.4 },
   crunchyroll: { '1 mes': 0.9, '1 Month':0.9, '6 meses': 3.8, '6 Months':3.8, '12 meses': 7.2, '12 Months':7.2, 'Lifetime': 1.05 },
   youtube: { '1 mes': 1.6, '1 Month':1.6, '6 meses': 5.5, '6 Months':5.5, '12 meses': 10.5, '12 Months':10.5, 'Lifetime': 2.27 },
   prime: { 'Lifetime': 14.0 },
