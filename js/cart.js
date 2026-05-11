@@ -6,6 +6,28 @@ const USD_TO_EUR_RATE_CART = 0.92; // Exchange rate USD to EUR
 // Square payment state
 let squarePayments = null;
 let squareCard = null;
+const SQUARE_SDK_URL = 'https://web.squarecdn.com/v1/square.js';
+
+async function ensureSquareSdkLoaded(timeout = 8000) {
+  if (window.Square) return;
+  const script = document.querySelector(`script[src="${SQUARE_SDK_URL}"]`);
+  if (!script) {
+    throw new Error('Square payments SDK is not included on this page.');
+  }
+
+  await new Promise((resolve, reject) => {
+    if (window.Square) return resolve();
+    const onLoad = () => resolve();
+    const onError = () => reject(new Error('Square payments SDK failed to load.'));
+    script.addEventListener('load', onLoad, { once: true });
+    script.addEventListener('error', onError, { once: true });
+    setTimeout(() => reject(new Error('Square payments SDK load timed out.')), timeout);
+  });
+
+  if (!window.Square) {
+    throw new Error('Square payments SDK did not initialize after loading.');
+  }
+}
 
 async function fetchJSON(url, opts = {}){
   const headers = Object.assign({}, opts.headers || {});
@@ -29,7 +51,7 @@ function showCheckout(show){
 
 async function initSquare(){
   if (squarePayments) return squarePayments;
-  if (!window.Square) throw new Error('Square.js not loaded');
+  await ensureSquareSdkLoaded();
   const cfg = await fetchJSON(`${API_BASE}/api/get-square-config`);
   squarePayments = window.Square.payments(cfg.applicationId, cfg.locationId);
   return squarePayments;

@@ -10,6 +10,28 @@ let allOrders = []; // Store orders globally
 let selectedAmount = 0;
 let squarePayments = null;
 let cardElement = null;
+const SQUARE_SDK_URL = 'https://web.squarecdn.com/v1/square.js';
+
+async function ensureSquareSdkLoaded(timeout = 8000) {
+  if (window.Square) return;
+  const script = document.querySelector(`script[src="${SQUARE_SDK_URL}"]`);
+  if (!script) {
+    throw new Error('Square payments SDK is not included on this page.');
+  }
+
+  await new Promise((resolve, reject) => {
+    if (window.Square) return resolve();
+    const onLoad = () => resolve();
+    const onError = () => reject(new Error('Square payments SDK failed to load.'));
+    script.addEventListener('load', onLoad, { once: true });
+    script.addEventListener('error', onError, { once: true });
+    setTimeout(() => reject(new Error('Square payments SDK load timed out.')), timeout);
+  });
+
+  if (!window.Square) {
+    throw new Error('Square payments SDK did not initialize after loading.');
+  }
+}
 
 // Make switchPanel globally accessible
 window.switchPanel = switchPanel;
@@ -882,6 +904,7 @@ async function initializeSquare() {
   if (squarePayments) return;
 
   try {
+    await ensureSquareSdkLoaded();
     const configResponse = await fetch(`${API_BASE}/api/get-square-config`);
     const config = await configResponse.json();
     if (!config.applicationId || !config.locationId) {
