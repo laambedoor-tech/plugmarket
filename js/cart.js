@@ -6,6 +6,7 @@ const USD_TO_EUR_RATE_CART = 0.92; // Exchange rate USD to EUR
 // Square payment state
 let squarePayments = null;
 let squareCard = null;
+let mountPromise = null; // Prevent race condition for mounting card
 const SQUARE_SDK_URL = 'https://web.squarecdn.com/v1/square.js';
 
 async function ensureSquareSdkLoaded(timeout = 8000) {
@@ -58,11 +59,24 @@ async function initSquare(){
 }
 
 async function mountSquareCard(){
-  await initSquare();
+  // Prevent race condition - reuse mounting promise if already in progress
+  if (mountPromise) return mountPromise;
   if (squareCard) return squareCard;
-  squareCard = await squarePayments.card();
-  await squareCard.attach('#payment-element');
-  return squareCard;
+  
+  mountPromise = (async () => {
+    try {
+      await initSquare();
+      if (!squareCard) {
+        squareCard = await squarePayments.card();
+        await squareCard.attach('#payment-element');
+      }
+      return squareCard;
+    } finally {
+      mountPromise = null;
+    }
+  })();
+  
+  return mountPromise;
 }
 
 async function tokenizeSquareCard(){

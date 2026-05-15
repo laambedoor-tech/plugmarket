@@ -10,6 +10,7 @@ let allOrders = []; // Store orders globally
 let selectedAmount = 0;
 let squarePayments = null;
 let cardElement = null;
+let mountPromise = null; // Prevent race condition for mounting card
 const SQUARE_SDK_URL = 'https://web.squarecdn.com/v1/square.js';
 
 async function ensureSquareSdkLoaded(timeout = 8000) {
@@ -901,35 +902,49 @@ function setupBalanceUI() {
 }
 
 async function initializeSquare() {
-  if (squarePayments) return;
-
-  try {
-    await ensureSquareSdkLoaded();
-    const configResponse = await fetch(`${API_BASE}/api/get-square-config`);
-    const config = await configResponse.json();
-    if (!config.applicationId || !config.locationId) {
-      throw new Error('Missing Square configuration');
-    }
-
-    squarePayments = window.Square.payments(config.applicationId, config.locationId);
-    cardElement = await squarePayments.card({
-      style: {
-        input: {
-          color: '#ffffff',
-          fontSize: '16px',
-          placeholderColor: '#9aa0ad',
-          backgroundColor: 'transparent'
-        },
-        error: {
-          color: '#ff2743'
+  // Prevent race condition - reuse mounting promise if already in progress
+  if (mountPromise) return mountPromise;
+  if (squarePayments && cardElement) return cardElement;
+  
+  mountPromise = (async () => {
+    try {
+      await ensureSquareSdkLoaded();
+      if (!squarePayments) {
+        const configResponse = await fetch(`${API_BASE}/api/get-square-config`);
+        const config = await configResponse.json();
+        if (!config.applicationId || !config.locationId) {
+          throw new Error('Missing Square configuration');
         }
-      }
-    });
 
-    await cardElement.attach('#card-element');
-  } catch (error) {
-    console.error('Error initializing Square:', error);
-  }
+        squarePayments = window.Square.payments(config.applicationId, config.locationId);
+      }
+
+      if (!cardElement) {
+        cardElement = await squarePayments.card({
+          style: {
+            input: {
+              color: '#ffffff',
+              fontSize: '16px',
+              placeholderColor: '#9aa0ad',
+              backgroundColor: 'transparent'
+            },
+            error: {
+              color: '#ff2743'
+            }
+          }
+        });
+        await cardElement.attach('#card-element');
+      }
+      return cardElement;
+    } catch (error) {
+      console.error('Error initializing Square:', error);
+      throw error;
+    } finally {
+      mountPromise = null;
+    }
+  })();
+  
+  return mountPromise;
 }
 
 async function handleTopupSubmitCard() {
