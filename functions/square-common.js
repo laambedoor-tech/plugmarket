@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 export const PRICES_EUR = {
-  boosts: { '3 Months': 665 },
+  'server-boosts': { '3 Months': 665 },
   netflix: { '1 Month': 122, '3 Months': 284, '6 Months': 486, '12 Months': 891, 'Bulk': 49, 'Lifetime': 110, 'FA': 780 },
   spotify: { '1 Month': 178, '3 Months': 308, '6 Months': 502, '12 Months': 962, 'Lifetime': 270 },
   'youtube-premium': { '1 Month': 227, '6 Months': 680, '12 Months': 1013, 'Lifetime': 227, 'fowner': 474 },
@@ -9,7 +9,7 @@ export const PRICES_EUR = {
   prime: { '1 Month': 65, '3 Months': 178, '12 Months': 599, 'Lifetime': 65 },
   hbomax: { 'Lifetime': 86 },
   nordvpn: { '1 Month': 146, '3 Months': 275, '6 Months': 470, '12 Months': 862, 'Lifetime': 146 },
-  crunchy: { '1 Month': 105, '3 Months': 267, '6 Months': 470, '12 Months': 842, 'Lifetime': 105 },
+  crunchly: { '1 Month': 105, '3 Months': 267, '6 Months': 470, '12 Months': 842, 'Lifetime': 105 },
   nitro: { 'Boost 1m': 400, 'Boost 1 Year': 1229, 'Basic 1m': 110 },
   discordpromocode: { '1 Month Nitro': 89, '3 Months Nitro': 99, 'Boost 1m': 89, 'Boost 3m': 99 },
   realmembers: { '[500]': 203, '[1000]': 383, '[2000]': 709, '[3000]': 1047, '[4000]': 1102, '[5000]': 1405 },
@@ -26,7 +26,10 @@ export const PRICES_EUR = {
   rockstar: { 'Activation Code': 25 },
   minecraft: { 'NFA Lifetime': 100, 'FA Lifetime': 450 },
   stake: { 'Level 2 Verified': 60 },
-  xbox: { 'Game Pass Lifetime': 60 }
+  xbox: { 'Game Pass Lifetime': 60 },
+  xboxcodes: { '1 Month': 254 },
+  roblox: { '1000 Robux': 600 },
+  gemini: { '1 Month': 175, '6 Months': 730 }
 };
 
 export const PLAN_ALIASES = {
