@@ -865,6 +865,16 @@
     
     const variants = [
       { id: 'Lifetime', name: 'Netflix — Lifetime', stock: 0, price: 0.95, oldPrice: null, minQty: 1 },
+      { id: 'links', name: 'Netflix Login Keys Lifetime [ Lifetime Warranty + Auto Replace]', stock: 0, price: 2.80, oldPrice: null, minQty: 1, description: `
+        <ul class="description-list">
+          <li>Guaranteed Subscription — 100% functional Netflix access.</li>
+          <li>Fully Verified Keys — tested and verified for reliable login.</li>
+          <li>Instant Key Delivery — receive a key and login link immediately.</li>
+          <li>Lifetime Warranty + Auto Replace — unlimited replacement if a key fails.</li>
+          <li>PC/TV Ready — works instantly; mobile may not reproduce content.</li>
+          <li>High Quality & Resell Ready — ideal for personal use or resale.</li>
+        </ul>
+      ` },
       { id: 'FA', name: 'Netflix Lifetime [FULL ACCESS ACCOUNT]', stock: 0, price: 7.80, oldPrice: 10, minQty: 1 },
       { id: 'Bulk', name: 'Netflix Bulk (For Resellers)', stock: 0, price: 0.40, oldPrice: null, minQty: 25 }
     ];
@@ -914,7 +924,7 @@
           stockData = data.stock || {};
           console.log('All stock keys:', Object.keys(stockData));
           console.log('Netflix stock keys:', Object.keys(stockData).filter(k => k.toLowerCase().includes('netflix')));
-          console.log('Looking for keys: netflix:Lifetime, netflix:Bulk');
+          console.log('Looking for keys: netflix:Lifetime, netflix:links, netflix:Bulk');
           renderVariants();
           updateStockBadge();
         } else {
@@ -953,6 +963,28 @@
           </div>
         `;
       }).join('');
+      updateDescription();
+    }
+
+    function updateDescription() {
+      const descContent = document.getElementById('desc-content');
+      if (!descContent) return;
+      if (selectedVariant.description) {
+        descContent.innerHTML = selectedVariant.description;
+      } else {
+        descContent.innerHTML = `
+          <ul class="description-list">
+            <li><strong>Guaranteed Subscription</strong> – 100% working Netflix access.</li>
+            <li><strong>Fully Checked Accounts</strong> – Tested and verified for full functionality.</li>
+            <li><strong>Guaranteed Duration</strong> – Reliable accounts for long-term use.</li>
+            <li><strong>In-Stock & Ready</strong> – Instant delivery, no waiting.</li>
+            <li><strong>High Quality & Resell-Friendly</strong> – Great for personal use or resale.</li>
+            <li><strong>Full Warranty</strong> – Free replacements for any issues, anytime.</li>
+            <li><strong>Auto-Renew Enabled</strong> – Seamless access with automatic renewals.</li>
+            <li><strong>Reliable Support</strong> – Quick help and replacements if needed.</li>
+          </ul>
+        `;
+      }
     }
 
     // Select variant
