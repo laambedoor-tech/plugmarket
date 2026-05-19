@@ -13,7 +13,7 @@ export const PRICES_EUR = {
   nitro: { 'Boost 1m': 400, 'Boost 1 Year': 1229, 'Basic 1m': 110 },
   discordpromocode: { '1 Month Nitro': 89, '3 Months Nitro': 99, 'Boost 1m': 89, 'Boost 3m': 99 },
   realmembers: { '[500]': 203, '[1000]': 383, '[2000]': 709, '[3000]': 1047, '[4000]': 1102, '[5000]': 1405 },
-  'chatgpt-plus': { '1 Month': 259, '3 Months': 632, '6 Months': 962, '12 Months': 850 },
+  'chatgpt-plus': { '1 Month': 415, '3 Months': 415, '12 Months': 415, 'Lifetime': 560 },
   'chatgpt-pro': { '1 Month': 315 },
   capcut: { '1 Month': 235, '3 Months': 599, '6 Months': 1069, '12 Months': 1879, 'Lifetime': 235 },
   geoguessr: { '1 Month': 81, '3 Months': 211, '6 Months': 389, '12 Months': 713, 'Lifetime': 81 },
