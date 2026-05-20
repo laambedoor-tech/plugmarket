@@ -1095,60 +1095,8 @@
     </div>
   </footer>
 
-  <div class="promo-popup" id="promo-popup" aria-hidden="true">
-    <div class="promo-popup__overlay" data-close></div>
-    <div class="promo-popup__panel" role="dialog" aria-modal="true" aria-labelledby="promo-popup-title">
-      <button class="promo-popup__close" type="button" data-close aria-label="Close promotion">×</button>
-      <div class="promo-popup__inner">
-        <div class="promo-popup__media">
-          <div class="promo-popup__illustration">
-            <span class="promo-popup__label">New product launch</span>
-            <div class="promo-popup__box">
-              <span class="promo-popup__netflix-text">Netflix</span>
-            </div>
-          </div>
-        </div>
-        <div class="promo-popup__content">
-          <span class="promo-popup__badge">Netflix Lifetime Keys</span>
-          <h2 class="promo-popup__title" id="promo-popup-title">Clean Netflix login links for customers and resellers</h2>
-          <p class="promo-popup__body">Purchase instant Netflix keys with auto-replace warranty, no passwords, and resale-ready delivery. Perfect for TV, desktop and bulk orders.</p>
-          <ul class="promo-popup__features">
-            <li>No passwords needed — login links only</li>
-            <li>Lifetime auto-replace warranty</li>
-            <li>Ready for resellers and customers</li>
-          </ul>
-          <div class="promo-popup__price">
-            <span>From</span>
-            <strong>1.45 €</strong>
-            <small>per key</small>
-          </div>
-          <div class="promo-popup__actions">
-            <a href="./product-netflix.html" class="btn btn--primary">Buy Netflix Keys</a>
-            <button class="btn btn--ghost" type="button" data-close>Dismiss</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="./js/main.js" type="module"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const promoPopup = document.getElementById('promo-popup');
-      if (!promoPopup) return;
-
-      const closeButtons = promoPopup.querySelectorAll('[data-close]');
-      closeButtons.forEach(button => button.addEventListener('click', () => {
-        promoPopup.classList.remove('active');
-        promoPopup.setAttribute('aria-hidden', 'true');
-      }));
-
-      setTimeout(() => {
-        promoPopup.classList.add('active');
-        promoPopup.setAttribute('aria-hidden', 'false');
-      }, 250);
-    });
-
     // Typing Animation
     const texts = [
       'Discord.',

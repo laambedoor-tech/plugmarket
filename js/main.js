@@ -234,7 +234,7 @@ const subscriptions = {
   nitro: { 'Boost 1m': 4.00, 'Boost 1 Year': 13.65, 'Basic 1m': 1.22 },
   'server-boosts': { '3 Months': 6.65 },
   discordpromocode: { '1 Month': 0.54, '3 Months': 0.95 },
-  'chatgpt-plus': { '1 Month': 4.15, '3 Months': 4.15, '12 Months': 4.15, 'Lifetime': 5.60 },
+  'chatgpt-plus': { '1 Month': 4.15, 'Lifetime': 5.60 },
   'chatgpt-pro': { '1 Month': 3.15, '3 Months': 5.4, 'Lifetime': 0.99 },
   gemini: { '1 Month': 1.75, '6 Months': 7.30 },
   capcut: { '1 Month': 2.61, '3 Months': 6.66, '6 Months': 11.88, '12 Months': 20.88, 'Lifetime': 1.53 },
