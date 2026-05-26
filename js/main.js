@@ -435,6 +435,7 @@ const toneToGradient = (tone) => {
       
       if (pageMap[pid]) {
         window.location.href = './' + pageMap[pid];
+        return;
       }
     });
   });
