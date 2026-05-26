@@ -190,6 +190,7 @@ const products = [
   { id: 'disney', title: 'Disney+ ', price: 'From €0.89', tone: 'blue' },
   { id: 'prime', title: 'Prime Video', price: 'From €1.05', tone: 'blue' },
   { id: 'hbomax', title: 'HBO Max', price: 'From €0.86', tone: 'purple' },
+  { id: 'claude', title: 'Claude (Full Access)', price: 'From €4.95', tone: 'red' },
   { id: 'nordvpn', title: 'NordVPN', price: 'From €1.46', tone: 'cyan' },
   { id: 'realmembers', title: 'Discord Real Server Members [KEYS]', price: 'From €2.03', tone: 'green' },
   { id: 'nitro', title: 'Discord Nitro', price: 'From €1.10', tone: 'purple' },
@@ -237,6 +238,7 @@ const subscriptions = {
   'chatgpt-plus': { '1 Month': 4.15, 'Lifetime': 5.60 },
   'chatgpt-pro': { '1 Month': 3.15, '3 Months': 5.4, 'Lifetime': 0.99 },
   gemini: { '1 Month': 1.75, '6 Months': 7.30 },
+  claude: { '1 Day': 4.95, '7 Days': 9.95, '1 Month': 20.00 },
   capcut: { '1 Month': 2.61, '3 Months': 6.66, '6 Months': 11.88, '12 Months': 20.88, 'Lifetime': 1.53 },
   geoguessr: { '1 Month': 0.9, '3 Months': 2.34, '6 Months': 4.32, '12 Months': 7.92, 'Lifetime': 1.80 },
   filmora: { '1 Month': 2.25, '3 Months': 5.4, '6 Months': 9.45, '12 Months': 14.4, 'Lifetime': 0.95 },
@@ -430,7 +432,8 @@ const toneToGradient = (tone) => {
         'stake': 'product-stake.html',
         'xbox': 'product-xbox.html',
         'xboxcodes': 'product-xboxcodes.html',
-        'roblox': 'product-roblox.html'
+        'roblox': 'product-roblox.html',
+        'claude': 'product-claude.html'
       };
       
       if (pageMap[pid]) {
