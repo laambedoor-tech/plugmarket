@@ -3,6 +3,7 @@ import createSquarePayment from './create-square-payment.js';
 import getStripeConfig from './get-stripe-config.js';
 import createPaymentIntent from './create-payment-intent.js';
 import updatePaymentIntent from './update-payment-intent.js';
+import createTopupIntent from './create-topup-intent.js';
 import stripeWebhook from './stripe-webhook.js';
 import getOrders from './get-orders.js';
 import getStock from './get-stock.js';
@@ -68,6 +69,7 @@ export default {
     if (path === '/api/get-stripe-config') response = await getStripeConfig.fetch(request, env, ctx);
     else if (path === '/api/create-payment-intent') response = await createPaymentIntent.fetch(request, env, ctx);
     else if (path === '/api/update-payment-intent') response = await updatePaymentIntent.fetch(request, env, ctx);
+    else if (path === '/api/create-topup-intent') response = await createTopupIntent(request, env);
     else if (path === '/api/get-square-config') response = await getSquareConfig.fetch(request, env, ctx);
     else if (path === '/api/create-square-payment') response = await createSquarePayment.fetch(request, env, ctx);
     else if (path === '/api/stripe-webhook') response = await stripeWebhook.fetch(request, env, ctx);

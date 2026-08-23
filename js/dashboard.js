@@ -10,6 +10,8 @@ let allOrders = []; // Store orders globally
 let selectedAmount = 0;
 let stripe = null;
 let elements = null;
+let paymentElement = null;
+let topupClientSecret = null;
 
 async function loadStripe() {
   if (stripe) return stripe;
@@ -834,7 +836,6 @@ function setupBalanceUI() {
       console.error('Modal content (.modal) not found');
     }
     
-    setTimeout(() => initializeSquare(), 100);
   });
   
   // Close modal
@@ -863,6 +864,7 @@ function setupBalanceUI() {
       if (submitBtnCard) submitBtnCard.disabled = false;
       if (submitBtnCrypto) submitBtnCrypto.disabled = false;
       updateSubmitButtons();
+      prepareStripeTopup(selectedAmount, submitBtnCard);
     });
   });
   
@@ -875,6 +877,7 @@ function setupBalanceUI() {
       if (submitBtnCard) submitBtnCard.disabled = false;
       if (submitBtnCrypto) submitBtnCrypto.disabled = false;
       updateSubmitButtons();
+      prepareStripeTopup(selectedAmount, submitBtnCard);
     } else {
       selectedAmount = 0;
       if (submitBtnCard) submitBtnCard.disabled = true;
@@ -889,50 +892,36 @@ function setupBalanceUI() {
   submitBtnCrypto?.addEventListener('click', handleTopupSubmitCrypto);
 }
 
-async function initializeSquare() {
-  // Prevent race condition - reuse mounting promise if already in progress
-  if (mountPromise) return mountPromise;
-  if (squarePayments && cardElement) return cardElement;
-  
-  mountPromise = (async () => {
-    try {
-      await ensureSquareSdkLoaded();
-      if (!squarePayments) {
-        const configResponse = await fetch(`${API_BASE}/api/get-square-config`);
-        const config = await configResponse.json();
-        if (!config.applicationId || !config.locationId) {
-          throw new Error('Missing Square configuration');
-        }
+async function initializeStripeTopup(amount) {
+  const response = await fetch(`${API_BASE}/api/create-topup-intent`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth.token}`
+    },
+    body: JSON.stringify({ amount })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to initialize payment');
 
-        squarePayments = window.Square.payments(config.applicationId, config.locationId);
-      }
+  const stripeInstance = await loadStripe();
+  topupClientSecret = data.clientSecret;
+  elements = stripeInstance.elements({ clientSecret: topupClientSecret });
+  paymentElement?.destroy();
+  paymentElement = elements.create('payment');
+  paymentElement.mount('#payment-element');
+}
 
-      if (!cardElement) {
-        cardElement = await squarePayments.card({
-          style: {
-            input: {
-              color: '#ffffff',
-              fontSize: '16px',
-              placeholderColor: '#9aa0ad',
-              backgroundColor: 'transparent'
-            },
-            error: {
-              color: '#ff2743'
-            }
-          }
-        });
-        await cardElement.attach('#card-element');
-      }
-      return cardElement;
-    } catch (error) {
-      console.error('Error initializing Square:', error);
-      throw error;
-    } finally {
-      mountPromise = null;
-    }
-  })();
-  
-  return mountPromise;
+async function prepareStripeTopup(amount, submitBtn) {
+  if (!submitBtn) return;
+  submitBtn.disabled = true;
+  try {
+    await initializeStripeTopup(amount);
+    submitBtn.disabled = false;
+  } catch (error) {
+    console.error('Error initializing Stripe top-up:', error);
+    alert(error.message || 'Failed to initialize payment');
+  }
 }
 
 async function handleTopupSubmitCard() {
@@ -946,26 +935,16 @@ async function handleTopupSubmitCard() {
   submitBtn.textContent = 'Processing...';
 
   try {
-    await initializeSquare();
-    const result = await cardElement.tokenize();
-    if (result.status !== 'OK') {
-      const message = result.errors?.[0]?.detail || result.errors?.[0]?.message || 'Card tokenization failed';
-      throw new Error(message);
+    if (!topupClientSecret || !paymentElement) {
+      await initializeStripeTopup(selectedAmount);
     }
-
-    const response = await fetch(`${API_BASE}/api/create-square-topup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${auth.token}`
-      },
-      body: JSON.stringify({ amount: selectedAmount, sourceId: result.token })
+    const stripeInstance = await loadStripe();
+    const result = await stripeInstance.confirmPayment({
+      elements,
+      confirmParams: { return_url: window.location.href },
+      redirect: 'if_required'
     });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || 'Failed to create payment');
-    }
+    if (result.error) throw new Error(result.error.message);
 
     alert('Funds added successfully!');
     document.getElementById('topup-modal').classList.remove('active');
@@ -1170,7 +1149,8 @@ function resetTopupForm() {
     submitBtnCrypto.disabled = true;
   }
   
-  if (cardElement) {
-    cardElement.clear();
-  }
+  paymentElement?.destroy();
+  paymentElement = null;
+  elements = null;
+  topupClientSecret = null;
 }
