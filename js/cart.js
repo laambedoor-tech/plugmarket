@@ -3,31 +3,44 @@ const CART_KEY = 'plugmarket_cart';
 const API_BASE = 'https://plugmarket.es';
 const USD_TO_EUR_RATE_CART = 0.92; // Exchange rate USD to EUR
 
-// Square payment state
-let squarePayments = null;
-let squareCard = null;
-let mountPromise = null; // Prevent race condition for mounting card
-const SQUARE_SDK_URL = 'https://web.squarecdn.com/v1/square.js';
+// Stripe payment state
+let stripe = null;
+let elements = null;
+let paymentElement = null;
 
-async function ensureSquareSdkLoaded(timeout = 8000) {
-  if (window.Square) return;
-  const script = document.querySelector(`script[src="${SQUARE_SDK_URL}"]`);
-  if (!script) {
-    throw new Error('Square payments SDK is not included on this page.');
+async function loadStripe() {
+  if (stripe) return stripe;
+  if (!window.Stripe) {
+    throw new Error('Stripe.js not loaded');
   }
+  const configResp = await fetch(`${API_BASE}/api/get-stripe-config`);
+  const config = await configResp.json();
+  stripe = window.Stripe(config.publishableKey);
+  return stripe;
+}
 
-  await new Promise((resolve, reject) => {
-    if (window.Square) return resolve();
-    const onLoad = () => resolve();
-    const onError = () => reject(new Error('Square payments SDK failed to load.'));
-    script.addEventListener('load', onLoad, { once: true });
-    script.addEventListener('error', onError, { once: true });
-    setTimeout(() => reject(new Error('Square payments SDK load timed out.')), timeout);
+async function createPaymentIntent(cart, customerEmail) {
+  const clientSecretResp = await fetch(`${API_BASE}/api/create-payment-intent`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cart, customerEmail })
   });
 
-  if (!window.Square) {
-    throw new Error('Square payments SDK did not initialize after loading.');
+  if (!clientSecretResp.ok) {
+    const err = await clientSecretResp.json();
+    throw new Error(err.error || 'Failed to create payment intent');
   }
+
+  const data = await clientSecretResp.json();
+  return data.clientSecret;
+}
+
+async function initializeStripeElements(clientSecret) {
+  if (elements) return elements;
+  const stripeInstance = await loadStripe();
+
+  elements = stripeInstance.elements({ clientSecret });
+  return elements;
 }
 
 async function fetchJSON(url, opts = {}){
@@ -50,57 +63,34 @@ function showCheckout(show){
   panel.style.display = show ? 'block' : 'none';
 }
 
-async function initSquare(){
-  if (squarePayments) return squarePayments;
-  await ensureSquareSdkLoaded();
-  const cfg = await fetchJSON(`${API_BASE}/api/get-square-config`);
-  squarePayments = window.Square.payments(cfg.applicationId, cfg.locationId);
-  return squarePayments;
-}
+async function mountStripeCard(clientSecret) {
+  const elementsContainer = document.getElementById('payment-element');
+  if (!elementsContainer) return;
 
-async function mountSquareCard(){
-  // Prevent race condition - reuse mounting promise if already in progress
-  if (mountPromise) return mountPromise;
-  if (squareCard) return squareCard;
-  
-  mountPromise = (async () => {
-    try {
-      await initSquare();
-      if (!squareCard) {
-        squareCard = await squarePayments.card();
-        await squareCard.attach('#payment-element');
-      }
-      return squareCard;
-    } finally {
-      mountPromise = null;
-    }
-  })();
-  
-  return mountPromise;
-}
-
-async function tokenizeSquareCard(){
-  if (!squareCard) {
-    await mountSquareCard();
+  const els = await initializeStripeElements(clientSecret);
+  if (!paymentElement) {
+    paymentElement = els.create('payment');
+    paymentElement.mount('#payment-element');
   }
-  const result = await squareCard.tokenize();
-  if (result.status !== 'OK') {
-    const message = result.errors?.[0]?.detail || result.errors?.[0]?.message || 'Card tokenization failed';
-    throw new Error(message);
-  }
-  return result.token;
 }
 
-async function processSquarePayment(sourceId, customerEmail){
-  const items = getCart();
-  return await fetchJSON(`${API_BASE}/api/create-square-payment`, {
-    method: 'POST',
-    body: JSON.stringify({
-      cart: items.map(i => ({ pid: i.pid, plan: i.plan, qty: i.qty })),
-      sourceId,
-      customerEmail: customerEmail || ''
-    })
+async function processStripePayment(customerEmail) {
+  const stripeInstance = await loadStripe();
+  
+  const result = await stripeInstance.confirmPayment({
+    elements,
+    confirmParams: {
+      return_url: window.location.href,
+      receipt_email: customerEmail
+    },
+    redirect: 'if_required'
   });
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.paymentIntent;
 }
 
 function setMessage(msg){
@@ -291,18 +281,6 @@ addEventListener('click', (e) => {
 function initCheckout() {
   document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
   
-  // Auto-mount Square card field when valid email is entered
-  document.getElementById('checkout-email')?.addEventListener('blur', async (e) => {
-    const email = e.target.value.trim();
-    if (email && email.includes('@') && !squareCard) {
-      try {
-        await mountSquareCard();
-      } catch (err) {
-        console.warn('Failed to pre-mount Square card element:', err);
-      }
-    }
-  });
-  
   document.getElementById('btn-checkout')?.addEventListener('click', async () => {
     const items = getCart();
     if (!items.length) return;
@@ -401,19 +379,12 @@ function initCheckout() {
   document.getElementById('btn-cancel-checkout')?.addEventListener('click', async () => {
     showCheckout(false);
     setMessage('');
-    try {
-      if (squareCard) {
-        if (typeof squareCard.destroy === 'function') {
-          await squareCard.destroy();
-        } else if (typeof squareCard.detach === 'function') {
-          await squareCard.detach();
-        }
-      }
-    } catch (err) {
-      console.warn('Unable to remove Square card element:', err);
+    // Reset Stripe state
+    if (paymentElement) {
+      paymentElement.destroy();
+      paymentElement = null;
     }
-    squareCard = null;
-    squarePayments = null;
+    elements = null;
   });
   
   // Balance payment buttons
@@ -448,9 +419,19 @@ function initCheckout() {
     btn && (btn.disabled = true);
 
     try {
-      await mountSquareCard();
-      const sourceId = await tokenizeSquareCard();
-      await processSquarePayment(sourceId, customerEmail);
+      const items = getCart();
+      if (!items.length) {
+        throw new Error('Your cart is empty');
+      }
+
+      // Create payment intent with cart and email
+      const clientSecret = await createPaymentIntent(items, customerEmail);
+
+      // Mount Stripe card with the new client secret
+      await mountStripeCard(clientSecret);
+
+      // Process payment
+      await processStripePayment(customerEmail);
       setCart([]);
       showCheckout(false);
       const modal = document.getElementById('success-modal');
