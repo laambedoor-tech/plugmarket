@@ -1038,10 +1038,10 @@
       <div class="modal-body">
         <!-- Payment Method Tabs -->
         <div class="payment-tabs" style="display: flex; gap: 12px; margin-bottom: 24px;">
-          <button class="payment-tab active" data-method="card" style="flex: 1; padding: 12px; background: rgba(255, 39, 67, 0.1); border: 2px solid #ff2743; border-radius: 12px; color: #ff2743; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          <button class="payment-tab" data-method="card" style="display:none; flex: 1; padding: 12px; background: rgba(255, 39, 67, 0.1); border: 2px solid #ff2743; border-radius: 12px; color: #ff2743; font-weight: 600; cursor: pointer; transition: all 0.2s;">
             💳 Card
           </button>
-          <button class="payment-tab" data-method="crypto" style="flex: 1; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #9aa0ad; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          <button class="payment-tab active" data-method="crypto" style="flex: 1; padding: 12px; background: rgba(255, 39, 67, 0.1); border: 2px solid #ff2743; border-radius: 12px; color: #ff2743; font-weight: 600; cursor: pointer; transition: all 0.2s;">
             ₿ Crypto
           </button>
         </div>
@@ -1066,7 +1066,7 @@
         />
         
         <!-- Card Payment Form -->
-        <div class="payment-form" id="card-payment-form">
+        <div class="payment-form" id="card-payment-form" style="display:none;">
           <div id="payment-element"></div>
           <div id="card-errors"></div>
           <button class="btn btn--primary" id="submit-topup-card" disabled style="width: 100%; margin-top: 16px;">
@@ -1075,7 +1075,7 @@
         </div>
 
         <!-- Crypto Payment Form -->
-        <div class="payment-form" id="crypto-payment-form" style="display: none;">
+        <div class="payment-form" id="crypto-payment-form" style="display: block;">
           <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
             <p style="color: #9aa0ad; font-size: 14px; margin-bottom: 8px;">Select cryptocurrency:</p>
             <select id="crypto-currency" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; font-size: 14px; font-family: 'Poppins', sans-serif;">
@@ -1093,7 +1093,6 @@
     </div>
   </div>
 
-  <script src="https://js.stripe.com/v3/" defer></script>
   <script src="./js/auth.js"></script>
   <script src="./js/dashboard.js"></script>
   <script>

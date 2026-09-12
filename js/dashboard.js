@@ -864,7 +864,6 @@ function setupBalanceUI() {
       if (submitBtnCard) submitBtnCard.disabled = false;
       if (submitBtnCrypto) submitBtnCrypto.disabled = false;
       updateSubmitButtons();
-      prepareStripeTopup(selectedAmount, submitBtnCard);
     });
   });
   
@@ -877,7 +876,6 @@ function setupBalanceUI() {
       if (submitBtnCard) submitBtnCard.disabled = false;
       if (submitBtnCrypto) submitBtnCrypto.disabled = false;
       updateSubmitButtons();
-      prepareStripeTopup(selectedAmount, submitBtnCard);
     } else {
       selectedAmount = 0;
       if (submitBtnCard) submitBtnCard.disabled = true;

@@ -281,30 +281,12 @@ addEventListener('click', (e) => {
 function initCheckout() {
   document.getElementById('btn-clear')?.addEventListener('click', () => { setCart([]); });
 
-  document.getElementById('checkout-email')?.addEventListener('blur', async (e) => {
-    const customerEmail = e.target.value.trim();
-    const items = getCart();
-    if (!customerEmail || !customerEmail.includes('@') || !items.length || paymentElement) return;
-
-    try {
-      const clientSecret = await createPaymentIntent(items, customerEmail);
-      await mountStripeCard(clientSecret);
-    } catch (err) {
-      setMessage(err.message || 'Unable to load card payment.');
-    }
-  });
-  
   document.getElementById('btn-checkout')?.addEventListener('click', async () => {
     const items = getCart();
     if (!items.length) return;
     try {
       showCheckout(true);
-      const tabCard = document.getElementById('tab-card');
-      if (tabCard) {
-        tabCard.click();
-      } else {
-        document.getElementById('tab-paypal')?.click();
-      }
+      document.getElementById('tab-paypal')?.click();
       document.getElementById('checkout-email')?.focus();
     } catch (e) {
       setMessage(e.message || 'Checkout unavailable');
